@@ -27,7 +27,12 @@ export class TrainingsController {
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.trainingsService.findOne(+id);
+    return this.trainingsService.findOne(id);
+  }
+
+  @Get("user/:id")
+  findByUserId(@Param("id") id: string) {
+    return this.trainingsService.findByUserId(id);
   }
 
   @Patch(":id")

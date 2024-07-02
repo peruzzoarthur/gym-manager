@@ -51,34 +51,43 @@ model Training {
   rounds          Int
   reps            Int
   sets            Int
+  rest            Int
 }
 
 model TrainingGroup {
   id         String     @id @default(uuid())
   key        String
-  exercices  Exercise[]
+  exercises  Exercise[]
   done       Boolean    @default(false)
   groups     Group[]
   training   Training   @relation(fields: [trainingId], references: [id])
   trainingId String
+  phase      Phase
 
   @@unique([key, trainingId])
 }
 
+enum Phase {
+  CIS
+  ONE
+  TWO
+}
+
 model Exercise {
-  id            String            @id @default(uuid())
-  name          ExerciseReference @relation(fields: [nameId], references: [id])
-  nameId        String
-  load          Float?
-  reps          Int?
-  sets          Int?
-  TrainingGroup TrainingGroup[]
+  id             String            @id @default(uuid())
+  ref            ExerciseReference @relation(fields: [refId], references: [id])
+  refId          String
+  load           Float?
+  reps           Int?
+  sets           Int?
+  trainingGroups TrainingGroup[]
+  index          Int?
 }
 
 model ExerciseReference {
   id        String     @id @default(uuid())
   name      String     @unique()
-  exercices Exercise[]
+  exercises Exercise[]
   groups    Group[]
 }
 

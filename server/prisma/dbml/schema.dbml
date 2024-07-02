@@ -32,16 +32,18 @@ Table Training {
   rounds Int [not null]
   reps Int [not null]
   sets Int [not null]
+  rest Int [not null]
 }
 
 Table TrainingGroup {
   id String [pk]
   key String [not null]
-  exercices Exercise [not null]
+  exercises Exercise [not null]
   done Boolean [not null, default: false]
   groups Group[] [not null]
   training Training [not null]
   trainingId String [not null]
+  phase Phase [not null]
 
   indexes {
     (key, trainingId) [unique]
@@ -50,18 +52,19 @@ Table TrainingGroup {
 
 Table Exercise {
   id String [pk]
-  name ExerciseReference [not null]
-  nameId String [not null]
+  ref ExerciseReference [not null]
+  refId String [not null]
   load Float
   reps Int
   sets Int
-  TrainingGroup TrainingGroup [not null]
+  trainingGroups TrainingGroup [not null]
+  index Int
 }
 
 Table ExerciseReference {
   id String [pk]
   name String [unique, not null]
-  exercices Exercise [not null]
+  exercises Exercise [not null]
   groups Group[] [not null]
 }
 
@@ -71,13 +74,19 @@ Table TrainingToUser {
 }
 
 Table ExerciseToTrainingGroup {
-  exercicesId String [ref: > Exercise.id]
-  traininggroupId String [ref: > TrainingGroup.id]
+  exercisesId String [ref: > Exercise.id]
+  traininggroupsId String [ref: > TrainingGroup.id]
 }
 
 Enum Role {
   USER
   ADMIN
+}
+
+Enum Phase {
+  CIS
+  ONE
+  TWO
 }
 
 Enum Tempo {
@@ -102,4 +111,4 @@ Ref: User.activeTrainingId > Training.id
 
 Ref: TrainingGroup.trainingId > Training.id
 
-Ref: Exercise.nameId > ExerciseReference.id
+Ref: Exercise.refId > ExerciseReference.id

@@ -10,6 +10,7 @@ export class TrainingGroupsService {
     return await this.prisma.trainingGroup.create({
       data: {
         key: createTrainingGroupDto.key,
+        phase: createTrainingGroupDto.phase,
         training: {
           connect: {
             id: createTrainingGroupDto.trainingId,
@@ -23,8 +24,29 @@ export class TrainingGroupsService {
     return await this.prisma.trainingGroup.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} trainingGroup`;
+  async findOne(id: string) {
+    return await this.prisma.trainingGroup.findUniqueOrThrow({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        key: true,
+        done: true,
+        groups: true,
+        phase: true,
+        exercises: {
+          select: {
+            id: true,
+            index: true,
+            sets: true,
+            reps: true,
+            ref: true,
+            load: true,
+          },
+        },
+      },
+    });
   }
 
   update(id: number, updateTrainingGroupDto: UpdateTrainingGroupDto) {

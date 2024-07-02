@@ -14,6 +14,7 @@ export class TrainingsService {
         rounds: createTrainingDto.rounds,
         sets: createTrainingDto.sets,
         tempo: createTrainingDto.tempo,
+        rest: createTrainingDto.rest,
         user: {
           connect: {
             id: createTrainingDto.userId,
@@ -24,11 +25,99 @@ export class TrainingsService {
   }
 
   async findAll() {
-    return await this.prisma.training.findMany();
+    return await this.prisma.training.findMany({
+      select: {
+        id: true,
+        tempo: true,
+        daysInWeek: true,
+        done: true,
+        createdAt: true,
+        updatedAt: true,
+        rounds: true,
+        reps: true,
+        sets: true,
+        rest: true,
+        trainingGroups: {
+          select: {
+            id: true,
+            key: true,
+            done: true,
+            groups: true,
+            phase: true,
+            exercises: {
+              select: {
+                index: true,
+                sets: true,
+                reps: true,
+                ref: true,
+                load: true,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} training`;
+  async findOne(id: string) {
+    return await this.prisma.training.findUniqueOrThrow({
+      where: { id: id },
+      select: {
+        id: true,
+        tempo: true,
+        daysInWeek: true,
+        done: true,
+        createdAt: true,
+        updatedAt: true,
+        rounds: true,
+        reps: true,
+        sets: true,
+        rest: true,
+        trainingGroups: {
+          select: {
+            id: true,
+            key: true,
+            done: true,
+            groups: true,
+            phase: true,
+            exercises: {
+              select: {
+                index: true,
+                sets: true,
+                reps: true,
+                ref: true,
+                load: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async findByUserId(userId: string) {
+    return await this.prisma.training.findMany({
+      where: {
+        user: {
+          every: {
+            id: userId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        activatedAtUser: true,
+        daysInWeek: true,
+        done: true,
+        reps: true,
+        rest: true,
+        rounds: true,
+        tempo: true,
+        createdAt: true,
+        trainingGroups: true,
+        sets: true,
+      },
+    });
   }
 
   update(id: number, updateTrainingDto: UpdateTrainingDto) {

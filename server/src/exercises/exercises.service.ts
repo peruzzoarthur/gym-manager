@@ -7,12 +7,29 @@ import { PrismaService } from "src/prisma.service";
 export class ExercisesService {
   constructor(private prisma: PrismaService) {}
 
-  create(createExerciseDto: CreateExerciseDto) {
-    return "This action adds a new exercise";
+  async create(createExerciseDto: CreateExerciseDto) {
+    return await this.prisma.exercise.create({
+      data: {
+        ref: {
+          connect: {
+            id: createExerciseDto.refId,
+          },
+        },
+        trainingGroups: {
+          connect: {
+            id: createExerciseDto.trainingGroupId,
+          },
+        },
+        index: createExerciseDto.index,
+        reps: createExerciseDto.reps,
+        sets: createExerciseDto.sets,
+        load: createExerciseDto.load,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all exercises`;
+  async findAll() {
+    return await this.prisma.exercise.findMany();
   }
 
   findOne(id: number) {

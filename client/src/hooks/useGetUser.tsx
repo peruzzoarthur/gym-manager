@@ -1,5 +1,5 @@
 import { axiosInstance } from '@/axiosInstance'
-import { User } from '@/types/padel.types'
+import { User } from '@/types/gym.types'
 import { useQuery } from '@tanstack/react-query'
 
 export const useGetUserById = () => {
