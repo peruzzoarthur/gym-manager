@@ -1,0 +1,101 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["metrics"]
+}
+
+generator docs {
+  provider = "node node_modules/prisma-docs-generator"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String     @id @default(uuid())
+  firstName        String?
+  lastName         String?
+  email            String     @unique
+  password         String
+  dob              DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  role             Role       @default(USER)
+  hashedRt         String?
+  profileImage     String?
+  trainings        Training[]
+  activeTraining   Training?  @relation("ActiveTraining", references: [id], fields: [activeTrainingId])
+  activeTrainingId String?
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Training {
+  id              String          @id @default(uuid())
+  trainingGroups  TrainingGroup[]
+  user            User[]
+  activatedAtUser User[]          @relation("ActiveTraining")
+  tempo           Tempo
+  daysInWeek      Int
+  done            Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  rounds          Int
+  reps            Int
+  sets            Int
+}
+
+model TrainingGroup {
+  id         String     @id @default(uuid())
+  key        String
+  exercices  Exercise[]
+  done       Boolean    @default(false)
+  groups     Group[]
+  training   Training   @relation(fields: [trainingId], references: [id])
+  trainingId String
+
+  @@unique([key, trainingId])
+}
+
+model Exercise {
+  id            String            @id @default(uuid())
+  name          ExerciseReference @relation(fields: [nameId], references: [id])
+  nameId        String
+  load          Float?
+  reps          Int?
+  sets          Int?
+  TrainingGroup TrainingGroup[]
+}
+
+model ExerciseReference {
+  id        String     @id @default(uuid())
+  name      String     @unique()
+  exercices Exercise[]
+  groups    Group[]
+}
+
+enum Tempo {
+  ONE2ONE
+  ONE2TWO
+  ONE2THREE
+  ONE2FOUR
+}
+
+enum Group {
+  CHEST
+  BACK
+  TRICEPS
+  BICEPS
+  LEGS
+  CALVES
+  COMPLEX
+  SHOULDERS
+}
