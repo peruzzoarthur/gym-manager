@@ -14,7 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as UsersIdImport } from './routes/users/$id'
+import { Route as AuthUsersIdImport } from './routes/_auth/users/$id'
 
 // Create Virtual Routes
 
@@ -23,99 +23,116 @@ const ProfileLazyImport = createFileRoute('/profile')()
 const LoginLazyImport = createFileRoute('/login')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
-const UsersIndexLazyImport = createFileRoute('/users/')()
+const AuthExercisesLazyImport = createFileRoute('/_auth/exercises')()
+const AuthUsersIndexLazyImport = createFileRoute('/_auth/users/')()
 
 // Create/Update Routes
 
 const RegisterLazyRoute = RegisterLazyImport.update({
-  path: '/register',
-  getParentRoute: () => rootRoute,
+    path: '/register',
+    getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/register.lazy').then((d) => d.Route))
 
 const ProfileLazyRoute = ProfileLazyImport.update({
-  path: '/profile',
-  getParentRoute: () => rootRoute,
+    path: '/profile',
+    getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/profile.lazy').then((d) => d.Route))
 
 const LoginLazyRoute = LoginLazyImport.update({
-  path: '/login',
-  getParentRoute: () => rootRoute,
+    path: '/login',
+    getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
 
 const AboutLazyRoute = AboutLazyImport.update({
-  path: '/about',
-  getParentRoute: () => rootRoute,
+    path: '/about',
+    getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
 const AuthRoute = AuthImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRoute,
+    id: '/_auth',
+    getParentRoute: () => rootRoute,
 } as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
-  path: '/',
-  getParentRoute: () => rootRoute,
+    path: '/',
+    getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const UsersIndexLazyRoute = UsersIndexLazyImport.update({
-  path: '/users/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/users/index.lazy').then((d) => d.Route))
+const AuthExercisesLazyRoute = AuthExercisesLazyImport.update({
+    path: '/exercises',
+    getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+    import('./routes/_auth/exercises.lazy').then((d) => d.Route)
+)
 
-const UsersIdRoute = UsersIdImport.update({
-  path: '/users/$id',
-  getParentRoute: () => rootRoute,
+const AuthUsersIndexLazyRoute = AuthUsersIndexLazyImport.update({
+    path: '/users/',
+    getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+    import('./routes/_auth/users/index.lazy').then((d) => d.Route)
+)
+
+const AuthUsersIdRoute = AuthUsersIdImport.update({
+    path: '/users/$id',
+    getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
+    interface FileRoutesByPath {
+        '/': {
+            preLoaderRoute: typeof IndexLazyImport
+            parentRoute: typeof rootRoute
+        }
+        '/_auth': {
+            preLoaderRoute: typeof AuthImport
+            parentRoute: typeof rootRoute
+        }
+        '/about': {
+            preLoaderRoute: typeof AboutLazyImport
+            parentRoute: typeof rootRoute
+        }
+        '/login': {
+            preLoaderRoute: typeof LoginLazyImport
+            parentRoute: typeof rootRoute
+        }
+        '/profile': {
+            preLoaderRoute: typeof ProfileLazyImport
+            parentRoute: typeof rootRoute
+        }
+        '/register': {
+            preLoaderRoute: typeof RegisterLazyImport
+            parentRoute: typeof rootRoute
+        }
+        '/_auth/exercises': {
+            preLoaderRoute: typeof AuthExercisesLazyImport
+            parentRoute: typeof AuthImport
+        }
+        '/_auth/users/$id': {
+            preLoaderRoute: typeof AuthUsersIdImport
+            parentRoute: typeof AuthImport
+        }
+        '/_auth/users/': {
+            preLoaderRoute: typeof AuthUsersIndexLazyImport
+            parentRoute: typeof AuthImport
+        }
     }
-    '/_auth': {
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      preLoaderRoute: typeof AboutLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/login': {
-      preLoaderRoute: typeof LoginLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/profile': {
-      preLoaderRoute: typeof ProfileLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/register': {
-      preLoaderRoute: typeof RegisterLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/users/$id': {
-      preLoaderRoute: typeof UsersIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/users/': {
-      preLoaderRoute: typeof UsersIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-  }
 }
 
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexLazyRoute,
-  AboutLazyRoute,
-  LoginLazyRoute,
-  ProfileLazyRoute,
-  RegisterLazyRoute,
-  UsersIdRoute,
-  UsersIndexLazyRoute,
+    IndexLazyRoute,
+    AuthRoute.addChildren([
+        AuthExercisesLazyRoute,
+        AuthUsersIdRoute,
+        AuthUsersIndexLazyRoute,
+    ]),
+    AboutLazyRoute,
+    LoginLazyRoute,
+    ProfileLazyRoute,
+    RegisterLazyRoute,
 ])
 
 /* prettier-ignore-end */

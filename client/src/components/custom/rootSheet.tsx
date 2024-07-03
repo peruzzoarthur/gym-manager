@@ -5,13 +5,13 @@ import {
     TooltipTrigger,
     TooltipProvider,
 } from '@/components/ui/tooltip'
-import { Home, User } from 'lucide-react'
+import { Dumbbell, Home, User } from 'lucide-react'
 import { useGetUserById } from '@/hooks/useGetUser'
 import { UserDropdown } from './userDropdown'
-// import { useGetRole } from '@/hooks/useGetRole'
+import { useGetRole } from '@/hooks/useGetRole'
 
 export function RootSheet() {
-    // const { role } = useGetRole()
+    const { role } = useGetRole()
     const { user } = useGetUserById()
 
     return (
@@ -48,6 +48,26 @@ export function RootSheet() {
                                 Profile
                             </TooltipContent>
                         </Tooltip>
+                        {role === 'ADMIN' && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    {user && (
+                                        <Link
+                                            to={'/exercises'}
+                                            className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 [&.active]:bg-accent text-accent-foreground hover:text-foreground"
+                                        >
+                                            <Dumbbell className="w-5 h-5" />
+                                            <span className="sr-only">
+                                                Exercises
+                                            </span>
+                                        </Link>
+                                    )}
+                                </TooltipTrigger>
+                                <TooltipContent side="right">
+                                    Exercises
+                                </TooltipContent>
+                            </Tooltip>
+                        )}
                     </TooltipProvider>
                 </div>
                 <div className="flex-shrink-0">

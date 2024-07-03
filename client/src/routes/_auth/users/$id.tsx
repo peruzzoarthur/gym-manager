@@ -18,7 +18,7 @@ import { useGetTrainingGroup } from '@/hooks/useGetTrainingGroup'
 import { TrainingGroupCard } from '@/components/custom/trainingGroupCard'
 import { Badge } from '@/components/ui/badge'
 
-export const Route = createFileRoute('/users/$id')({
+export const Route = createFileRoute('/_auth/users/$id')({
     component: User,
 })
 
