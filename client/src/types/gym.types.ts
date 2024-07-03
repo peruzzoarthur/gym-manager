@@ -88,3 +88,7 @@ export type ExerciseReference = {
     exercises: Exercise[]
     groups: Group[]
 }
+
+export type ErrorResponse = {
+    message: string
+}

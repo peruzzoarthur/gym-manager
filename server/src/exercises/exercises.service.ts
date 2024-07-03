@@ -25,6 +25,14 @@ export class ExercisesService {
         sets: createExerciseDto.sets,
         load: createExerciseDto.load,
       },
+      select: {
+        id: true,
+        index: true,
+        sets: true,
+        reps: true,
+        ref: true,
+        load: true,
+      },
     });
   }
 
@@ -40,7 +48,7 @@ export class ExercisesService {
     return `This action updates a #${id} exercise`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} exercise`;
+  async remove(id: string) {
+    return await this.prisma.exercise.delete({ where: { id: id } });
   }
 }

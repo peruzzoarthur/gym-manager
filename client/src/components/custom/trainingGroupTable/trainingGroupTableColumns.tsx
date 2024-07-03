@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 
 export type TrainingGroupTableProps = {
+    id: string
     index: number | undefined
     sets: number | undefined
     reps: number | undefined
@@ -39,20 +40,8 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
     },
     {
         accessorKey: 'sets',
-        header: ({ column }) => {
-            return (
-                <div className="text-right">
-                    <Button
-                        variant="ghost"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === 'asc')
-                        }
-                    >
-                        Série
-                        <ArrowUpDown className="w-4 h-4 ml-2" />
-                    </Button>
-                </div>
-            )
+        header: () => {
+            return <div className="text-right">Séries </div>
         },
         cell: ({ row }) => {
             return (
@@ -64,20 +53,8 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
     },
     {
         accessorKey: 'reps',
-        header: ({ column }) => {
-            return (
-                <div className="text-right">
-                    <Button
-                        variant="ghost"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === 'asc')
-                        }
-                    >
-                        Reps
-                        <ArrowUpDown className="w-4 h-4 ml-2" />
-                    </Button>
-                </div>
-            )
+        header: () => {
+            return <div className="text-right">Reps</div>
         },
         cell: ({ row }) => {
             return (
@@ -114,20 +91,8 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
     },
     {
         accessorKey: 'load',
-        header: ({ column }) => {
-            return (
-                <div className="text-right">
-                    <Button
-                        variant="ghost"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === 'asc')
-                        }
-                    >
-                        Carga
-                        <ArrowUpDown className="w-4 h-4 ml-2" />
-                    </Button>
-                </div>
-            )
+        header: () => {
+            return <div className="text-right">Carga</div>
         },
         cell: ({ row }) => {
             return (

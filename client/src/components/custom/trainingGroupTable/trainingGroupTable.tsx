@@ -1,5 +1,6 @@
 import {
     ColumnDef,
+    Row,
     // Row,
     SortingState,
     flexRender,
@@ -11,6 +12,7 @@ import {
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuItem,
     // DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuTrigger,
@@ -25,22 +27,28 @@ import {
 } from '@/components/ui/table'
 import React from 'react'
 // import { axiosInstance } from '@/axiosInstance'
-import { useGetRole } from '@/hooks/useGetRole'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
 import { TrainingGroupTableProps } from './trainingGroupTableColumns'
+import { Exercise, TrainingGroup } from '@/types/gym.types'
+import { axiosInstance } from '@/axiosInstance'
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
+import { SetLoadDrawer } from '../setLoadDrawer'
 
 interface DataTableProps<TValue> {
     columns: ColumnDef<TrainingGroupTableProps, TValue>[]
     data: TrainingGroupTableProps[]
+    refetchTrainingGroup: (
+        options?: RefetchOptions | undefined
+    ) => Promise<QueryObserverResult<TrainingGroup, Error>>
 }
 
 export function TrainingGroupTable<TValue>({
     columns,
     data,
+    refetchTrainingGroup,
 }: DataTableProps<TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
-    const { role } = useGetRole()
     const table = useReactTable({
         data,
         columns,
@@ -53,29 +61,29 @@ export function TrainingGroupTable<TValue>({
         },
     })
 
-    // const handleDeleteCategory = async (id: string) => {
-    //     try {
-    //         const { data: removedCategory }: { data: Category } =
-    //             await axiosInstance.delete(`/training/${id}`)
-    //         return removedCategory
-    //     } catch (error) {
-    //         return error
-    //     }
-    // }
+    const handleDeleteExercise = async (id: string) => {
+        try {
+            const { data: removedExercise }: { data: Exercise } =
+                await axiosInstance.delete(`/exercises/${id}`)
+            return removedExercise
+        } catch (error) {
+            return error
+        }
+    }
 
-    // const tableActionDeleteCategory = async (
-    //     row: Row<TrainingTableProps>
-    // ) => {
-    //     const categoryId: string = row.original.id
-    //     {
-    //         if (categoryId) {
-    //             await handleDeleteCategory(categoryId)
-    //             await refetchAllTraining()
-    //         } else {
-    //             throw new Error('Error deleting category.')
-    //         }
-    //     }
-    // }
+    const tableActionDeleteExercise = async (
+        row: Row<TrainingGroupTableProps>
+    ) => {
+        const exerciseId: string = row.original.id
+        {
+            if (exerciseId) {
+                await handleDeleteExercise(exerciseId)
+                await refetchTrainingGroup()
+            } else {
+                throw new Error('Error deleting exercise.')
+            }
+        }
+    }
 
     return (
         <div className="flex w-full h-auto border rounded-md">
@@ -114,34 +122,43 @@ export function TrainingGroupTable<TValue>({
                                         )}
                                     </TableCell>
                                 ))}
-                                {role === 'ADMIN' ? (
-                                    <TableCell>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    className="w-8 h-8 p-0"
-                                                    variant="ghost"
-                                                >
-                                                    <MoreHorizontal className="w-4 h-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent>
-                                                <DropdownMenuLabel>
-                                                    Actions
-                                                </DropdownMenuLabel>
-                                                {/* <DropdownMenuItem
-                                                    onClick={async () =>
-                                                        tableActionDeleteCategory(
-                                                            row
-                                                        )
-                                                    }
-                                                >
-                                                    Delete doubles from event
-                                                </DropdownMenuItem> */}
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                ) : null}
+                                {/* {role === 'ADMIN' ? ( */}
+                                <TableCell>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                className="w-8 h-8 p-0"
+                                                variant="ghost"
+                                            >
+                                                <MoreHorizontal className="w-4 h-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent>
+                                            <DropdownMenuLabel>
+                                                Actions
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuItem
+                                                onClick={async () =>
+                                                    tableActionDeleteExercise(
+                                                        row
+                                                    )
+                                                }
+                                            >
+                                                Delete doubles from event
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem></DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                                <TableCell>
+                                    <SetLoadDrawer
+                                        exerciseId={row.original.id}
+                                        refetchTrainingGroup={
+                                            refetchTrainingGroup
+                                        }
+                                    />
+                                </TableCell>
+                                {/* ) : null} */}
                             </TableRow>
                         ))
                     ) : (

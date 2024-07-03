@@ -15,7 +15,7 @@ import {
 import { useState } from 'react'
 import { useGetTrainingById } from '@/hooks/useGetTrainingById'
 import { useGetTrainingGroup } from '@/hooks/useGetTrainingGroup'
-import TrainingGroupCard from '@/components/custom/trainingGroupCard'
+import { TrainingGroupCard } from '@/components/custom/trainingGroupCard'
 
 export const Route = createFileRoute('/users/$id')({
     component: User,
@@ -32,7 +32,9 @@ function User() {
         string | undefined
     >()
     const { trainingById } = useGetTrainingById(selectedTraining)
-    const { trainingGroup } = useGetTrainingGroup(selectedTrainingGroup)
+    const { trainingGroup, refetchTrainingGroup } = useGetTrainingGroup(
+        selectedTrainingGroup
+    )
 
     const trainingTableData: TrainingGroupTableProps[] | undefined =
         trainingGroup?.exercises.map((e) => {
@@ -47,72 +49,83 @@ function User() {
         })
 
     return (
-        <div className="flex flex-col gap-4 justify-items-center">
-            <header className="flex items-start justify-start">
-                <h1 className="text-2xl">
-                    {user?.firstName} {user?.lastName}
-                </h1>
-            </header>
-            <main>
-                <div className="flex flex-col items-center justify-center space-y-2">
-                    {/* <h2>Create training</h2> */}
-                    <Card className="flex p-4 space-x-2">
-                        {userTrainings ? (
-                            <Select
-                                onValueChange={(value) =>
-                                    setSelectedTraining(value)
-                                }
-                            >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Selecionar treino" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Training</SelectLabel>
-                                        {userTrainings.map((t) => (
-                                            <SelectItem value={t.id}>
-                                                {new Date(
-                                                    t.createdAt
-                                                ).toLocaleDateString()}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        ) : (
-                            <p>No trainings</p>
-                        )}
-                        {selectedTraining && trainingById ? (
-                            <Select
-                                onValueChange={(value) =>
-                                    setSelectedTrainingGroup(value)
-                                }
-                            >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Selecionar grupo" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Index</SelectLabel>
-                                        {trainingById.trainingGroups.map(
-                                            (tg) => (
-                                                <SelectItem value={tg.id}>
-                                                    {tg.key}
+        <>
+            <div className="flex flex-col justify-center w-11/12">
+                <header className="flex flex-col items-center full ">
+                    <h1 className="text-2xl">
+                        {user?.firstName} {user?.lastName}
+                    </h1>
+                </header>
+                <main>
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                        {/* <h2>Create training</h2> */}
+                        <Card className="flex flex-col p-4 space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 ">
+                            {userTrainings ? (
+                                <Select
+                                    onValueChange={(value) =>
+                                        setSelectedTraining(value)
+                                    }
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Selecionar treino" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Training</SelectLabel>
+                                            {userTrainings.map((t) => (
+                                                <SelectItem
+                                                    value={t.id}
+                                                    key={t.id}
+                                                >
+                                                    {new Date(
+                                                        t.createdAt
+                                                    ).toLocaleDateString()}
                                                 </SelectItem>
-                                            )
-                                        )}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        ) : null}
-                    </Card>
-                    {trainingTableData && (
-                        <TrainingGroupCard
-                            trainingTableData={trainingTableData}
-                        />
-                    )}
-                </div>
-            </main>
-        </div>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            ) : (
+                                <p>No trainings</p>
+                            )}
+                            {selectedTraining && trainingById ? (
+                                <Select
+                                    onValueChange={(value) =>
+                                        setSelectedTrainingGroup(value)
+                                    }
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Selecionar grupo" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Index</SelectLabel>
+                                            {trainingById.trainingGroups.map(
+                                                (tg) => (
+                                                    <SelectItem
+                                                        value={tg.id}
+                                                        key={tg.id}
+                                                    >
+                                                        {tg.key}
+                                                    </SelectItem>
+                                                )
+                                            )}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            ) : null}
+                        </Card>
+                        {trainingTableData && (
+                            <TrainingGroupCard
+                                trainingTableData={trainingTableData}
+                                training={trainingById}
+                                trainingGroup={trainingGroup}
+                                refetchTrainingGroup={refetchTrainingGroup}
+                            />
+                        )}
+                    </div>
+                </main>
+            </div>
+        </>
     )
 }
