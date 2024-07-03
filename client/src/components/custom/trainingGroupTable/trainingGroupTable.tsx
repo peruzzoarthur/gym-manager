@@ -34,6 +34,7 @@ import { Exercise, TrainingGroup } from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { SetLoadDrawer } from '../setLoadDrawer'
+import { useGetRole } from '@/hooks/useGetRole'
 
 interface DataTableProps<TValue> {
     columns: ColumnDef<TrainingGroupTableProps, TValue>[]
@@ -60,6 +61,7 @@ export function TrainingGroupTable<TValue>({
             sorting,
         },
     })
+    const { role } = useGetRole()
 
     const handleDeleteExercise = async (id: string) => {
         try {
@@ -122,34 +124,6 @@ export function TrainingGroupTable<TValue>({
                                         )}
                                     </TableCell>
                                 ))}
-                                {/* {role === 'ADMIN' ? ( */}
-                                <TableCell>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                className="w-8 h-8 p-0"
-                                                variant="ghost"
-                                            >
-                                                <MoreHorizontal className="w-4 h-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuLabel>
-                                                Actions
-                                            </DropdownMenuLabel>
-                                            <DropdownMenuItem
-                                                onClick={async () =>
-                                                    tableActionDeleteExercise(
-                                                        row
-                                                    )
-                                                }
-                                            >
-                                                Delete doubles from event
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem></DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
                                 <TableCell>
                                     <SetLoadDrawer
                                         exerciseId={row.original.id}
@@ -158,7 +132,35 @@ export function TrainingGroupTable<TValue>({
                                         }
                                     />
                                 </TableCell>
-                                {/* ) : null} */}
+                                {role === 'ADMIN' ? (
+                                    <TableCell>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    className="w-8 h-8 p-0"
+                                                    variant="ghost"
+                                                >
+                                                    <MoreHorizontal className="w-4 h-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuLabel>
+                                                    Actions
+                                                </DropdownMenuLabel>
+                                                <DropdownMenuItem
+                                                    onClick={async () =>
+                                                        tableActionDeleteExercise(
+                                                            row
+                                                        )
+                                                    }
+                                                >
+                                                    Delete exercise from list
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem></DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                ) : null}
                             </TableRow>
                         ))
                     ) : (

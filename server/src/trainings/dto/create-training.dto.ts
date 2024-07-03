@@ -16,6 +16,7 @@ export class CreateTrainingDto {
   rounds: number;
   @IsInt()
   rest: number;
+
   @IsUUID()
   userId: string;
 }

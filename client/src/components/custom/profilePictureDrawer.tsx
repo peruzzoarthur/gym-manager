@@ -20,7 +20,8 @@ import {
     DrawerTrigger,
 } from '@/components/ui/drawer'
 import { ProfilePictureForm } from './profilePictureForm'
-import { User } from '@/types/padel.types'
+import { User } from '@/types/gym.types'
+
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { useMediaQuery } from 'usehooks-ts'
 import { Pencil1Icon } from '@radix-ui/react-icons'

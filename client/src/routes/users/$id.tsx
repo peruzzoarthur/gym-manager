@@ -16,6 +16,7 @@ import { useState } from 'react'
 import { useGetTrainingById } from '@/hooks/useGetTrainingById'
 import { useGetTrainingGroup } from '@/hooks/useGetTrainingGroup'
 import { TrainingGroupCard } from '@/components/custom/trainingGroupCard'
+import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/users/$id')({
     component: User,
@@ -28,10 +29,25 @@ function User() {
     const [selectedTraining, setSelectedTraining] = useState<
         string | undefined
     >()
+    const [selectedTrainingGroupsKey, setSelectedTrainingGroupsKey] =
+        useState<string>('all')
     const [selectedTrainingGroup, setSelectedTrainingGroup] = useState<
         string | undefined
     >()
+
     const { trainingById } = useGetTrainingById(selectedTraining)
+    const trainingGroupsKeys = [
+        ...new Set(trainingById?.trainingGroups.map((tg) => tg.key)),
+    ]
+
+    let trainingGroups = trainingById?.trainingGroups
+
+    if (selectedTrainingGroupsKey !== 'all') {
+        trainingGroups = trainingGroups?.filter(
+            (tg) => tg.key === selectedTrainingGroupsKey
+        )
+    }
+
     const { trainingGroup, refetchTrainingGroup } = useGetTrainingGroup(
         selectedTrainingGroup
     )
@@ -50,82 +66,135 @@ function User() {
 
     return (
         <>
-            <div className="flex flex-col justify-center w-11/12">
-                <header className="flex flex-col items-center full ">
-                    <h1 className="text-2xl">
+            <Card className="flex flex-col justify-center w-11/12 p-4 space-y-4">
+                <header className="flex flex-row items-center justify-center w-full space-x-4">
+                    <h1 className="text-sm">
                         {user?.firstName} {user?.lastName}
                     </h1>
+                    {userTrainings ? (
+                        <Select
+                            onValueChange={(value) =>
+                                setSelectedTraining(value)
+                            }
+                        >
+                            <SelectTrigger className="w-[140px] text-xs sm:text-base">
+                                <SelectValue placeholder="Pick training" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel className="text-xs">
+                                        Training
+                                    </SelectLabel>
+                                    {userTrainings.map((t) => (
+                                        <SelectItem
+                                            className="text-xs"
+                                            value={t.id}
+                                            key={t.id}
+                                        >
+                                            {new Date(
+                                                t.createdAt
+                                            ).toLocaleDateString()}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    ) : (
+                        <p>No trainings</p>
+                    )}
                 </header>
                 <main>
-                    <div className="flex flex-col items-center justify-center space-y-2">
+                    <div className="flex flex-col items-center justify-center w-full space-y-2">
                         {/* <h2>Create training</h2> */}
-                        <Card className="flex flex-col p-4 space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2 ">
-                            {userTrainings ? (
-                                <Select
-                                    onValueChange={(value) =>
-                                        setSelectedTraining(value)
+                        {trainingById && (
+                            <Card className="p-2">
+                                {trainingGroupsKeys.map((key) => {
+                                    if (key === selectedTrainingGroupsKey) {
+                                        return (
+                                            <Badge
+                                                className="ml-1 cursor-pointer"
+                                                variant="default"
+                                                onClick={() => {
+                                                    setSelectedTrainingGroupsKey(
+                                                        key
+                                                    )
+                                                }}
+                                                key={key}
+                                            >
+                                                {key}
+                                            </Badge>
+                                        )
+                                    } else {
+                                        return (
+                                            <Badge
+                                                className="ml-1 cursor-pointer"
+                                                variant="outline"
+                                                onClick={() => {
+                                                    setSelectedTrainingGroupsKey(
+                                                        key
+                                                    )
+                                                    setSelectedTrainingGroup(
+                                                        undefined
+                                                    )
+                                                }}
+                                                key={key}
+                                            >
+                                                {key}
+                                            </Badge>
+                                        )
                                     }
-                                >
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Selecionar treino" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Training</SelectLabel>
-                                            {userTrainings.map((t) => (
-                                                <SelectItem
-                                                    value={t.id}
-                                                    key={t.id}
+                                })}
+                            </Card>
+                        )}
+                        {trainingGroups &&
+                            selectedTrainingGroupsKey !== 'all' && (
+                                <Card className="p-2">
+                                    {trainingGroups.map((tg) => {
+                                        if (tg.id === selectedTrainingGroup) {
+                                            return (
+                                                <Badge
+                                                    className="ml-1 cursor-pointer"
+                                                    variant="default"
+                                                    onClick={() =>
+                                                        setSelectedTrainingGroup(
+                                                            tg.id
+                                                        )
+                                                    }
+                                                    key={tg.id}
                                                 >
-                                                    {new Date(
-                                                        t.createdAt
-                                                    ).toLocaleDateString()}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            ) : (
-                                <p>No trainings</p>
+                                                    {tg.phase} {tg.number}
+                                                </Badge>
+                                            )
+                                        } else {
+                                            return (
+                                                <Badge
+                                                    className="ml-1 cursor-pointer"
+                                                    variant="outline"
+                                                    onClick={() =>
+                                                        setSelectedTrainingGroup(
+                                                            tg.id
+                                                        )
+                                                    }
+                                                    key={tg.id}
+                                                >
+                                                    {tg.phase} {tg.number}
+                                                </Badge>
+                                            )
+                                        }
+                                    })}
+                                </Card>
                             )}
-                            {selectedTraining && trainingById ? (
-                                <Select
-                                    onValueChange={(value) =>
-                                        setSelectedTrainingGroup(value)
-                                    }
-                                >
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Selecionar grupo" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Index</SelectLabel>
-                                            {trainingById.trainingGroups.map(
-                                                (tg) => (
-                                                    <SelectItem
-                                                        value={tg.id}
-                                                        key={tg.id}
-                                                    >
-                                                        {tg.key}
-                                                    </SelectItem>
-                                                )
-                                            )}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            ) : null}
-                        </Card>
-                        {trainingTableData && (
+                        {selectedTrainingGroup && trainingById ? (
                             <TrainingGroupCard
                                 trainingTableData={trainingTableData}
                                 training={trainingById}
                                 trainingGroup={trainingGroup}
                                 refetchTrainingGroup={refetchTrainingGroup}
                             />
-                        )}
+                        ) : null}
                     </div>
                 </main>
-            </div>
+            </Card>
         </>
     )
 }

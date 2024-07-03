@@ -1,4 +1,4 @@
-import { User } from '@/types/padel.types'
+import { User } from '@/types/gym.types'
 import { Card } from '../ui/card'
 import { ProfilePictureDrawerDialog } from './profilePictureDrawer'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'

@@ -13,6 +13,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+
 import { useGetAllExerciseReferences } from '@/hooks/useGetAllExercises'
 import { ScrollArea } from '../ui/scroll-area'
 import { useToast } from '../ui/use-toast'
@@ -29,7 +30,7 @@ import { ErrorAlert } from './errorAlert'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 
 type TrainingGroupCardProps = {
-    trainingTableData: TrainingGroupTableProps[]
+    trainingTableData: TrainingGroupTableProps[] | undefined
     training: Training | undefined
     trainingGroup: TrainingGroup | undefined
     refetchTrainingGroup: (
@@ -92,37 +93,43 @@ export const TrainingGroupCard = ({
     }
     const { allExerciseReferences } = useGetAllExerciseReferences()
     return (
-        <Card className="flex flex-col items-center justify-center w-11/12 p-8 space-y-4 sm:w-11/12">
-            <TrainingGroupTable
-                columns={trainingGroupTableColumns}
-                data={trainingTableData}
-                refetchTrainingGroup={refetchTrainingGroup}
-            />
-            <DropdownMenu>
-                <DropdownMenuTrigger>
-                    <PlusCircle />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuLabel>Exercises</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <ScrollArea className=" h-[420px]">
-                        {allExerciseReferences?.map((er) => (
-                            <DropdownMenuItem
-                                key={er.id}
-                                onClick={async () =>
-                                    addExerciseToTrainingGroup({
-                                        refId: er.id,
-                                        trainingGroupId: trainingGroup?.id,
-                                    })
-                                }
-                                className="cursor-pointer hover:bg-opacity-50"
-                            >
-                                {er.name}
-                            </DropdownMenuItem>
-                        ))}
-                    </ScrollArea>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        <Card className="flex flex-col items-center justify-center w-11/12 p-4 space-y-4 sm:w-11/12">
+            {trainingTableData && (
+                <>
+                    <TrainingGroupTable
+                        columns={trainingGroupTableColumns}
+                        data={trainingTableData}
+                        refetchTrainingGroup={refetchTrainingGroup}
+                    />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <PlusCircle />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>Exercises</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <ScrollArea className=" h-[420px]">
+                                {allExerciseReferences?.map((er) => (
+                                    <DropdownMenuItem
+                                        key={er.id}
+                                        onClick={async () =>
+                                            addExerciseToTrainingGroup({
+                                                refId: er.id,
+                                                trainingGroupId:
+                                                    trainingGroup?.id,
+                                            })
+                                        }
+                                        className="cursor-pointer hover:bg-opacity-50"
+                                    >
+                                        {er.name}
+                                    </DropdownMenuItem>
+                                ))}
+                            </ScrollArea>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </>
+            )}
+
             {isError && (
                 <div onClick={async () => setError(false)} className="mt-4">
                     <ErrorAlert message={errorMessage} />

@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/breadcrumb'
 
 import { Link } from '@tanstack/react-router'
-import { User } from '@/types/padel.types'
+import { User } from '@/types/gym.types'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { ProfileHeaderCard } from './profileHeaderCard'
 

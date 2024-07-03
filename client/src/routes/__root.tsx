@@ -9,7 +9,6 @@ import { AuthContext } from '@/hooks/useAuth'
 
 import { RootSheet } from '@/components/custom/rootSheet'
 import { Outlet } from '@tanstack/react-router'
-import { UserDropdown } from '@/components/custom/userDropdown'
 
 const TanStackRouterDevtools =
     process.env.NODE_ENV === 'production'
@@ -34,14 +33,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function Root() {
     return (
         <>
-            <UserDropdown />
-
             <RootSheet />
-            <div className="flex justify-center ml-14">
-                <ScrollRestoration />
-
+            <div className="flex justify-center mt-24">
                 <Outlet />
             </div>
+            <ScrollRestoration />
             <Suspense>
                 <TanStackRouterDevtools />
             </Suspense>

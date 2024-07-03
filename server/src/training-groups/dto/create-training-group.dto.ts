@@ -1,5 +1,5 @@
 import { Phase } from "@prisma/client";
-import { IsEnum, IsString, IsUUID } from "class-validator";
+import { IsEnum, IsInt, IsString, IsUUID } from "class-validator";
 
 export class CreateTrainingGroupDto {
   @IsString()
@@ -10,4 +10,7 @@ export class CreateTrainingGroupDto {
 
   @IsEnum(Phase)
   phase: Phase;
+
+  @IsInt()
+  number: number;
 }

@@ -69,6 +69,7 @@ export type TrainingGroup = {
     training: Training
     trainingId: string
     phase: Phase
+    number: number
 }
 
 export type Exercise = {

@@ -35,7 +35,15 @@ export class ExercisesController {
     @Param("id") id: string,
     @Body() updateExerciseDto: UpdateExerciseDto
   ) {
-    return this.exercisesService.update(+id, updateExerciseDto);
+    return this.exercisesService.update(id, updateExerciseDto);
+  }
+
+  @Patch("/set-load/:id")
+  setLoad(
+    @Param("id") id: string,
+    @Body() updateExerciseDto: UpdateExerciseDto
+  ) {
+    return this.exercisesService.setLoadToExercise(id, updateExerciseDto);
   }
 
   @Delete(":id")

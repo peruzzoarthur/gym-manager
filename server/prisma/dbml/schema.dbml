@@ -44,9 +44,10 @@ Table TrainingGroup {
   training Training [not null]
   trainingId String [not null]
   phase Phase [not null]
+  number Int [not null]
 
   indexes {
-    (key, trainingId) [unique]
+    (key, trainingId, phase, number) [unique]
   }
 }
 

@@ -44,8 +44,25 @@ export class ExercisesService {
     return `This action returns a #${id} exercise`;
   }
 
-  update(id: number, updateExerciseDto: UpdateExerciseDto) {
+  update(id: string, updateExerciseDto: UpdateExerciseDto) {
     return `This action updates a #${id} exercise`;
+  }
+
+  async setLoadToExercise(id: string, updateExerciseDto: UpdateExerciseDto) {
+    return await this.prisma.exercise.update({
+      where: { id: id },
+      data: {
+        load: updateExerciseDto.load,
+      },
+      select: {
+        id: true,
+        index: true,
+        sets: true,
+        reps: true,
+        ref: true,
+        load: true,
+      },
+    });
   }
 
   async remove(id: string) {

@@ -11,6 +11,7 @@ export class TrainingGroupsService {
       data: {
         key: createTrainingGroupDto.key,
         phase: createTrainingGroupDto.phase,
+        number: createTrainingGroupDto.number,
         training: {
           connect: {
             id: createTrainingGroupDto.trainingId,

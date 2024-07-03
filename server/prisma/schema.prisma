@@ -63,8 +63,9 @@ model TrainingGroup {
   training   Training   @relation(fields: [trainingId], references: [id])
   trainingId String
   phase      Phase
+  number     Int
 
-  @@unique([key, trainingId])
+  @@unique([key, trainingId, phase, number])
 }
 
 enum Phase {

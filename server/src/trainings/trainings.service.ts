@@ -80,6 +80,7 @@ export class TrainingsService {
             done: true,
             groups: true,
             phase: true,
+            number: true,
             exercises: {
               select: {
                 index: true,

@@ -17,6 +17,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ErrorResponse, Exercise, TrainingGroup } from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
+import { DumbbellIcon } from 'lucide-react'
 
 type SetLoadDrawerProps = {
     refetchTrainingGroup: (
@@ -30,28 +31,32 @@ export const SetLoadDrawer = ({
 }: SetLoadDrawerProps) => {
     const [open, setOpen] = useState(false)
     return (
-        <Drawer open={open} onOpenChange={setOpen}>
-            <DrawerTrigger asChild>
-                <Button variant="outline">Set load</Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="text-left">
-                    <DrawerTitle>Set load</DrawerTitle>
-                    <DrawerDescription>
-                        Set load you are using to do this exercise
-                    </DrawerDescription>
-                </DrawerHeader>
-                <ExerciseLoadForm
-                    refetchTrainingGroup={refetchTrainingGroup}
-                    exerciseId={exerciseId}
-                />
-                <DrawerFooter className="pt-2">
-                    <DrawerClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
+        <div className="flex">
+            <Drawer open={open} onOpenChange={setOpen}>
+                <DrawerTrigger asChild>
+                    <Button variant="ghost">
+                        <DumbbellIcon className="w-5 h-5" />
+                    </Button>
+                </DrawerTrigger>
+                <DrawerContent className="flex items-center justify-center w-full">
+                    <DrawerHeader className="text-left">
+                        <DrawerTitle>Load</DrawerTitle>
+                        <DrawerDescription>
+                            Set load you are using to do this exercise
+                        </DrawerDescription>
+                    </DrawerHeader>
+                    <ExerciseLoadForm
+                        refetchTrainingGroup={refetchTrainingGroup}
+                        exerciseId={exerciseId}
+                    />
+                    <DrawerFooter className="pt-2">
+                        <DrawerClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                    </DrawerFooter>
+                </DrawerContent>
+            </Drawer>
+        </div>
     )
 }
 
@@ -70,10 +75,10 @@ function ExerciseLoadForm({
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const { toast } = useToast()
 
-    const toasted = (exercise: Exercise) => {
+    const toasted = (exercise: Exercise, load: number) => {
         toast({
             title: 'Keep going 🏋️‍♀️🏋️‍♂️',
-            description: `Load set to ${exercise.ref.name}`,
+            description: `Set load ${load} to ${exercise.ref.name}`,
         })
     }
 
@@ -82,16 +87,15 @@ function ExerciseLoadForm({
         try {
             console.log(inputValue)
             const requestBody = {
-                exerciseId: exerciseId,
-                load: inputValue,
+                load: parseFloat(inputValue),
             }
 
             const data: AxiosResponse<Exercise> = await axiosInstance.patch(
-                '/exercises/',
+                `/exercises/set-load/${exerciseId}`,
                 requestBody
             )
             await refetchTrainingGroup()
-            toasted(data.data)
+            toasted(data.data, parseFloat(inputValue))
             return data
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -104,33 +108,33 @@ function ExerciseLoadForm({
                     setErrorMessage(axiosError.response.data.message)
                 } else {
                     setError(true)
-                    setErrorMessage('Error creating player')
+                    setErrorMessage('Error setting load to exercise')
                 }
             } else {
                 setError(true)
-                setErrorMessage('Error creating player')
+                setErrorMessage('Error setting load to exercise')
             }
         }
     }
 
     return (
-        <div className="flex mt-6">
-            <form onSubmit={handleSubmit}>
-                <div className="flex flex-col items-end space-y-2">
-                    <Input
-                        type="number"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                    />
-                    <Button className="w-1/3" type="submit">
-                        Upload
-                    </Button>
-                </div>
-            </form>
-
+        <form
+            onSubmit={handleSubmit}
+            className="grid w-2/3 gap-4 justify-items-center"
+        >
+            <div className="flex flex-col items-end space-y-2">
+                <Input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                />
+                <Button className="w-1/3" type="submit">
+                    Upload
+                </Button>
+            </div>
             {isError && (
                 <ErrorBox errorMessage={errorMessage} setError={setError} />
             )}
-        </div>
+        </form>
     )
 }

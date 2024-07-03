@@ -57,14 +57,14 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async getProfile(@Request() req: JwtPayload) {
-    return await this.usersService.findOne(req.user.username);
+    return await this.usersService.findOneByEmail(req.user.username);
   }
   @Get(":id")
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async findOne(@Param("id") id: string) {
-    return new UserEntity(await this.usersService.findOne(id));
+    return new UserEntity(await this.usersService.findOneById(id));
   }
 
   @Patch("update-password/:id")

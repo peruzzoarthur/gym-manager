@@ -17,22 +17,23 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
         accessorKey: 'index',
         header: ({ column }) => {
             return (
-                <div className="text-right">
+                <div>
                     <Button
                         variant="ghost"
                         onClick={() =>
                             column.toggleSorting(column.getIsSorted() === 'asc')
                         }
+                        className="w-4 text-xs text-right sm:w-auto sm:text-sm"
                     >
                         N°
-                        <ArrowUpDown className="w-4 h-4 ml-2" />
+                        <ArrowUpDown className="w-3 h-3 ml-0.5" />
                     </Button>
                 </div>
             )
         },
         cell: ({ row }) => {
             return (
-                <div className="font-medium text-right">
+                <div className="text-xs font-medium text-right sm:text-sm">
                     {row.getValue('index')}
                 </div>
             )
@@ -41,11 +42,11 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
     {
         accessorKey: 'sets',
         header: () => {
-            return <div className="text-right">Séries </div>
+            return <div className="text-xs text-right sm:text-sm">Séries</div>
         },
         cell: ({ row }) => {
             return (
-                <div className="font-medium text-right">
+                <div className="text-xs font-medium text-right sm:text-sm">
                     {row.getValue('sets')}
                 </div>
             )
@@ -54,11 +55,11 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
     {
         accessorKey: 'reps',
         header: () => {
-            return <div className="text-right">Reps</div>
+            return <div className="text-xs text-right sm:text-sm">Reps</div>
         },
         cell: ({ row }) => {
             return (
-                <div className="font-medium text-right">
+                <div className="text-xs font-medium text-right sm:text-sm">
                     {row.getValue('reps')}
                 </div>
             )
@@ -66,24 +67,12 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
     },
     {
         accessorKey: 'name',
-        header: ({ column }) => {
-            return (
-                <div className="text-right">
-                    <Button
-                        variant="ghost"
-                        onClick={() =>
-                            column.toggleSorting(column.getIsSorted() === 'asc')
-                        }
-                    >
-                        Name
-                        <ArrowUpDown className="w-4 h-4 ml-2" />
-                    </Button>
-                </div>
-            )
+        header: () => {
+            return <div className="text-xs text-right sm:text-sm">Nome</div>
         },
         cell: ({ row }) => {
             return (
-                <div className="font-medium text-right">
+                <div className="text-xs font-medium text-right sm:text-sm">
                     {row.getValue('name')}
                 </div>
             )
@@ -92,11 +81,11 @@ export const trainingGroupTableColumns: ColumnDef<TrainingGroupTableProps>[] = [
     {
         accessorKey: 'load',
         header: () => {
-            return <div className="text-right">Carga</div>
+            return <div className="text-xs text-right sm:text-sm">Carga</div>
         },
         cell: ({ row }) => {
             return (
-                <div className="font-medium text-right">
+                <div className="text-xs font-medium text-right sm:text-sm">
                     {row.getValue('load')}
                 </div>
             )

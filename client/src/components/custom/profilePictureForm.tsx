@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useToast } from '../ui/use-toast'
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { ErrorResponse, User } from '@/types/padel.types'
+import { ErrorResponse, User } from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'

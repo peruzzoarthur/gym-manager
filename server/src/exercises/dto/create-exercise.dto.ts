@@ -1,4 +1,10 @@
-import { IsDecimal, IsInt, IsOptional, IsUUID } from "class-validator";
+import {
+  IsDecimal,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+} from "class-validator";
 
 export class CreateExerciseDto {
   @IsOptional()
@@ -11,7 +17,7 @@ export class CreateExerciseDto {
   sets: number;
 
   @IsOptional()
-  @IsDecimal()
+  @IsNumber()
   load: number;
 
   @IsUUID()
