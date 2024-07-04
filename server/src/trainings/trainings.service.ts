@@ -73,6 +73,7 @@ export class TrainingsService {
         number: 3,
       });
     }
+    return training;
   }
 
   async findAll() {

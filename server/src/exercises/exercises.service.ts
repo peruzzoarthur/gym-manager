@@ -20,11 +20,7 @@ export class ExercisesService {
       orderBy: { index: "desc" },
     });
 
-    console.log(highestIndexExercise);
-    // Set the new index
     const newIndex = highestIndexExercise ? highestIndexExercise.index + 1 : 1;
-
-    // Create the new exercise with the new index
 
     return await this.prisma.exercise.create({
       data: {
@@ -72,8 +68,23 @@ export class ExercisesService {
     const filteredByKey = training.trainingGroups.filter(
       (tg) => tg.key === key && tg.done === false
     );
-    console.log(filteredByKey);
-    return tg;
+    const ids = filteredByKey.flatMap((tg) => tg.id);
+
+    const promises = ids.map(async (id) => {
+      const exercise = await this.create({
+        load: createExerciseDto.load,
+        refId: createExerciseDto.refId,
+        sets: createExerciseDto.sets,
+        reps: createExerciseDto.reps,
+        trainingGroupId: id,
+        index: undefined,
+      });
+      console.log(exercise);
+      return exercise;
+    });
+
+    const results = await Promise.all(promises);
+    return results[0];
   }
 
   async findAll() {
