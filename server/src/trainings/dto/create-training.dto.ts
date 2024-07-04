@@ -1,5 +1,5 @@
 import { Tempo } from "@prisma/client";
-import { IsEnum, IsInt, IsUUID } from "class-validator";
+import { IsEnum, IsInt, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class CreateTrainingDto {
   @IsInt()
@@ -12,11 +12,18 @@ export class CreateTrainingDto {
   reps: number;
   @IsInt()
   sets: number;
-  @IsInt()
-  rounds: number;
+  // @IsInt()
+  // rounds: number;
   @IsInt()
   rest: number;
 
   @IsUUID()
   userId: string;
+
+  @IsUUID()
+  creatorId: string;
+
+  @IsOptional()
+  @IsString()
+  name: string;
 }

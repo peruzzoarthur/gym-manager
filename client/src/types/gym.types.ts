@@ -47,7 +47,7 @@ export type User = {
 export type Training = {
     id: string
     trainingGroups: TrainingGroup[]
-    user: User[]
+    users: User[]
     activatedAtUser: User[]
     tempo: Tempo
     daysInWeek: number
@@ -58,6 +58,10 @@ export type Training = {
     reps: number
     sets: number
     rest: number
+    createdBy: User
+    createdByUserId: string
+    objective?: string
+    name?: string
 }
 
 export type TrainingGroup = {

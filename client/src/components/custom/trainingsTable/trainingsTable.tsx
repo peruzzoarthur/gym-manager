@@ -29,25 +29,24 @@ import React from 'react'
 // import { axiosInstance } from '@/axiosInstance'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
-import { TrainingGroupTableProps } from './trainingGroupTableColumns'
-import { Exercise, TrainingGroup } from '@/types/gym.types'
+import { TrainingsTableProps } from './trainingsTableColumns'
+import { Training } from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
-import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
-import { SetLoadDrawer } from '../setLoadDrawer'
+// import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { useGetRole } from '@/hooks/useGetRole'
 
 interface DataTableProps<TValue> {
-    columns: ColumnDef<TrainingGroupTableProps, TValue>[]
-    data: TrainingGroupTableProps[]
-    refetchTrainingGroup: (
-        options?: RefetchOptions | undefined
-    ) => Promise<QueryObserverResult<TrainingGroup, Error>>
+    columns: ColumnDef<TrainingsTableProps, TValue>[]
+    data: TrainingsTableProps[]
+    // refetchTrainings: (
+    //     options?: RefetchOptions | undefined
+    // ) => Promise<QueryObserverResult<Training[], Error>>
 }
 
-export function TrainingGroupTable<TValue>({
+export function TrainingsTable<TValue>({
     columns,
     data,
-    refetchTrainingGroup,
+    // refetchTrainingGroup,
 }: DataTableProps<TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const table = useReactTable({
@@ -63,26 +62,24 @@ export function TrainingGroupTable<TValue>({
     })
     const { role } = useGetRole()
 
-    const handleDeleteExercise = async (id: string) => {
+    const handleDeleteTraining = async (id: string) => {
         try {
-            const { data: removedExercise }: { data: Exercise } =
-                await axiosInstance.delete(`/exercises/${id}`)
-            return removedExercise
+            const { data: removedTraining }: { data: Training } =
+                await axiosInstance.delete(`/trainings/${id}`)
+            return removedTraining
         } catch (error) {
             return error
         }
     }
 
-    const tableActionDeleteExercise = async (
-        row: Row<TrainingGroupTableProps>
-    ) => {
-        const exerciseId: string = row.original.id
+    const tableActionDeleteTraining = async (row: Row<TrainingsTableProps>) => {
+        const trainingId: string = row.original.id
         {
-            if (exerciseId) {
-                await handleDeleteExercise(exerciseId)
-                await refetchTrainingGroup()
+            if (trainingId) {
+                await handleDeleteTraining(trainingId)
+                // await refetchTrainingGroup()
             } else {
-                throw new Error('Error deleting exercise.')
+                throw new Error('Error deleting training.')
             }
         }
     }
@@ -124,14 +121,7 @@ export function TrainingGroupTable<TValue>({
                                         )}
                                     </TableCell>
                                 ))}
-                                <TableCell>
-                                    <SetLoadDrawer
-                                        exerciseId={row.original.id}
-                                        refetchTrainingGroup={
-                                            refetchTrainingGroup
-                                        }
-                                    />
-                                </TableCell>
+
                                 {role === 'ADMIN' ? (
                                     <TableCell>
                                         <DropdownMenu>
@@ -149,7 +139,7 @@ export function TrainingGroupTable<TValue>({
                                                 </DropdownMenuLabel>
                                                 <DropdownMenuItem
                                                     onClick={async () =>
-                                                        tableActionDeleteExercise(
+                                                        tableActionDeleteTraining(
                                                             row
                                                         )
                                                     }
@@ -169,7 +159,7 @@ export function TrainingGroupTable<TValue>({
                                 colSpan={columns.length}
                                 className="h-24 text-center"
                             >
-                                No exercises
+                                No trainings
                             </TableCell>
                         </TableRow>
                     )}

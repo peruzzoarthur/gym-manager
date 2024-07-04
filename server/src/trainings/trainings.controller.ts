@@ -45,6 +45,6 @@ export class TrainingsController {
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.trainingsService.remove(+id);
+    return this.trainingsService.remove(id);
   }
 }

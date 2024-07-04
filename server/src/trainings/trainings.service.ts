@@ -11,13 +11,18 @@ export class TrainingsService {
       data: {
         daysInWeek: createTrainingDto.daysInWeek,
         reps: createTrainingDto.reps,
-        rounds: createTrainingDto.rounds,
         sets: createTrainingDto.sets,
         tempo: createTrainingDto.tempo,
         rest: createTrainingDto.rest,
-        user: {
+        name: createTrainingDto.name,
+        users: {
           connect: {
             id: createTrainingDto.userId,
+          },
+        },
+        createdBy: {
+          connect: {
+            id: createTrainingDto.creatorId,
           },
         },
       },
@@ -33,10 +38,12 @@ export class TrainingsService {
         done: true,
         createdAt: true,
         updatedAt: true,
-        rounds: true,
         reps: true,
         sets: true,
         rest: true,
+        createdBy: true,
+        name: true,
+        users: true,
         trainingGroups: {
           select: {
             id: true,
@@ -69,7 +76,6 @@ export class TrainingsService {
         done: true,
         createdAt: true,
         updatedAt: true,
-        rounds: true,
         reps: true,
         sets: true,
         rest: true,
@@ -100,7 +106,7 @@ export class TrainingsService {
   async findByUserId(userId: string) {
     return await this.prisma.training.findMany({
       where: {
-        user: {
+        users: {
           every: {
             id: userId,
           },
@@ -113,7 +119,6 @@ export class TrainingsService {
         done: true,
         reps: true,
         rest: true,
-        rounds: true,
         tempo: true,
         createdAt: true,
         trainingGroups: true,
@@ -126,7 +131,7 @@ export class TrainingsService {
     return `This action updates a #${id} training`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} training`;
   }
 }
