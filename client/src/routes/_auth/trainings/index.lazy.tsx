@@ -17,7 +17,7 @@ export const Route = createLazyFileRoute('/_auth/trainings/')({
 function Trainings() {
     const [showCreateForm, setShowCreateForm] = useState<boolean>(false)
     const [showTrainingsList, setShowTrainingsList] = useState<boolean>(false)
-    const { trainings } = useGetTrainings()
+    const { trainings, refetchTrainings } = useGetTrainings()
 
     const trainingsTableData: TrainingsTableProps[] | undefined =
         trainings?.map((t) => {
@@ -34,7 +34,7 @@ function Trainings() {
         })
 
     return (
-        <div>
+        <div className="flex flex-col space-y-2">
             <div className="flex flex-row justify-center gap-2 pb-2">
                 <Badge
                     className={twMerge(
@@ -61,7 +61,9 @@ function Trainings() {
                     List
                 </Badge>
             </div>
-            {showCreateForm ? <CreateTrainingForm /> : null}
+            {showCreateForm ? (
+                <CreateTrainingForm refetchTrainings={refetchTrainings} />
+            ) : null}
             {showTrainingsList && trainingsTableData ? (
                 <TrainingsTable
                     columns={trainingsTableColumns}

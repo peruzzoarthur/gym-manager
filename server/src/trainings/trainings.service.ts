@@ -2,12 +2,17 @@ import { Injectable } from "@nestjs/common";
 import { CreateTrainingDto } from "./dto/create-training.dto";
 import { UpdateTrainingDto } from "./dto/update-training.dto";
 import { PrismaService } from "src/prisma.service";
+import { TrainingGroupsService } from "src/training-groups/training-groups.service";
+import { Phase } from "@prisma/client";
 
 @Injectable()
 export class TrainingsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private trainingGroupsService: TrainingGroupsService
+  ) {}
   async create(createTrainingDto: CreateTrainingDto) {
-    return await this.prisma.training.create({
+    const training = await this.prisma.training.create({
       data: {
         daysInWeek: createTrainingDto.daysInWeek,
         reps: createTrainingDto.reps,
@@ -27,6 +32,47 @@ export class TrainingsService {
         },
       },
     });
+
+    const keys = ["A", "B", "C", "D", "E", "F"];
+
+    for (let i = 0; i < training.daysInWeek; i++) {
+      await this.trainingGroupsService.create({
+        key: keys[i],
+        trainingId: training.id,
+        phase: "CIS",
+        number: 1,
+      });
+      await this.trainingGroupsService.create({
+        key: keys[i],
+        trainingId: training.id,
+        phase: Phase.ONE,
+        number: 1,
+      });
+      await this.trainingGroupsService.create({
+        key: keys[i],
+        trainingId: training.id,
+        phase: Phase.ONE,
+        number: 2,
+      });
+      await this.trainingGroupsService.create({
+        key: keys[i],
+        trainingId: training.id,
+        phase: Phase.TWO,
+        number: 1,
+      });
+      await this.trainingGroupsService.create({
+        key: keys[i],
+        trainingId: training.id,
+        phase: Phase.TWO,
+        number: 2,
+      });
+      await this.trainingGroupsService.create({
+        key: keys[i],
+        trainingId: training.id,
+        phase: Phase.TWO,
+        number: 3,
+      });
+    }
   }
 
   async findAll() {
@@ -50,7 +96,6 @@ export class TrainingsService {
             key: true,
             done: true,
             groups: true,
-            phase: true,
             exercises: {
               select: {
                 index: true,
@@ -86,8 +131,6 @@ export class TrainingsService {
             key: true,
             done: true,
             groups: true,
-            phase: true,
-            number: true,
             exercises: {
               select: {
                 index: true,
@@ -123,6 +166,7 @@ export class TrainingsService {
         createdAt: true,
         trainingGroups: true,
         sets: true,
+        name: true,
       },
     });
   }

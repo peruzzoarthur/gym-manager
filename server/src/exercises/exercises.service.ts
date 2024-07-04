@@ -54,6 +54,28 @@ export class ExercisesService {
     });
   }
 
+  async createToAllWithSameKey(createExerciseDto: CreateExerciseDto) {
+    const tg = await this.prisma.trainingGroup.findUniqueOrThrow({
+      where: {
+        id: createExerciseDto.trainingGroupId,
+      },
+    });
+    const key = tg.key;
+    const training = await this.prisma.training.findUniqueOrThrow({
+      where: {
+        id: tg.trainingId,
+      },
+      select: {
+        trainingGroups: true,
+      },
+    });
+    const filteredByKey = training.trainingGroups.filter(
+      (tg) => tg.key === key && tg.done === false
+    );
+    console.log(filteredByKey);
+    return tg;
+  }
+
   async findAll() {
     return await this.prisma.exercise.findMany();
   }

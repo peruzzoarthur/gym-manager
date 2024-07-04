@@ -97,9 +97,7 @@ function User() {
                                             value={t.id}
                                             key={t.id}
                                         >
-                                            {new Date(
-                                                t.createdAt
-                                            ).toLocaleDateString()}
+                                            {t.name}
                                         </SelectItem>
                                     ))}
                                 </SelectGroup>
@@ -155,7 +153,7 @@ function User() {
                         {trainingGroupsByKey &&
                             selectedTrainingGroupsKey !== 'all' && (
                                 <Card className="grid grid-cols-2 gap-4 p-2 ">
-                                    <div className="flex">
+                                    <div className="flex flex-col space-y-0.5">
                                         {trainingGroupsByKey.map((tg) => {
                                             if (
                                                 tg.id === selectedTrainingGroup
@@ -171,7 +169,7 @@ function User() {
                                                         }
                                                         key={tg.id}
                                                     >
-                                                        {tg.phase} {tg.number}
+                                                        {tg.phase}
                                                     </Badge>
                                                 )
                                             } else {
@@ -187,8 +185,7 @@ function User() {
                                                             }
                                                             key={tg.id}
                                                         >
-                                                            {tg.phase}{' '}
-                                                            {tg.number}
+                                                            {tg.phase}
                                                         </Badge>
                                                     )
                                                 }
@@ -204,8 +201,7 @@ function User() {
                                                             }
                                                             key={tg.id}
                                                         >
-                                                            {tg.phase}{' '}
-                                                            {tg.number}
+                                                            {tg.phase}
                                                         </Badge>
                                                     )
                                                 }

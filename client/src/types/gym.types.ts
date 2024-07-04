@@ -1,32 +1,3 @@
-export enum Role {
-    USER = 'USER',
-    ADMIN = 'ADMIN',
-}
-
-export enum Phase {
-    CIS = 'CIS',
-    ONE = 'ONE',
-    TWO = 'TWO',
-}
-
-export enum Tempo {
-    ONE2ONE = 'ONE2ONE',
-    ONE2TWO = 'ONE2TWO',
-    ONE2THREE = 'ONE2THREE',
-    ONE2FOUR = 'ONE2FOUR',
-}
-
-export enum Group {
-    CHEST = 'CHEST',
-    BACK = 'BACK',
-    TRICEPS = 'TRICEPS',
-    BICEPS = 'BICEPS',
-    LEGS = 'LEGS',
-    CALVES = 'CALVES',
-    COMPLEX = 'COMPLEX',
-    SHOULDERS = 'SHOULDERS',
-}
-
 export type User = {
     id: string
     firstName?: string | null
@@ -42,10 +13,17 @@ export type User = {
     trainings: Training[]
     activeTraining?: Training | null
     activeTrainingId?: string | null
+    trainingsCreated: Training[]
+}
+
+export enum Role {
+    USER = 'USER',
+    ADMIN = 'ADMIN',
 }
 
 export type Training = {
     id: string
+    name?: string | null
     trainingGroups: TrainingGroup[]
     users: User[]
     activatedAtUser: User[]
@@ -54,14 +32,12 @@ export type Training = {
     done: boolean
     createdAt: Date
     updatedAt: Date
-    rounds: number
     reps: number
     sets: number
     rest: number
+    objective?: string | null
     createdBy: User
     createdByUserId: string
-    objective?: string
-    name?: string
 }
 
 export type TrainingGroup = {
@@ -69,12 +45,18 @@ export type TrainingGroup = {
     key: string
     exercises: Exercise[]
     done: boolean
-    doneAt?: string
+    doneAt?: Date | null
     groups: Group[]
     training: Training
     trainingId: string
     phase: Phase
-    number: number
+}
+
+export enum Phase {
+    CIS = 'CIS',
+    ONE = 'ONE',
+    TWO = 'TWO',
+    UNCATEGORIZED = 'UNCATEGORIZED',
 }
 
 export type Exercise = {
@@ -93,6 +75,24 @@ export type ExerciseReference = {
     name: string
     exercises: Exercise[]
     groups: Group[]
+}
+
+export enum Tempo {
+    ONE2ONE = 'ONE2ONE',
+    ONE2TWO = 'ONE2TWO',
+    ONE2THREE = 'ONE2THREE',
+    ONE2FOUR = 'ONE2FOUR',
+}
+
+export enum Group {
+    CHEST = 'CHEST',
+    BACK = 'BACK',
+    TRICEPS = 'TRICEPS',
+    BICEPS = 'BICEPS',
+    LEGS = 'LEGS',
+    CALVES = 'CALVES',
+    COMPLEX = 'COMPLEX',
+    SHOULDERS = 'SHOULDERS',
 }
 
 export type ErrorResponse = {

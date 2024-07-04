@@ -35,6 +35,8 @@ import {
 // import { Badge } from '../ui/badge'
 // import { PlusCircle } from 'lucide-react'
 import { useGetUsers } from '@/hooks/useGetUsers'
+import { faker } from '@faker-js/faker'
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 
 const trainingSchema = z.object({
     daysInWeek: z.number(),
@@ -54,7 +56,14 @@ const trainingSchema = z.object({
 
 type TrainingInput = z.infer<typeof trainingSchema>
 
-export function CreateTrainingForm() {
+type CreateTrainingFormProps = {
+    refetchTrainings: (
+        options?: RefetchOptions | undefined
+    ) => Promise<QueryObserverResult<Training[], Error>>
+}
+export function CreateTrainingForm({
+    refetchTrainings,
+}: CreateTrainingFormProps) {
     const [isError, setError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const { toast } = useToast()
@@ -70,7 +79,7 @@ export function CreateTrainingForm() {
             tempo: Tempo.ONE2TWO,
             daysInWeek: 5,
             userId: 'd2994ffa-e640-4581-b101-1ab01ad6f1d0',
-            name: 'ladsa', //! add faker.js here
+            name: `${faker.word.adjective()}-${faker.animal.type()}`, //! add faker.js here
         },
     })
 
@@ -86,6 +95,7 @@ export function CreateTrainingForm() {
             toast({
                 title: `Created training ${data.data.id} 🏋️‍♀️🏋️‍♂️`,
             })
+            await refetchTrainings()
             return data
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -121,7 +131,7 @@ export function CreateTrainingForm() {
                                     name="sets"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Name</FormLabel>
+                                            <FormLabel>Sets</FormLabel>
                                             <FormControl>
                                                 <Input
                                                     placeholder="Training name"

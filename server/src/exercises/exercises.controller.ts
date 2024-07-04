@@ -20,6 +20,11 @@ export class ExercisesController {
     return this.exercisesService.create(createExerciseDto);
   }
 
+  @Post("/create-to-all-with-same-key/")
+  createToAllWithSameKey(@Body() createExerciseDto: CreateExerciseDto) {
+    return this.exercisesService.createToAllWithSameKey(createExerciseDto);
+  }
+
   @Get()
   findAll() {
     return this.exercisesService.findAll();

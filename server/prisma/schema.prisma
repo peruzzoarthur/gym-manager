@@ -78,6 +78,7 @@ enum Phase {
   CIS
   ONE
   TWO
+  UNCATEGORIZED
 }
 
 model Exercise {

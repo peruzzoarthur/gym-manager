@@ -93,6 +93,7 @@ Enum Phase {
   CIS
   ONE
   TWO
+  UNCATEGORIZED
 }
 
 Enum Tempo {
