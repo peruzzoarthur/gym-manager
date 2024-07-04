@@ -7,7 +7,7 @@ import { QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AuthContext } from '@/hooks/useAuth'
 
-import { RootSheet } from '@/components/custom/rootSheet'
+import { RootNav } from '@/components/custom/rootNav'
 import { Outlet } from '@tanstack/react-router'
 
 const TanStackRouterDevtools =
@@ -33,7 +33,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function Root() {
     return (
         <>
-            <RootSheet />
+            <RootNav />
             <div className="flex justify-center mt-24">
                 <Outlet />
             </div>

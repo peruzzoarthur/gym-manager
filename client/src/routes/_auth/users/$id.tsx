@@ -17,6 +17,9 @@ import { useGetTrainingById } from '@/hooks/useGetTrainingById'
 import { useGetTrainingGroup } from '@/hooks/useGetTrainingGroup'
 import { TrainingGroupCard } from '@/components/custom/trainingGroupCard'
 import { Badge } from '@/components/ui/badge'
+import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGroupsByTrainingWithKey'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 
 export const Route = createFileRoute('/_auth/users/$id')({
     component: User,
@@ -29,24 +32,27 @@ function User() {
     const [selectedTraining, setSelectedTraining] = useState<
         string | undefined
     >()
-    const [selectedTrainingGroupsKey, setSelectedTrainingGroupsKey] =
-        useState<string>('all')
+    const [selectedTrainingGroupsKey, setSelectedTrainingGroupsKey] = useState<
+        string | undefined
+    >()
     const [selectedTrainingGroup, setSelectedTrainingGroup] = useState<
         string | undefined
     >()
 
-    const { trainingById } = useGetTrainingById(selectedTraining)
+    const [showAllTrainingGroups, setShowAllTrainingGroups] =
+        useState<boolean>(true)
+
+    const { trainingById, refetchTrainingById } =
+        useGetTrainingById(selectedTraining)
     const trainingGroupsKeys = [
         ...new Set(trainingById?.trainingGroups.map((tg) => tg.key)),
     ]
 
-    let trainingGroups = trainingById?.trainingGroups
-
-    if (selectedTrainingGroupsKey !== 'all') {
-        trainingGroups = trainingGroups?.filter(
-            (tg) => tg.key === selectedTrainingGroupsKey
-        )
-    }
+    const { trainingGroupsByKey } = useGetTrainingGroupsByTrainingWithKey(
+        trainingById?.id,
+        selectedTrainingGroupsKey,
+        showAllTrainingGroups
+    )
 
     const { trainingGroup, refetchTrainingGroup } = useGetTrainingGroup(
         selectedTrainingGroup
@@ -146,42 +152,81 @@ function User() {
                                 })}
                             </Card>
                         )}
-                        {trainingGroups &&
+                        {trainingGroupsByKey &&
                             selectedTrainingGroupsKey !== 'all' && (
-                                <Card className="p-2">
-                                    {trainingGroups.map((tg) => {
-                                        if (tg.id === selectedTrainingGroup) {
-                                            return (
-                                                <Badge
-                                                    className="ml-1 cursor-pointer"
-                                                    variant="default"
-                                                    onClick={() =>
-                                                        setSelectedTrainingGroup(
-                                                            tg.id
-                                                        )
-                                                    }
-                                                    key={tg.id}
-                                                >
-                                                    {tg.phase} {tg.number}
-                                                </Badge>
-                                            )
-                                        } else {
-                                            return (
-                                                <Badge
-                                                    className="ml-1 cursor-pointer"
-                                                    variant="outline"
-                                                    onClick={() =>
-                                                        setSelectedTrainingGroup(
-                                                            tg.id
-                                                        )
-                                                    }
-                                                    key={tg.id}
-                                                >
-                                                    {tg.phase} {tg.number}
-                                                </Badge>
-                                            )
-                                        }
-                                    })}
+                                <Card className="grid grid-cols-2 gap-4 p-2 ">
+                                    <div className="flex">
+                                        {trainingGroupsByKey.map((tg) => {
+                                            if (
+                                                tg.id === selectedTrainingGroup
+                                            ) {
+                                                return (
+                                                    <Badge
+                                                        className="ml-1 cursor-pointer"
+                                                        variant="default"
+                                                        onClick={() =>
+                                                            setSelectedTrainingGroup(
+                                                                tg.id
+                                                            )
+                                                        }
+                                                        key={tg.id}
+                                                    >
+                                                        {tg.phase} {tg.number}
+                                                    </Badge>
+                                                )
+                                            } else {
+                                                if (tg.done) {
+                                                    return (
+                                                        <Badge
+                                                            className="ml-1 cursor-pointer"
+                                                            variant="secondary"
+                                                            onClick={() =>
+                                                                setSelectedTrainingGroup(
+                                                                    tg.id
+                                                                )
+                                                            }
+                                                            key={tg.id}
+                                                        >
+                                                            {tg.phase}{' '}
+                                                            {tg.number}
+                                                        </Badge>
+                                                    )
+                                                }
+                                                if (!tg.done) {
+                                                    return (
+                                                        <Badge
+                                                            className="ml-1 cursor-pointer"
+                                                            variant="outline"
+                                                            onClick={() =>
+                                                                setSelectedTrainingGroup(
+                                                                    tg.id
+                                                                )
+                                                            }
+                                                            key={tg.id}
+                                                        >
+                                                            {tg.phase}{' '}
+                                                            {tg.number}
+                                                        </Badge>
+                                                    )
+                                                }
+                                            }
+                                        })}
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        {showAllTrainingGroups ? (
+                                            <Label>Show all</Label>
+                                        ) : (
+                                            <Label>Unfinished</Label>
+                                        )}
+                                        <Switch
+                                            checked={showAllTrainingGroups}
+                                            onCheckedChange={() =>
+                                                setShowAllTrainingGroups(
+                                                    (prevState) => !prevState
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 </Card>
                             )}
                         {selectedTrainingGroup && trainingById ? (
@@ -190,6 +235,7 @@ function User() {
                                 training={trainingById}
                                 trainingGroup={trainingGroup}
                                 refetchTrainingGroup={refetchTrainingGroup}
+                                refetchTrainingById={refetchTrainingById}
                             />
                         ) : null}
                     </div>

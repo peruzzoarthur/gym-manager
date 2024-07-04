@@ -28,6 +28,8 @@ import { axiosInstance } from '@/axiosInstance'
 import { useState } from 'react'
 import { ErrorAlert } from './errorAlert'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
 
 type TrainingGroupCardProps = {
     trainingTableData: TrainingGroupTableProps[] | undefined
@@ -36,12 +38,16 @@ type TrainingGroupCardProps = {
     refetchTrainingGroup: (
         options?: RefetchOptions | undefined
     ) => Promise<QueryObserverResult<TrainingGroup, Error>>
+    refetchTrainingById: (
+        options?: RefetchOptions | undefined
+    ) => Promise<QueryObserverResult<Training, Error>>
 }
 export const TrainingGroupCard = ({
     trainingTableData,
     training,
     trainingGroup,
     refetchTrainingGroup,
+    refetchTrainingById,
 }: TrainingGroupCardProps) => {
     const [isError, setError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -83,11 +89,39 @@ export const TrainingGroupCard = ({
                     setErrorMessage(axiosError.response.data.message)
                 } else {
                     setError(true)
-                    setErrorMessage('Error creating player')
+                    setErrorMessage('Error adding exercise')
                 }
             } else {
                 setError(true)
-                setErrorMessage('Error creating player')
+                setErrorMessage('Error adding exercise')
+            }
+        }
+    }
+
+    const setTrainingGroupDone = async (id: string) => {
+        try {
+            const data: AxiosResponse<TrainingGroup> =
+                await axiosInstance.patch(`/training-groups/set-done/${id}`)
+            await refetchTrainingGroup()
+            await refetchTrainingById()
+            toast({ title: 'Success', description: `${id} done` })
+            return data
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<ErrorResponse>
+                if (
+                    axiosError.response &&
+                    (axiosError.response.status === 400 || 409)
+                ) {
+                    setError(true)
+                    setErrorMessage(axiosError.response.data.message)
+                } else {
+                    setError(true)
+                    setErrorMessage('Error finishing training')
+                }
+            } else {
+                setError(true)
+                setErrorMessage('Error finishing training')
             }
         }
     }
@@ -134,6 +168,18 @@ export const TrainingGroupCard = ({
                 <div onClick={async () => setError(false)} className="mt-4">
                     <ErrorAlert message={errorMessage} />
                 </div>
+            )}
+            {trainingGroup && !trainingGroup.done && (
+                <Button
+                    onClick={async () => setTrainingGroupDone(trainingGroup.id)}
+                >
+                    Finish
+                </Button>
+            )}
+            {trainingGroup && trainingGroup.done && trainingGroup.doneAt && (
+                <Badge>
+                    {new Date(trainingGroup.doneAt).toLocaleDateString()}
+                </Badge>
             )}
         </Card>
     )

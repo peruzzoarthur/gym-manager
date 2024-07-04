@@ -8,6 +8,24 @@ export class ExercisesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createExerciseDto: CreateExerciseDto) {
+    // Find the highest current index in the training group
+    const highestIndexExercise = await this.prisma.exercise.findFirst({
+      where: {
+        trainingGroups: {
+          some: {
+            id: createExerciseDto.trainingGroupId,
+          },
+        },
+      },
+      orderBy: { index: "desc" },
+    });
+
+    console.log(highestIndexExercise);
+    // Set the new index
+    const newIndex = highestIndexExercise ? highestIndexExercise.index + 1 : 1;
+
+    // Create the new exercise with the new index
+
     return await this.prisma.exercise.create({
       data: {
         ref: {
@@ -20,7 +38,7 @@ export class ExercisesService {
             id: createExerciseDto.trainingGroupId,
           },
         },
-        index: createExerciseDto.index,
+        index: newIndex,
         reps: createExerciseDto.reps,
         sets: createExerciseDto.sets,
         load: createExerciseDto.load,

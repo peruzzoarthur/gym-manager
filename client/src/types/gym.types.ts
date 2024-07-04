@@ -65,6 +65,7 @@ export type TrainingGroup = {
     key: string
     exercises: Exercise[]
     done: boolean
+    doneAt?: string
     groups: Group[]
     training: Training
     trainingId: string

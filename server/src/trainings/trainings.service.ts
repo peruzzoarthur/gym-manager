@@ -74,6 +74,7 @@ export class TrainingsService {
         sets: true,
         rest: true,
         trainingGroups: {
+          orderBy: { key: "asc" },
           select: {
             id: true,
             key: true,

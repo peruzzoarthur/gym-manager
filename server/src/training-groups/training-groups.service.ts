@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateTrainingGroupDto } from "./dto/create-training-group.dto";
 import { UpdateTrainingGroupDto } from "./dto/update-training-group.dto";
 import { PrismaService } from "src/prisma.service";
+import { FindByTrainingWithKeyDto } from "./dto/find-by-training-with-key";
 
 @Injectable()
 export class TrainingGroupsService {
@@ -34,6 +35,36 @@ export class TrainingGroupsService {
         id: true,
         key: true,
         done: true,
+        doneAt: true,
+        groups: true,
+        phase: true,
+        exercises: {
+          select: {
+            id: true,
+            index: true,
+            sets: true,
+            reps: true,
+            ref: true,
+            load: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findByTrainingWithKey(
+    findByTrainingWithKeyDto: FindByTrainingWithKeyDto
+  ) {
+    return await this.prisma.trainingGroup.findMany({
+      where: {
+        trainingId: findByTrainingWithKeyDto.trainingId,
+        key: findByTrainingWithKeyDto.key,
+      },
+      select: {
+        id: true,
+        key: true,
+        done: true,
+        doneAt: true,
         groups: true,
         phase: true,
         exercises: {
@@ -52,6 +83,13 @@ export class TrainingGroupsService {
 
   update(id: number, updateTrainingGroupDto: UpdateTrainingGroupDto) {
     return `This action updates a #${id} trainingGroup`;
+  }
+
+  async setDone(id: string) {
+    return await this.prisma.trainingGroup.update({
+      where: { id: id },
+      data: { done: true, doneAt: new Date(Date.now()) },
+    });
   }
 
   remove(id: number) {

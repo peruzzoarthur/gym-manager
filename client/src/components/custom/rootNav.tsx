@@ -5,12 +5,12 @@ import {
     TooltipTrigger,
     TooltipProvider,
 } from '@/components/ui/tooltip'
-import { Dumbbell, Home, User } from 'lucide-react'
+import { Calendar, Dumbbell, Home, User } from 'lucide-react'
 import { useGetUserById } from '@/hooks/useGetUser'
 import { UserDropdown } from './userDropdown'
 import { useGetRole } from '@/hooks/useGetRole'
 
-export function RootSheet() {
+export function RootNav() {
     const { role } = useGetRole()
     const { user } = useGetUserById()
 
@@ -49,9 +49,9 @@ export function RootSheet() {
                             </TooltipContent>
                         </Tooltip>
                         {role === 'ADMIN' && (
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    {user && (
+                            <>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
                                         <Link
                                             to={'/exercises'}
                                             className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 [&.active]:bg-accent text-accent-foreground hover:text-foreground"
@@ -61,12 +61,28 @@ export function RootSheet() {
                                                 Exercises
                                             </span>
                                         </Link>
-                                    )}
-                                </TooltipTrigger>
-                                <TooltipContent side="right">
-                                    Exercises
-                                </TooltipContent>
-                            </Tooltip>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        Exercises
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Link
+                                            to={'/trainings'}
+                                            className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 [&.active]:bg-accent text-accent-foreground hover:text-foreground"
+                                        >
+                                            <Calendar className="w-5 h-5" />
+                                            <span className="sr-only">
+                                                Trainings
+                                            </span>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        Trainings
+                                    </TooltipContent>
+                                </Tooltip>
+                            </>
                         )}
                     </TooltipProvider>
                 </div>

@@ -23,6 +23,7 @@ const ProfileLazyImport = createFileRoute('/profile')()
 const LoginLazyImport = createFileRoute('/login')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
+const AuthTrainingsLazyImport = createFileRoute('/_auth/trainings')()
 const AuthExercisesLazyImport = createFileRoute('/_auth/exercises')()
 const AuthUsersIndexLazyImport = createFileRoute('/_auth/users/')()
 
@@ -57,6 +58,13 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const AuthTrainingsLazyRoute = AuthTrainingsLazyImport.update({
+  path: '/trainings',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/trainings.lazy').then((d) => d.Route),
+)
 
 const AuthExercisesLazyRoute = AuthExercisesLazyImport.update({
   path: '/exercises',
@@ -109,6 +117,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExercisesLazyImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/trainings': {
+      preLoaderRoute: typeof AuthTrainingsLazyImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/users/$id': {
       preLoaderRoute: typeof AuthUsersIdImport
       parentRoute: typeof AuthImport
@@ -126,6 +138,7 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   AuthRoute.addChildren([
     AuthExercisesLazyRoute,
+    AuthTrainingsLazyRoute,
     AuthUsersIdRoute,
     AuthUsersIndexLazyRoute,
   ]),

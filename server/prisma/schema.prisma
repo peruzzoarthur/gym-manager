@@ -59,6 +59,7 @@ model TrainingGroup {
   key        String
   exercises  Exercise[]
   done       Boolean    @default(false)
+  doneAt     DateTime?
   groups     Group[]
   training   Training   @relation(fields: [trainingId], references: [id])
   trainingId String

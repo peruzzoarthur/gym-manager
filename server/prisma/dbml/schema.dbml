@@ -40,6 +40,7 @@ Table TrainingGroup {
   key String [not null]
   exercises Exercise [not null]
   done Boolean [not null, default: false]
+  doneAt DateTime
   groups Group[] [not null]
   training Training [not null]
   trainingId String [not null]
