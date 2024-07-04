@@ -79,7 +79,7 @@ export function CreateTrainingForm({
             tempo: Tempo.ONE2TWO,
             daysInWeek: 5,
             userId: 'd2994ffa-e640-4581-b101-1ab01ad6f1d0',
-            name: `${faker.word.adjective()}-${faker.animal.type()}`, //! add faker.js here
+            name: `${faker.word.adjective()}-${faker.animal.type()}`,
         },
     })
 
@@ -93,7 +93,7 @@ export function CreateTrainingForm({
                 requestBody
             )
             toast({
-                title: `Created training ${data.data.id} 🏋️‍♀️🏋️‍♂️`,
+                title: `Created training ${data.data.name} 🏋️‍♀️🏋️‍♂️`,
             })
             await refetchTrainings()
             return data
