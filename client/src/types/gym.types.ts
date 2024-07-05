@@ -1,55 +1,6 @@
-export type User = {
-    id: string
-    firstName?: string | null
-    lastName?: string | null
-    email: string
-    password: string
-    dob?: Date | null
-    createdAt: Date
-    updatedAt: Date
-    role: Role
-    hashedRt?: string | null
-    profileImage?: string | null
-    trainings: Training[]
-    activeTraining?: Training | null
-    activeTrainingId?: string | null
-    trainingsCreated: Training[]
-}
-
 export enum Role {
     USER = 'USER',
     ADMIN = 'ADMIN',
-}
-
-export type Training = {
-    id: string
-    name?: string | null
-    trainingGroups: TrainingGroup[]
-    users: User[]
-    activatedAtUser: User[]
-    tempo: Tempo
-    daysInWeek: number
-    done: boolean
-    createdAt: Date
-    updatedAt: Date
-    reps: number
-    sets: number
-    rest: number
-    objective?: string | null
-    createdBy: User
-    createdByUserId: string
-}
-
-export type TrainingGroup = {
-    id: string
-    key: string
-    exercises: Exercise[]
-    done: boolean
-    doneAt?: Date | null
-    groups: Group[]
-    training: Training
-    trainingId: string
-    phase: Phase
 }
 
 export enum Phase {
@@ -57,24 +8,6 @@ export enum Phase {
     ONE = 'ONE',
     TWO = 'TWO',
     UNCATEGORIZED = 'UNCATEGORIZED',
-}
-
-export type Exercise = {
-    id: string
-    ref: ExerciseReference
-    refId: string
-    load?: number | null
-    reps?: number | null
-    sets?: number | null
-    trainingGroups: TrainingGroup[]
-    index?: number | null
-}
-
-export type ExerciseReference = {
-    id: string
-    name: string
-    exercises: Exercise[]
-    groups: Group[]
 }
 
 export enum Tempo {
@@ -93,6 +26,83 @@ export enum Group {
     CALVES = 'CALVES',
     COMPLEX = 'COMPLEX',
     SHOULDERS = 'SHOULDERS',
+}
+
+export interface User {
+    id: string
+    firstName?: string | null
+    lastName?: string | null
+    email: string
+    password: string
+    dob?: Date | null
+    createdAt: Date
+    updatedAt: Date
+    role: Role
+    hashedRt?: string | null
+    profileImage?: string | null
+    trainings: Training[]
+    activeTraining?: Training | null
+    activeTrainingId?: string | null
+    trainingsCreated: Training[]
+}
+
+export interface Training {
+    id: string
+    name?: string | null
+    trainingGroups: TrainingGroup[]
+    users: User[]
+    activatedAtUser: User[]
+    tempo: Tempo
+    daysInWeek: number
+    done: boolean
+    createdAt: Date
+    updatedAt: Date
+    reps: number
+    sets: number
+    rest: number
+    objective?: string | null
+    createdBy: User
+    createdByUserId: string
+}
+
+export interface TrainingGroup {
+    id: string
+    key: string
+    exercises: Exercise[]
+    combinedExercises: CombinedExercise[]
+    done: boolean
+    doneAt?: Date | null
+    groups: Group[]
+    training: Training
+    trainingId: string
+    phase: Phase
+    number: number
+}
+
+export interface Exercise {
+    id: string
+    ref: ExerciseReference
+    refId: string
+    load?: number | null
+    reps?: number | null
+    sets?: number | null
+    trainingGroups: TrainingGroup[]
+    index?: number | null
+    combinedExercises: CombinedExercise[]
+}
+
+export interface CombinedExercise {
+    id: string
+    exercises: Exercise[]
+    index?: number | null
+    trainingGroups: TrainingGroup[]
+}
+
+export interface ExerciseReference {
+    id: string
+    name: string
+    exercises: Exercise[]
+    groups: Group[]
 }
 
 export type ErrorResponse = {

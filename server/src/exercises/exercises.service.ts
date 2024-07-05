@@ -19,7 +19,31 @@ export class ExercisesService {
       orderBy: { index: "desc" },
     });
 
-    const newIndex = highestIndexExercise ? highestIndexExercise.index + 1 : 1;
+    const highestIndexCombinedExercise =
+      await this.prisma.combinedExercise.findFirst({
+        where: {
+          trainingGroups: {
+            some: {
+              id: createExerciseDto.trainingGroupId,
+            },
+          },
+        },
+        orderBy: { index: "desc" },
+      });
+
+    let newIndex = 1;
+
+    if (highestIndexExercise && highestIndexCombinedExercise) {
+      newIndex =
+        Math.max(
+          highestIndexExercise.index,
+          highestIndexCombinedExercise.index
+        ) + 1;
+    } else if (highestIndexExercise) {
+      newIndex = highestIndexExercise.index + 1;
+    } else if (highestIndexCombinedExercise) {
+      newIndex = highestIndexCombinedExercise.index + 1;
+    }
 
     return await this.prisma.exercise.create({
       data: {

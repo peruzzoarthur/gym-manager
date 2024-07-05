@@ -50,7 +50,6 @@ model Training {
   done            Boolean         @default(false)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-  // rounds          Int
   reps            Int
   sets            Int
   rest            Int
@@ -60,16 +59,17 @@ model Training {
 }
 
 model TrainingGroup {
-  id         String     @id @default(uuid())
-  key        String
-  exercises  Exercise[]
-  done       Boolean    @default(false)
-  doneAt     DateTime?
-  groups     Group[]
-  training   Training   @relation(fields: [trainingId], references: [id])
-  trainingId String
-  phase      Phase
-  number     Int
+  id                String             @id @default(uuid())
+  key               String
+  exercises         Exercise[]
+  combinedExercises CombinedExercise[]
+  done              Boolean            @default(false)
+  doneAt            DateTime?
+  groups            Group[]
+  training          Training           @relation(fields: [trainingId], references: [id])
+  trainingId        String
+  phase             Phase
+  number            Int
 
   @@unique([key, trainingId, phase, number])
 }
@@ -82,14 +82,22 @@ enum Phase {
 }
 
 model Exercise {
-  id             String            @id @default(uuid())
-  ref            ExerciseReference @relation(fields: [refId], references: [id])
-  refId          String
-  load           Float?
-  reps           Int?
-  sets           Int?
-  trainingGroups TrainingGroup[]
+  id                String             @id @default(uuid())
+  ref               ExerciseReference  @relation(fields: [refId], references: [id])
+  refId             String
+  load              Float?
+  reps              Int?
+  sets              Int?
+  trainingGroups    TrainingGroup[]
+  index             Int?
+  combinedExercises CombinedExercise[]
+}
+
+model CombinedExercise {
+  id             String          @id @default(uuid())
+  exercises      Exercise[]
   index          Int?
+  trainingGroups TrainingGroup[]
 }
 
 model ExerciseReference {

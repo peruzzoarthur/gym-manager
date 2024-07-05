@@ -1,5 +1,5 @@
-import { Plus, PlusCircle } from 'lucide-react'
-import { Card } from '../ui/card'
+import { PlusCircle } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardTitle } from '../ui/card'
 import { TrainingGroupTable } from './trainingGroupTable/trainingGroupTable'
 import {
     TrainingGroupTableProps,
@@ -13,11 +13,20 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select'
 import { useGetAllExerciseReferences } from '@/hooks/useGetAllExercises'
 import { ScrollArea } from '../ui/scroll-area'
 import { useToast } from '../ui/use-toast'
 import {
+    CombinedExercise,
     ErrorResponse,
     Exercise,
     Training,
@@ -52,6 +61,7 @@ export const TrainingGroupCard = ({
     const [isError, setError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const { toast } = useToast()
+    const [combinedIds, setCombinedIds] = useState<string[]>([])
     const toasted = (exercise: Exercise) => {
         toast({
             title: 'Success! 🙌',
@@ -137,6 +147,46 @@ export const TrainingGroupCard = ({
         }
     }
 
+    const addCombinedExerciseToTrainingGroup = async (input: {
+        refIds: string[] | undefined
+        trainingGroupId: string | undefined
+    }) => {
+        try {
+            const requestBody = {
+                reps: training?.reps,
+                sets: training?.sets,
+                refIds: input.refIds,
+                trainingGroupId: input.trainingGroupId,
+            }
+
+            const data: AxiosResponse<CombinedExercise> =
+                await axiosInstance.post('/combined-exercises/', requestBody)
+            await refetchTrainingGroup()
+            toast({
+                title: 'Success! 🙌',
+                description: `Added combined exercise`,
+            })
+            return data
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<ErrorResponse>
+                if (
+                    axiosError.response &&
+                    (axiosError.response.status === 400 || 409)
+                ) {
+                    setError(true)
+                    setErrorMessage(axiosError.response.data.message)
+                } else {
+                    setError(true)
+                    setErrorMessage('Error adding combined exercise')
+                }
+            } else {
+                setError(true)
+                setErrorMessage('Error adding combined exercise')
+            }
+        }
+    }
+
     const setTrainingGroupDone = async (id: string) => {
         try {
             const data: AxiosResponse<TrainingGroup> =
@@ -165,6 +215,23 @@ export const TrainingGroupCard = ({
         }
     }
     const { allExerciseReferences } = useGetAllExerciseReferences()
+
+    const [selectedValue, setSelectedValue] = useState('')
+
+    const addCombinedId = (id: string) => {
+        if (combinedIds.includes(id)) {
+            return
+        }
+        const stringArray: string[] = combinedIds.concat(id)
+        setCombinedIds(stringArray)
+    }
+
+    const removeCombinedId = (deletedId: string) => {
+        const stringArray: string[] = combinedIds.filter(
+            (string) => string !== deletedId
+        )
+        setCombinedIds(stringArray)
+    }
     return (
         <Card className="flex flex-col items-center justify-center w-11/12 p-4 space-y-4 sm:w-11/12">
             {trainingTableData && (
@@ -174,60 +241,155 @@ export const TrainingGroupCard = ({
                         data={trainingTableData}
                         refetchTrainingGroup={refetchTrainingGroup}
                     />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <PlusCircle />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuLabel>Exercises</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <ScrollArea className=" h-[420px]">
-                                {allExerciseReferences?.map((er) => (
-                                    <DropdownMenuItem
-                                        key={er.id}
-                                        onClick={async () =>
-                                            addExerciseToTrainingGroup({
-                                                refId: er.id,
-                                                trainingGroupId:
-                                                    trainingGroup?.id,
-                                            })
-                                        }
-                                        className="cursor-pointer hover:bg-opacity-50"
-                                    >
-                                        {er.name}
-                                    </DropdownMenuItem>
-                                ))}
-                            </ScrollArea>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <Plus />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuLabel>Exercises</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <ScrollArea className=" h-[420px]">
-                                {allExerciseReferences?.map((er) => (
-                                    <DropdownMenuItem
-                                        key={er.id}
-                                        onClick={async () =>
-                                            addExerciseToTrainingGroupsWithSameKey(
-                                                {
-                                                    refId: er.id,
-                                                    trainingGroupId:
-                                                        trainingGroup?.id,
+                    {/* Add single exercise */}
+                    <Card className="flex flex-col justify-center p-2 space-y-4">
+                        <CardTitle>Create exercise</CardTitle>
+                        <CardDescription className="grid grid-cols-2 justify-items-center">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <div className="flex flex-row gap-2">
+                                        <p>Add</p>
+                                        <PlusCircle />
+                                    </div>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>
+                                        Exercises
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <ScrollArea className=" h-[420px]">
+                                        {allExerciseReferences?.map((er) => (
+                                            <DropdownMenuItem
+                                                key={er.id}
+                                                onClick={async () =>
+                                                    addExerciseToTrainingGroup({
+                                                        refId: er.id,
+                                                        trainingGroupId:
+                                                            trainingGroup?.id,
+                                                    })
                                                 }
-                                            )
-                                        }
-                                        className="cursor-pointer hover:bg-opacity-50"
-                                    >
-                                        {er.name}
-                                    </DropdownMenuItem>
-                                ))}
-                            </ScrollArea>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                                className="cursor-pointer hover:bg-opacity-50"
+                                            >
+                                                {er.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </ScrollArea>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                            {/* Add single exercise to all groups with same key  */}
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <div className="flex flex-row gap-2">
+                                        <p>{`Add to all ${trainingGroup?.key}`}</p>
+                                        <PlusCircle />
+                                    </div>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>
+                                        Exercises
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <ScrollArea className=" h-[420px]">
+                                        {allExerciseReferences?.map((er) => (
+                                            <DropdownMenuItem
+                                                key={er.id}
+                                                onClick={async () =>
+                                                    addExerciseToTrainingGroupsWithSameKey(
+                                                        {
+                                                            refId: er.id,
+                                                            trainingGroupId:
+                                                                trainingGroup?.id,
+                                                        }
+                                                    )
+                                                }
+                                                className="cursor-pointer hover:bg-opacity-50"
+                                            >
+                                                {er.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </ScrollArea>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </CardDescription>
+                    </Card>
+                    {/* Add combined exercise */}
+                    <Card className="flex flex-col justify-center p-2 space-y-4">
+                        <CardTitle>Create combined exercise</CardTitle>
+                        <CardContent>
+                            <Select
+                                onValueChange={(value) =>
+                                    setSelectedValue(value)
+                                }
+                            >
+                                <div className="flex space-x-1">
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select exercise" />
+                                    </SelectTrigger>
+                                    <div className="flex flex-row">
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>
+                                                    Muscle groups
+                                                </SelectLabel>
+                                                {allExerciseReferences?.map(
+                                                    (e) => (
+                                                        <SelectItem
+                                                            value={e.id}
+                                                            key={e.id}
+                                                            className="cursor-pointer"
+                                                        >
+                                                            {e.name}
+                                                        </SelectItem>
+                                                    )
+                                                )}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                        <Button
+                                            className="flex items-center w-full rounded-tl-sm rounded-bl-sm "
+                                            onClick={() =>
+                                                addCombinedId(selectedValue)
+                                            }
+                                            variant="outline"
+                                        >
+                                            <PlusCircle />
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="flex justify-center">
+                                    {combinedIds.map((id) => {
+                                        return (
+                                            <Badge
+                                                onClick={() =>
+                                                    removeCombinedId(id)
+                                                }
+                                                variant="secondary"
+                                                key={id}
+                                                className="justify-center cursor-pointer w-auto p-4 h-6 text-center  ml-1 mt-2 mr-0.5"
+                                            >
+                                                {
+                                                    allExerciseReferences?.filter(
+                                                        (e) => e.id === id
+                                                    )[0].name
+                                                }
+                                            </Badge>
+                                            //! fix this later
+                                        )
+                                    })}
+                                </div>
+                            </Select>
+                        </CardContent>
+                        <Button
+                            onClick={async () =>
+                                addCombinedExerciseToTrainingGroup({
+                                    refIds: combinedIds,
+                                    trainingGroupId: trainingGroup?.id,
+                                })
+                            }
+                        >
+                            Create
+                        </Button>
+                    </Card>
                 </>
             )}
 

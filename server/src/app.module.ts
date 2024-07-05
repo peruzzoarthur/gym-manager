@@ -9,6 +9,7 @@ import { TrainingGroupsModule } from "./training-groups/training-groups.module";
 import { ExerciseReferencesModule } from "./exercise-references/exercise-references.module";
 import { ExercisesModule } from "./exercises/exercises.module";
 import { TrainingsModule } from "./trainings/trainings.module";
+import { CombinedExercisesModule } from './combined-exercises/combined-exercises.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TrainingsModule } from "./trainings/trainings.module";
     ExerciseReferencesModule,
     TrainingsModule,
     ExercisesModule,
+    CombinedExercisesModule,
   ],
   controllers: [],
   providers: [PrismaService],
