@@ -38,10 +38,10 @@ function Trainings() {
             <div className="flex flex-row justify-center gap-2 pb-2">
                 <Badge
                     className={twMerge(
-                        'cursor-pointer', // Common classes
+                        'cursor-pointer px-5 py-1 ',
                         showCreateForm
                             ? 'bg-primary'
-                            : 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80' // Conditional classes
+                            : 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80'
                     )}
                     onClick={() => setShowCreateForm((prevState) => !prevState)}
                 >
@@ -49,10 +49,10 @@ function Trainings() {
                 </Badge>
                 <Badge
                     className={twMerge(
-                        'cursor-pointer', // Common classes
+                        'cursor-pointer px-5 py-1 ',
                         showTrainingsList
                             ? 'bg-primary'
-                            : 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80' // Conditional classes
+                            : 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80'
                     )}
                     onClick={() =>
                         setShowTrainingsList((prevState) => !prevState)
@@ -68,6 +68,7 @@ function Trainings() {
                 <TrainingsTable
                     columns={trainingsTableColumns}
                     data={trainingsTableData}
+                    refetchTrainings={refetchTrainings}
                 />
             ) : null}
         </div>

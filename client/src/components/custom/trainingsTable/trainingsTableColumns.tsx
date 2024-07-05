@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { Link } from '@tanstack/react-router'
 
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
@@ -32,9 +33,11 @@ export const trainingsTableColumns: ColumnDef<TrainingsTableProps>[] = [
         },
         cell: ({ row }) => {
             return (
-                <div className="text-xs font-medium text-right sm:text-sm">
-                    {row.getValue('name')}
-                </div>
+                <Link to="/trainings/$id" params={{ id: row.original.id }}>
+                    <div className="text-xs font-medium text-right sm:text-sm">
+                        {row.getValue('name')}
+                    </div>
+                </Link>
             )
         },
     },

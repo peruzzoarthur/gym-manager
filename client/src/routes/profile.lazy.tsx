@@ -6,6 +6,7 @@ import { RouterContext } from './__root'
 export const Route = createFileRoute('/profile')({
     beforeLoad: async ({ context }: { context: RouterContext }) => {
         const { isLogged } = context.authentication
+        console.log(isLogged)
         if (!isLogged()) {
             throw redirect({ to: '/login' })
         }

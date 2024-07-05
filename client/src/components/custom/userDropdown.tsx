@@ -14,7 +14,7 @@ import { Label } from '../ui/label'
 import { AxiosResponse } from 'axios'
 import { axiosInstance } from '@/axiosInstance'
 import { useAuth } from '@/hooks/useAuth'
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 import { useGetUserById } from '@/hooks/useGetUser'
 
@@ -34,7 +34,7 @@ export const UserDropdown = () => {
     }
     const { theme, setTheme } = useTheme()
 
-    return (
+    return user ? (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button
@@ -111,5 +111,9 @@ export const UserDropdown = () => {
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
+    ) : (
+        <Link to="/login">
+            <Button>Login</Button>
+        </Link>
     )
 }

@@ -37,6 +37,7 @@ import {
 import { useGetUsers } from '@/hooks/useGetUsers'
 import { faker } from '@faker-js/faker'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
+import { useGetUserById } from '@/hooks/useGetUser'
 
 const trainingSchema = z.object({
     daysInWeek: z.number(),
@@ -68,22 +69,30 @@ export function CreateTrainingForm({
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const { toast } = useToast()
     const { users } = useGetUsers()
+    const { user } = useGetUserById()
 
     const form = useForm<TrainingInput>({
         resolver: zodResolver(trainingSchema),
         defaultValues: {
             reps: 10,
             sets: 3,
-            creatorId: 'd2994ffa-e640-4581-b101-1ab01ad6f1d0',
+            creatorId: user ? `${user.id}` : undefined,
             rest: 60,
             tempo: Tempo.ONE2TWO,
             daysInWeek: 5,
-            userId: 'd2994ffa-e640-4581-b101-1ab01ad6f1d0',
+            userId: undefined,
             name: `${faker.word.adjective()}-${faker.animal.type()}`,
         },
     })
 
     const { handleSubmit } = form
+
+    const tempoArray = [
+        Tempo.ONE2ONE,
+        Tempo.ONE2TWO,
+        Tempo.ONE2THREE,
+        Tempo.ONE2FOUR,
+    ]
 
     const onSubmit = async (input: TrainingInput) => {
         try {
@@ -113,7 +122,7 @@ export function CreateTrainingForm({
     }
 
     return (
-        <div className="flex flex-col ">
+        <div className="flex flex-col p-2 ">
             <Card className="max-w-sm mx-auto min-w-[320px]">
                 <CardHeader>
                     <CardTitle className="text-2xl">Create Training</CardTitle>
@@ -124,8 +133,33 @@ export function CreateTrainingForm({
                 <CardContent>
                     <Form {...form}>
                         <div className="grid gap-4">
-                            <div className="grid gap-2">
-                                {/* email */}
+                            {/* days, sets, reps */}
+                            <div className="grid grid-cols-3 gap-2 ">
+                                <FormField
+                                    control={form.control}
+                                    name="daysInWeek"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Days</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="5"
+                                                    {...field}
+                                                    type="number"
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            parseInt(
+                                                                e.target.value,
+                                                                10
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="sets"
@@ -134,7 +168,102 @@ export function CreateTrainingForm({
                                             <FormLabel>Sets</FormLabel>
                                             <FormControl>
                                                 <Input
-                                                    placeholder="Training name"
+                                                    placeholder="3"
+                                                    {...field}
+                                                    type="number"
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            parseInt(
+                                                                e.target.value,
+                                                                10
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="reps"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Reps</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="10"
+                                                    {...field}
+                                                    type="number"
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            parseInt(
+                                                                e.target.value,
+                                                                10
+                                                            )
+                                                        )
+                                                    }
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            {/* tempo, rest */}
+                            <div className="grid grid-cols-2 gap-2 ">
+                                <FormField
+                                    name="tempo"
+                                    control={form.control}
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Tempo</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
+                                                <div className="flex">
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a user" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <div className="flex flex-row">
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>
+                                                                    Tempo
+                                                                </SelectLabel>
+                                                                {tempoArray.map(
+                                                                    (t) => (
+                                                                        <SelectItem
+                                                                            value={
+                                                                                t
+                                                                            }
+                                                                        >
+                                                                            {t}
+                                                                        </SelectItem>
+                                                                    )
+                                                                )}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </div>
+                                                </div>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="rest"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Rest</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="60"
                                                     {...field}
                                                     type="number"
                                                     onChange={(e) =>
@@ -166,7 +295,7 @@ export function CreateTrainingForm({
                                             <div className="flex">
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder="Select a group" />
+                                                        <SelectValue placeholder="Select a user" />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <div className="flex flex-row">
@@ -197,40 +326,8 @@ export function CreateTrainingForm({
                                                                 )}
                                                         </SelectGroup>
                                                     </SelectContent>
-                                                    {/* <Button
-                                                        className="flex items-center w-full rounded-tl-sm rounded-bl-sm "
-                                                        onClick={() =>
-                                                            addMuscleGroup(
-                                                                field.value
-                                                            )
-                                                        }
-                                                        variant="ghost"
-                                                    >
-                                                        <PlusCircle />
-                                                    </Button> */}
                                                 </div>
                                             </div>
-                                            {/* <div className="flex items-center justify-center">
-                                                <div className="flex-col justify-center w-1/3">
-                                                    {muscleGroupsState.map(
-                                                        (mg) => {
-                                                            return (
-                                                                <Badge
-                                                                    onClick={() =>
-                                                                        removeMuscleGroup(
-                                                                            mg
-                                                                        )
-                                                                    }
-                                                                    key={mg}
-                                                                    className="justify-center cursor-pointer w-auto h-5 text-center rounded-full ml-1 mt-2 mr-0.5"
-                                                                >
-                                                                    {mg}
-                                                                </Badge>
-                                                            )
-                                                        }
-                                                    )}
-                                                </div>
-                                            </div> */}
                                         </Select>
                                         <FormMessage />
                                     </FormItem>

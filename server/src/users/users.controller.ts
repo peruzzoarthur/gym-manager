@@ -13,6 +13,7 @@ import {
   ParseFilePipeBuilder,
   HttpStatus,
   Request,
+  HttpCode,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -29,7 +30,9 @@ import { UserEntity } from "./entities/user.entity";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { JwtPayload } from "src/auth/types/auth.types";
-import { ConnectToPlayerDto } from "./dto/connect-to-player.dto";
+import { ActivateTrainingDto } from "./dto/activate-training";
+import { Roles } from "src/auth/roles.decorator";
+import { RolesGuard } from "src/auth/roles.guard";
 
 @Controller("users")
 @ApiTags("users")
@@ -79,6 +82,39 @@ export class UsersController {
       await this.usersService.updatePassword(id, updateUserDto)
     );
   }
+
+  @Patch("activate-training/:id")
+  @ApiCreatedResponse({ type: UserEntity })
+  async activateTraining(
+    @Param("id") id: string,
+    @Body() activateTrainingDto: ActivateTrainingDto
+  ) {
+    return new UserEntity(
+      await this.usersService.activateTraining(
+        activateTrainingDto.trainingId,
+        id
+      )
+    );
+  }
+
+  @Patch("deactivate-training/:id")
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse()
+  @Roles(["USER", "ADMIN"])
+  @ApiBearerAuth()
+  @ApiCreatedResponse({ type: UserEntity })
+  async deactivateTraining(
+    @Param("id") id: string,
+    @Body() activateTrainingDto: ActivateTrainingDto
+  ) {
+    return new UserEntity(
+      await this.usersService.deactivateTraining(
+        activateTrainingDto.trainingId,
+        id
+      )
+    );
+  }
+
   @Patch("profile-image")
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor("file"))

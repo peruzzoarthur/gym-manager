@@ -176,7 +176,30 @@ export class TrainingsService {
     return `This action updates a #${id} training`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} training`;
+  async remove(id: string) {
+    const training = await this.prisma.training.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        trainingGroups: true,
+      },
+    });
+
+    const trainingGroups = training.trainingGroups;
+    console.log(trainingGroups.length);
+    if (trainingGroups) {
+      const promises = trainingGroups.map(async (tg) => {
+        const deletedTg = await this.trainingGroupsService.remove(tg.id);
+
+        return deletedTg;
+      });
+      await Promise.all(promises);
+    }
+
+    const deletedTraining = await this.prisma.training.delete({
+      where: { id: id },
+    });
+
+    return deletedTraining;
   }
 }

@@ -8,7 +8,6 @@ export class ExercisesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createExerciseDto: CreateExerciseDto) {
-    // Find the highest current index in the training group
     const highestIndexExercise = await this.prisma.exercise.findFirst({
       where: {
         trainingGroups: {
@@ -79,7 +78,6 @@ export class ExercisesService {
         trainingGroupId: id,
         index: undefined,
       });
-      console.log(exercise);
       return exercise;
     });
 

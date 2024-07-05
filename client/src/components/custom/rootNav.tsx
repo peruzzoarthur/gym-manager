@@ -13,7 +13,6 @@ import { useGetRole } from '@/hooks/useGetRole'
 export function RootNav() {
     const { role } = useGetRole()
     const { user } = useGetUserById()
-
     return (
         <aside className="fixed inset-y-0 left-0 z-10 flex flex-col w-screen h-20 border-r bg-muted/80">
             <nav className="flex flex-row items-center justify-between gap-4 px-4 py-4">

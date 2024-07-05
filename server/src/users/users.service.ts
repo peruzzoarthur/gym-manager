@@ -3,7 +3,6 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { PrismaService } from "src/prisma.service";
 import * as argon from "argon2";
-import { ConnectToPlayerDto } from "./dto/connect-to-player.dto";
 
 @Injectable()
 export class UsersService {
@@ -74,6 +73,62 @@ export class UsersService {
       },
       data: {
         role: "ADMIN",
+      },
+    });
+  }
+
+  async activateTraining(trainingId: string, userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    if (user.activeTrainingId) {
+      throw new HttpException(
+        "Finish active training before activating a new one",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        activeTraining: {
+          connect: { id: trainingId },
+        },
+      },
+    });
+  }
+
+  async deactivateTraining(trainingId: string, userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    if (!user.activeTrainingId) {
+      throw new HttpException(
+        "No training active for user",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        activeTraining: {
+          disconnect: { id: trainingId },
+        },
       },
     });
   }

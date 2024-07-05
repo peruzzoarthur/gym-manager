@@ -92,7 +92,7 @@ export class TrainingGroupsService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} trainingGroup`;
+  async remove(id: string) {
+    return await this.prisma.trainingGroup.delete({ where: { id: id } });
   }
 }

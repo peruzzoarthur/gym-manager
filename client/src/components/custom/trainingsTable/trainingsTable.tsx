@@ -26,27 +26,26 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import React from 'react'
-// import { axiosInstance } from '@/axiosInstance'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
 import { TrainingsTableProps } from './trainingsTableColumns'
 import { Training } from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
-// import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { useGetRole } from '@/hooks/useGetRole'
 
 interface DataTableProps<TValue> {
     columns: ColumnDef<TrainingsTableProps, TValue>[]
     data: TrainingsTableProps[]
-    // refetchTrainings: (
-    //     options?: RefetchOptions | undefined
-    // ) => Promise<QueryObserverResult<Training[], Error>>
+    refetchTrainings: (
+        options?: RefetchOptions | undefined
+    ) => Promise<QueryObserverResult<Training[], Error>>
 }
 
 export function TrainingsTable<TValue>({
     columns,
     data,
-    // refetchTrainingGroup,
+    refetchTrainings,
 }: DataTableProps<TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const table = useReactTable({
@@ -77,7 +76,7 @@ export function TrainingsTable<TValue>({
         {
             if (trainingId) {
                 await handleDeleteTraining(trainingId)
-                // await refetchTrainingGroup()
+                await refetchTrainings()
             } else {
                 throw new Error('Error deleting training.')
             }
@@ -144,7 +143,7 @@ export function TrainingsTable<TValue>({
                                                         )
                                                     }
                                                 >
-                                                    Delete exercise from list
+                                                    Delete training
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem></DropdownMenuItem>
                                             </DropdownMenuContent>
