@@ -226,7 +226,7 @@ export const TrainingGroupCard = ({
                         data={trainingTableData}
                         refetchTrainingGroup={refetchTrainingGroup}
                     />
-                    <Card className="flex flex-col justify-center p-2 space-y-4">
+                    <Card className="flex flex-col justify-center p-4 space-y-4">
                         <CardTitle>Exercises</CardTitle>
                         <CardDescription>{`Manage exercises related to the selected training`}</CardDescription>
                         <CardContent className="grid space-y-2 sm:grid-cols-2 justify-items-center">
