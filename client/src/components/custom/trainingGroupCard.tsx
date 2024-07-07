@@ -41,8 +41,6 @@ import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { ExerciseComboBox } from './exerciseCombobox'
-// import { ComboBoxResponsive } from './test'
-// import { CommandDemo } from './test2'
 
 type TrainingGroupCardProps = {
     trainingTableData: TrainingGroupTableProps[] | undefined
@@ -402,8 +400,7 @@ export const TrainingGroupCard = ({
                         selectedExercise={selectedExercise}
                         setSelectedExercise={setSelectedExercise}
                     />
-                    {/* <ComboBoxResponsive />
-                    <CommandDemo /> */}
+                    {/* <ComboBoxResponsive /> */}
                 </>
             )}
 
