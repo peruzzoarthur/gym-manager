@@ -29,6 +29,7 @@ import {
     CombinedExercise,
     ErrorResponse,
     Exercise,
+    ExerciseReference,
     Training,
     TrainingGroup,
 } from '@/types/gym.types'
@@ -39,6 +40,9 @@ import { ErrorAlert } from './errorAlert'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
+import { ExerciseComboBox } from './exerciseCombobox'
+import { ComboBoxResponsive } from './test'
+import { CommandDemo } from './test2'
 
 type TrainingGroupCardProps = {
     trainingTableData: TrainingGroupTableProps[] | undefined
@@ -62,6 +66,9 @@ export const TrainingGroupCard = ({
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const { toast } = useToast()
     const [combinedIds, setCombinedIds] = useState<string[]>([])
+    const [selectedExercise, setSelectedExercise] =
+        useState<ExerciseReference | null>(null)
+
     const toasted = (exercise: Exercise) => {
         toast({
             title: 'Success! 🙌',
@@ -276,6 +283,7 @@ export const TrainingGroupCard = ({
                                     </ScrollArea>
                                 </DropdownMenuContent>
                             </DropdownMenu>
+
                             {/* Add single exercise to all groups with same key  */}
 
                             <DropdownMenu>
@@ -390,6 +398,12 @@ export const TrainingGroupCard = ({
                             Create
                         </Button>
                     </Card>
+                    <ExerciseComboBox
+                        selectedExercise={selectedExercise}
+                        setSelectedExercise={setSelectedExercise}
+                    />
+                    {/* <ComboBoxResponsive />
+                    <CommandDemo /> */}
                 </>
             )}
 

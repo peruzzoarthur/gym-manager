@@ -34,7 +34,7 @@ function Root() {
     return (
         <>
             <RootNav />
-            <div className="flex justify-center mt-24">
+            <div className="flex justify-center mt-24 overflow-hidden">
                 <Outlet />
             </div>
             <ScrollRestoration />
