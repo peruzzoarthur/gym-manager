@@ -24,11 +24,13 @@ type ComboBoxResponsiveProps = {
     setSelectedExercise: React.Dispatch<
         React.SetStateAction<ExerciseReference | null>
     >
+    addCombinedId: (id: string) => void
 }
 
 export function ExerciseComboBox({
     selectedExercise,
     setSelectedExercise,
+    addCombinedId,
 }: ComboBoxResponsiveProps) {
     const [open, setOpen] = React.useState(false)
     const isDesktop = useMediaQuery('(min-width: 768px)')
@@ -52,6 +54,7 @@ export function ExerciseComboBox({
                     <ExercisesList
                         setOpen={setOpen}
                         setSelectedExercise={setSelectedExercise}
+                        addCombinedId={addCombinedId}
                     />
                 </PopoverContent>
             </Popover>
@@ -74,6 +77,7 @@ export function ExerciseComboBox({
                     <ExercisesList
                         setOpen={setOpen}
                         setSelectedExercise={setSelectedExercise}
+                        addCombinedId={addCombinedId}
                     />
                 </div>
             </DrawerContent>
@@ -84,9 +88,11 @@ export function ExerciseComboBox({
 function ExercisesList({
     setOpen,
     setSelectedExercise,
+    addCombinedId,
 }: {
     setOpen: (open: boolean) => void
     setSelectedExercise: (exercise: ExerciseReference | null) => void
+    addCombinedId: (id: string) => void
 }) {
     const { allExerciseReferences } = useGetAllExerciseReferences()
 
@@ -106,6 +112,7 @@ function ExercisesList({
                                         (priority) => priority.name === value
                                     ) || null
                                 )
+                                addCombinedId(e.id)
                                 setOpen(false)
                             }}
                         >

@@ -117,6 +117,7 @@ export class TrainingsService {
       where: { id: id },
       select: {
         id: true,
+        name: true,
         tempo: true,
         daysInWeek: true,
         done: true,

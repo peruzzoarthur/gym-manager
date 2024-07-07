@@ -244,14 +244,14 @@ function User() {
                         {trainingGroupsByKey &&
                             selectedTrainingGroupsKey !== 'all' && (
                                 <Card className="grid grid-cols-2 gap-4 p-2 ">
-                                    <div className="grid grid-cols-2 space-y-0.5">
+                                    <div className="grid grid-cols-3 space-y-0.5">
                                         {trainingGroupsByKey.map((tg) => {
                                             if (
                                                 tg.id === selectedTrainingGroup
                                             ) {
                                                 return (
                                                     <Badge
-                                                        className="ml-1 cursor-pointer"
+                                                        className="justify-center ml-1 cursor-pointer"
                                                         variant="default"
                                                         onClick={() =>
                                                             setSelectedTrainingGroup(
@@ -267,7 +267,7 @@ function User() {
                                                 if (tg.done) {
                                                     return (
                                                         <Badge
-                                                            className="ml-1 cursor-pointer"
+                                                            className="justify-center ml-1 cursor-pointer"
                                                             variant="secondary"
                                                             onClick={() =>
                                                                 setSelectedTrainingGroup(
@@ -283,7 +283,7 @@ function User() {
                                                 if (!tg.done) {
                                                     return (
                                                         <Badge
-                                                            className="ml-1 cursor-pointer"
+                                                            className="justify-center ml-1 cursor-pointer"
                                                             variant="outline"
                                                             onClick={() =>
                                                                 setSelectedTrainingGroup(
