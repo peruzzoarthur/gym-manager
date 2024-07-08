@@ -9,13 +9,13 @@ import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 
 type EndTrainingGroupButtonProps = {
-    refetchTrainingById: (
-        options?: RefetchOptions | undefined
-    ) => Promise<QueryObserverResult<Training, Error>>
     refetchTrainingGroup: (
         options?: RefetchOptions | undefined
     ) => Promise<QueryObserverResult<TrainingGroup, Error>>
     trainingGroup: TrainingGroup | undefined
+    refetchTrainingById: (
+        options?: RefetchOptions | undefined
+    ) => Promise<QueryObserverResult<Training | null, Error>>
 }
 export const EndTrainingGroupButton = ({
     refetchTrainingById,

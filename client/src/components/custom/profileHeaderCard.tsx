@@ -1,36 +1,56 @@
+import { ReactNode } from 'react'
 import { User } from '@/types/gym.types'
 import { Card } from '../ui/card'
 import { ProfilePictureDrawerDialog } from './profilePictureDrawer'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
+import { useMediaQuery } from 'usehooks-ts'
 
 type ProfileHeaderCardProps = {
     user: User
     refetchUser: (
         options?: RefetchOptions | undefined
     ) => Promise<QueryObserverResult<User | null, Error>>
+    children?: ReactNode
 }
+
 export function ProfileHeaderCard({
     user,
     refetchUser,
+    children,
 }: ProfileHeaderCardProps) {
-    return (
-        <Card className="flex w-full">
-            <div className="flex space-x-8">
-                <div className="flex flex-col items-center mt-5 ml-5">
-                    <div className="p-2 mt-2 text-4xl">
-                        Hello {user.firstName}!
+    const isDesktop = useMediaQuery('(min-width: 640px)')
+
+    if (isDesktop) {
+        return (
+            <Card className="flex justify-center w-auto p-2">
+                <div className="grid grid-cols-2 gap-4 justify-items-start">
+                    <div className="flex flex-col">
+                        {user.profileImage ? (
+                            <img
+                                className="w-48 h-48 rounded-full"
+                                src={user.profileImage}
+                            />
+                        ) : (
+                            <img className="w-48 h-48 rounded-full" />
+                        )}
+                        <ProfilePictureDrawerDialog refetchUser={refetchUser} />
                     </div>
-                    {user.profileImage ? (
-                        <img
-                            className="rounded-full w-52 h-52"
-                            src={user.profileImage}
-                        />
-                    ) : (
-                        <img className="rounded-full w-52 h-52" />
-                    )}
-                    <ProfilePictureDrawerDialog refetchUser={refetchUser} />
+                    <div className="flex flex-col items-center justify-center">
+                        <h1 className="text-xl">
+                            {user.firstName} {user.lastName}
+                        </h1>
+                        {children}
+                    </div>
                 </div>
-            </div>
-        </Card>
+            </Card>
+        )
+    }
+    return (
+        <div className="flex flex-row items-center justify-center gap-4">
+            <h1 className="text-xl">
+                {user.firstName} {user.lastName}
+            </h1>
+            {children}
+        </div>
     )
 }

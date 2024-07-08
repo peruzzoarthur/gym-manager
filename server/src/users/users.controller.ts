@@ -60,7 +60,9 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async getProfile(@Request() req: JwtPayload) {
-    return await this.usersService.findOneByEmail(req.user.username);
+    return new UserEntity(
+      await this.usersService.findOneByEmail(req.user.username)
+    );
   }
   @Get(":id")
   @UseGuards(JwtAuthGuard)

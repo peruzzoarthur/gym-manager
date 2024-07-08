@@ -2,7 +2,7 @@ import { axiosInstance } from '@/axiosInstance'
 import { TrainingGroup } from '@/types/gym.types'
 import { useQuery } from '@tanstack/react-query'
 
-export const useGetTrainingGroup = (trainingGroupId: string | undefined) => {
+export const useGetTrainingGroup = (trainingGroupId: string | null) => {
     const {
         data: trainingGroup,
         isFetching: isFetchingTrainingGroup,

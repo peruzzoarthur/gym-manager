@@ -3,8 +3,8 @@ import { TrainingGroup } from '@/types/gym.types'
 import { useQuery } from '@tanstack/react-query'
 
 export const useGetTrainingGroupsByTrainingWithKey = (
-    trainingId: string | undefined,
-    key: string | undefined,
+    trainingId: string | null | undefined,
+    key: string | null,
     showAll: boolean
 ) => {
     const {

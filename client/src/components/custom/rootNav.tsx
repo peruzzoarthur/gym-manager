@@ -14,9 +14,9 @@ export function RootNav() {
     const { role } = useGetRole()
     const { user } = useGetUserById()
     return (
-        <aside className="fixed inset-y-0 left-0 z-10 flex flex-col w-screen h-20 border-r bg-muted/80">
-            <nav className="flex flex-row items-center justify-between gap-4 px-4 py-4">
-                <div className="flex flex-row items-center justify-center flex-grow gap-4">
+        <aside className="fixed top-0 left-0 z-50 w-full h-20 bg-muted/80 backdrop-blur-md">
+            <nav className="flex items-center justify-between h-full px-4 py-4 border-b">
+                <div className="flex items-center justify-center flex-grow gap-4">
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
