@@ -16,8 +16,8 @@ export class TrainingsController {
   constructor(private readonly trainingsService: TrainingsService) {}
 
   @Post()
-  create(@Body() createTrainingDto: CreateTrainingDto) {
-    return this.trainingsService.create(createTrainingDto);
+  createForUser(@Body() createTrainingDto: CreateTrainingDto) {
+    return this.trainingsService.createForUser(createTrainingDto);
   }
 
   @Get()

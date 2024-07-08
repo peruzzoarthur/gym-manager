@@ -21,13 +21,10 @@ function Trainings() {
 
     const trainingsTableData: TrainingsTableProps[] | undefined =
         trainings?.map((t) => {
-            const usersStringArray = t.users.map(
-                (u) => `${u.firstName} ${u.lastName}`
-            )
             return {
                 id: t.id,
                 creator: `${t.createdBy.firstName} ${t.createdBy.lastName}`,
-                users: usersStringArray,
+                user: `${t.user.firstName} ${t.user.lastName}`,
                 createdAt: new Date(t.createdAt).toLocaleDateString(),
                 name: t.name ?? '',
             }

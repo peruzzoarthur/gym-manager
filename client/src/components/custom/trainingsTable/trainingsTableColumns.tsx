@@ -9,7 +9,7 @@ export type TrainingsTableProps = {
     name: string
     createdAt: string
     creator: string
-    users: (string | null | undefined)[]
+    user: string | null | undefined
 }
 
 export const trainingsTableColumns: ColumnDef<TrainingsTableProps>[] = [
@@ -64,7 +64,7 @@ export const trainingsTableColumns: ColumnDef<TrainingsTableProps>[] = [
         cell: ({ row }) => {
             return (
                 <div className="text-xs font-medium text-right sm:text-sm">
-                    {row.original.users.join(' ')}
+                    {row.original.user}
                 </div>
             )
         },

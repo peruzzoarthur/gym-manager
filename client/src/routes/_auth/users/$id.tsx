@@ -1,4 +1,7 @@
-import { TrainingGroupTableProps } from '@/components/custom/trainingGroupTable/trainingGroupTableColumns'
+import {
+    TrainingGroupTableProps,
+    trainingGroupTableColumns,
+} from '@/components/custom/trainingGroupTable/trainingGroupTableColumns'
 import { Card } from '@/components/ui/card'
 import { useGetTrainingsByUserId } from '@/hooks/useGetTrainingsByUserId'
 import { useGetUserByUserId } from '@/hooks/useGetUserByUserId'
@@ -15,7 +18,6 @@ import {
 import { useState } from 'react'
 import { useGetTrainingById } from '@/hooks/useGetTrainingById'
 import { useGetTrainingGroup } from '@/hooks/useGetTrainingGroup'
-import { TrainingGroupCard } from '@/components/custom/trainingGroupCard'
 import { Badge } from '@/components/ui/badge'
 import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGroupsByTrainingWithKey'
 import { Switch } from '@/components/ui/switch'
@@ -25,6 +27,10 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ErrorResponse, User as UserType } from '@/types/gym.types'
 import { ErrorBox } from '@/components/custom/errorBox'
 import { useToast } from '@/components/ui/use-toast'
+import { axiosInstance } from '@/axiosInstance'
+import { TrainingGroupTable } from '@/components/custom/trainingGroupTable/trainingGroupTable'
+import { AddExercisesCard } from '@/components/custom/addExercisesCard'
+import { EndTrainingGroupButton } from '@/components/custom/endTrainingGroupButton'
 
 export const Route = createFileRoute('/_auth/users/$id')({
     component: User,
@@ -88,20 +94,19 @@ function User() {
             }
 
             if (option === 'activate') {
-                const data: AxiosResponse<UserType> = await axios.patch(
+                const data: AxiosResponse<UserType> = await axiosInstance.patch(
                     `${import.meta.env.VITE_SERVER_URL}/users/activate-training/${id}`,
                     requestBody
                 )
                 toast({
                     title: `Activated training ${trainingId} 🏋️‍♀️🏋️‍♂️`,
                 })
-                // await refetchTrainingById()
                 await refetchUser()
                 return data
             }
 
             if (option === 'deactivate') {
-                const data: AxiosResponse<UserType> = await axios.patch(
+                const data: AxiosResponse<UserType> = await axiosInstance.patch(
                     `${import.meta.env.VITE_SERVER_URL}/users/deactivate-training/${userId}`,
                     requestBody
                 )
@@ -132,7 +137,7 @@ function User() {
 
     return (
         <>
-            <Card className="flex flex-col justify-center w-11/12 p-4 space-y-4">
+            <Card className="flex flex-col justify-center w-full p-4 space-y-4 sm:w-11/12">
                 {user && (
                     <header className="flex flex-row items-center justify-center w-full space-x-4">
                         <h1 className="text-sm sm:text-lg">
@@ -241,34 +246,20 @@ function User() {
                                 )}
                             </div>
                         )}
-                        {trainingGroupsByKey &&
-                            selectedTrainingGroupsKey !== 'all' && (
-                                <Card className="grid grid-cols-2 gap-4 p-2 ">
-                                    <div className="grid grid-cols-3 space-y-0.5">
-                                        {trainingGroupsByKey.map((tg) => {
-                                            if (
-                                                tg.id === selectedTrainingGroup
-                                            ) {
-                                                return (
-                                                    <Badge
-                                                        className="justify-center ml-1 cursor-pointer"
-                                                        variant="default"
-                                                        onClick={() =>
-                                                            setSelectedTrainingGroup(
-                                                                tg.id
-                                                            )
-                                                        }
-                                                        key={tg.id}
-                                                    >
-                                                        {tg.phase}
-                                                    </Badge>
-                                                )
-                                            } else {
-                                                if (tg.done) {
+                        <div className="grid gap-4 md:grid-cols-2">
+                            {trainingGroupsByKey &&
+                                selectedTrainingGroupsKey !== 'all' && (
+                                    <Card className="grid grid-cols-2 gap-4 p-2 ">
+                                        <div className="grid grid-cols-3 space-y-0.5">
+                                            {trainingGroupsByKey.map((tg) => {
+                                                if (
+                                                    tg.id ===
+                                                    selectedTrainingGroup
+                                                ) {
                                                     return (
                                                         <Badge
                                                             className="justify-center ml-1 cursor-pointer"
-                                                            variant="secondary"
+                                                            variant="default"
                                                             onClick={() =>
                                                                 setSelectedTrainingGroup(
                                                                     tg.id
@@ -279,61 +270,91 @@ function User() {
                                                             {tg.phase}
                                                         </Badge>
                                                     )
+                                                } else {
+                                                    if (tg.done) {
+                                                        return (
+                                                            <Badge
+                                                                className="justify-center ml-1 cursor-pointer"
+                                                                variant="secondary"
+                                                                onClick={() =>
+                                                                    setSelectedTrainingGroup(
+                                                                        tg.id
+                                                                    )
+                                                                }
+                                                                key={tg.id}
+                                                            >
+                                                                {tg.phase}
+                                                            </Badge>
+                                                        )
+                                                    }
+                                                    if (!tg.done) {
+                                                        return (
+                                                            <Badge
+                                                                className="justify-center ml-1 cursor-pointer"
+                                                                variant="outline"
+                                                                onClick={() =>
+                                                                    setSelectedTrainingGroup(
+                                                                        tg.id
+                                                                    )
+                                                                }
+                                                                key={tg.id}
+                                                            >
+                                                                {tg.phase}
+                                                            </Badge>
+                                                        )
+                                                    }
                                                 }
-                                                if (!tg.done) {
-                                                    return (
-                                                        <Badge
-                                                            className="justify-center ml-1 cursor-pointer"
-                                                            variant="outline"
-                                                            onClick={() =>
-                                                                setSelectedTrainingGroup(
-                                                                    tg.id
-                                                                )
-                                                            }
-                                                            key={tg.id}
-                                                        >
-                                                            {tg.phase}
-                                                        </Badge>
-                                                    )
-                                                }
-                                            }
-                                        })}
-                                    </div>
-                                    <div className="flex flex-col items-center pt-4 space-y-4 ">
-                                        <div className="flex items-center space-x-2">
-                                            {showAllTrainingGroups ? (
-                                                <Label>Show all</Label>
-                                            ) : (
-                                                <Label>Unfinished</Label>
-                                            )}
-                                            <Switch
-                                                checked={showAllTrainingGroups}
-                                                onCheckedChange={() =>
-                                                    setShowAllTrainingGroups(
-                                                        (prevState) =>
-                                                            !prevState
-                                                    )
-                                                }
-                                            />
+                                            })}
                                         </div>
-                                        {trainingById && (
-                                            <>
-                                                <Badge variant="secondary">{`Rest[${trainingById?.rest}]`}</Badge>
-                                                <Badge variant="secondary">{`Tempo[${trainingById?.tempo}]`}</Badge>
-                                            </>
-                                        )}
-                                    </div>
-                                </Card>
-                            )}
-                        {selectedTrainingGroup && trainingById ? (
-                            <TrainingGroupCard
-                                trainingTableData={trainingTableData}
-                                training={trainingById}
-                                trainingGroup={trainingGroup}
-                                refetchTrainingGroup={refetchTrainingGroup}
-                                refetchTrainingById={refetchTrainingById}
-                            />
-                        ) : null}
+                                        <div className="flex flex-col items-center pt-4 space-y-4 ">
+                                            <div className="flex items-center space-x-2">
+                                                {showAllTrainingGroups ? (
+                                                    <Label>Show all</Label>
+                                                ) : (
+                                                    <Label>Unfinished</Label>
+                                                )}
+                                                <Switch
+                                                    checked={
+                                                        showAllTrainingGroups
+                                                    }
+                                                    onCheckedChange={() =>
+                                                        setShowAllTrainingGroups(
+                                                            (prevState) =>
+                                                                !prevState
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                            {trainingById && (
+                                                <>
+                                                    <Badge variant="secondary">{`Rest[${trainingById?.rest}]`}</Badge>
+                                                    <Badge variant="secondary">{`Tempo[${trainingById?.tempo}]`}</Badge>
+                                                </>
+                                            )}
+                                        </div>
+                                    </Card>
+                                )}
+                            {selectedTrainingGroup && trainingById ? (
+                                <AddExercisesCard
+                                    trainingTableData={trainingTableData}
+                                    training={trainingById}
+                                    trainingGroup={trainingGroup}
+                                    refetchTrainingGroup={refetchTrainingGroup}
+                                />
+                            ) : null}
+                            {selectedTrainingGroup && trainingTableData ? (
+                                <TrainingGroupTable
+                                    columns={trainingGroupTableColumns}
+                                    data={trainingTableData}
+                                    refetchTrainingGroup={refetchTrainingGroup}
+                                />
+                            ) : null}
+                        </div>
+                        <EndTrainingGroupButton
+                            refetchTrainingById={refetchTrainingById}
+                            refetchTrainingGroup={refetchTrainingGroup}
+                            trainingGroup={trainingGroup}
+                        />
                     </div>
                 </main>
                 {isError && (

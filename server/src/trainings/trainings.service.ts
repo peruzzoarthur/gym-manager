@@ -11,7 +11,7 @@ export class TrainingsService {
     private prisma: PrismaService,
     private trainingGroupsService: TrainingGroupsService
   ) {}
-  async create(createTrainingDto: CreateTrainingDto) {
+  async createForUser(createTrainingDto: CreateTrainingDto) {
     const training = await this.prisma.training.create({
       data: {
         daysInWeek: createTrainingDto.daysInWeek,
@@ -20,7 +20,7 @@ export class TrainingsService {
         tempo: createTrainingDto.tempo,
         rest: createTrainingDto.rest,
         name: createTrainingDto.name,
-        users: {
+        user: {
           connect: {
             id: createTrainingDto.userId,
           },
@@ -90,7 +90,7 @@ export class TrainingsService {
         rest: true,
         createdBy: true,
         name: true,
-        users: true,
+        user: true,
         trainingGroups: {
           select: {
             id: true,
@@ -151,10 +151,8 @@ export class TrainingsService {
   async findByUserId(userId: string) {
     return await this.prisma.training.findMany({
       where: {
-        users: {
-          every: {
-            id: userId,
-          },
+        user: {
+          id: userId,
         },
       },
       select: {

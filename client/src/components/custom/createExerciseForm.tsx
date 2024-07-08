@@ -34,6 +34,7 @@ import {
 } from '../ui/select'
 import { Badge } from '../ui/badge'
 import { PlusCircle } from 'lucide-react'
+import { axiosInstance } from '@/axiosInstance'
 
 const exerciseSchema = z.object({
     name: z.string(),
@@ -85,10 +86,11 @@ export function CreateExerciseForm() {
                 groups: muscleGroupsState,
             }
 
-            const data: AxiosResponse<ExerciseReference> = await axios.post(
-                `${import.meta.env.VITE_SERVER_URL}/exercise-references/`,
-                requestBody
-            )
+            const data: AxiosResponse<ExerciseReference> =
+                await axiosInstance.post(
+                    `${import.meta.env.VITE_SERVER_URL}/exercise-references/`,
+                    requestBody
+                )
             toast({
                 title: `Created exercise ${input.name} 🏋️‍♀️🏋️‍♂️`,
             })

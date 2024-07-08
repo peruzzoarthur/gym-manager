@@ -50,7 +50,7 @@ export interface Training {
     id: string
     name?: string | null
     trainingGroups: TrainingGroup[]
-    users: User[]
+    user: User
     activatedAtUser: User[]
     tempo: Tempo
     daysInWeek: number

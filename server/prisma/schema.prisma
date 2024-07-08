@@ -43,7 +43,8 @@ model Training {
   id              String          @id @default(uuid())
   name            String?
   trainingGroups  TrainingGroup[]
-  users           User[]
+  user            User            @relation(fields: [userId], references: [id])
+  userId          String
   activatedAtUser User[]          @relation("ActiveTraining")
   tempo           Tempo
   daysInWeek      Int

@@ -88,7 +88,7 @@ export function TrainingGroupTable<TValue>({
     }
 
     return (
-        <div className="flex w-full h-auto border rounded-md">
+        <div className="flex w-full h-auto border rounded-md md:col-span-2">
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (

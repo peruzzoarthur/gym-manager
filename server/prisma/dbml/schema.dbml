@@ -24,7 +24,8 @@ Table Training {
   id String [pk]
   name String
   trainingGroups TrainingGroup [not null]
-  users User [not null]
+  user User [not null]
+  userId String [not null]
   activatedAtUser User [not null]
   tempo Tempo [not null]
   daysInWeek Int [not null]
@@ -83,11 +84,6 @@ Table ExerciseReference {
   groups Group[] [not null]
 }
 
-Table TrainingToUser {
-  trainingsId String [ref: > Training.id]
-  usersId String [ref: > User.id]
-}
-
 Table ExerciseToTrainingGroup {
   exercisesId String [ref: > Exercise.id]
   traininggroupsId String [ref: > TrainingGroup.id]
@@ -133,7 +129,9 @@ Enum Group {
   SHOULDERS
 }
 
-Ref: User.activeTrainingId > Training.id
+Ref: User.activeTrainingId - Training.id
+
+Ref: Training.userId > User.id
 
 Ref: Training.createdByUserId > User.id
 
