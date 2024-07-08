@@ -31,7 +31,7 @@ function Trainings() {
         })
 
     return (
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col mt-2 space-y-2">
             <div className="flex flex-row justify-center gap-2 pb-2">
                 <Badge
                     className={twMerge(

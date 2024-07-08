@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGroupsByTrainingWithKey'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { CheckCircle2, Circle } from 'lucide-react'
+import { CheckCircle2, Circle, Dumbbell } from 'lucide-react'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ErrorResponse, User as UserType } from '@/types/gym.types'
 import { ErrorBox } from '@/components/custom/errorBox'
@@ -26,6 +26,7 @@ import { ProfileHeaderCard } from '@/components/custom/profileHeaderCard'
 import { SelectUserTrainings } from '@/components/custom/selectUserTrainings'
 import { TrainingGroupsProgress } from '@/components/custom/trainingGroupsProgress'
 import { twMerge } from 'tailwind-merge'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/_auth/users/$id')({
     component: User,
@@ -59,6 +60,7 @@ function User() {
     const { toast } = useToast()
     const [showAllTrainingGroups, setShowAllTrainingGroups] =
         useState<boolean>(true)
+    const [showExercisesCard, setShowExercisesCard] = useState<boolean>(false)
 
     const { trainingById, refetchTrainingById } =
         useGetTrainingById(selectedTraining)
@@ -321,14 +323,33 @@ function User() {
                                     </div>
                                 </Card>
                             )}
-                        {selectedTrainingGroup && trainingById ? (
+                        {selectedTrainingGroup &&
+                        trainingById &&
+                        showExercisesCard ? (
                             <AddExercisesCard
                                 trainingTableData={trainingTableData}
                                 training={trainingById}
                                 trainingGroup={trainingGroup}
                                 refetchTrainingGroup={refetchTrainingGroup}
+                                setShowExercisesCard={setShowExercisesCard}
                             />
-                        ) : null}
+                        ) : (
+                            <>
+                                {selectedTrainingGroup && (
+                                    <div className="flex items-center justify-center">
+                                        <Button
+                                            className="w-12 h-12 rounded-full"
+                                            variant="outline"
+                                            onClick={() =>
+                                                setShowExercisesCard(true)
+                                            }
+                                        >
+                                            <Dumbbell />
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
+                        )}
                         {selectedTrainingGroup && trainingTableData ? (
                             <TrainingGroupTable
                                 columns={trainingGroupTableColumns}

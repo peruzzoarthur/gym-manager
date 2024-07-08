@@ -18,7 +18,7 @@ export const TrainingGroupsProgress = ({
             {totalTrainingsGroupsDone && totalTrainingGroups ? (
                 <Card className="flex flex-col p-1">
                     <CardContent>
-                        <h3 className=" text-md text-muted-foreground">
+                        <h3 className="flex items-center justify-center text-sm text-muted-foreground">
                             {`${trainingById.trainingGroups.length - trainingById.trainingGroups.filter((tg) => tg.done === true).length} left`}
                         </h3>
                     </CardContent>

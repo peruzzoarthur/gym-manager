@@ -19,6 +19,7 @@ import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { ExerciseComboBox } from './exerciseCombobox'
 import { Label } from '../ui/label'
+import { X } from 'lucide-react'
 
 type AddExercisesCardProps = {
     trainingTableData: TrainingGroupTableProps[] | undefined
@@ -27,12 +28,14 @@ type AddExercisesCardProps = {
     refetchTrainingGroup: (
         options?: RefetchOptions | undefined
     ) => Promise<QueryObserverResult<TrainingGroup, Error>>
+    setShowExercisesCard: React.Dispatch<React.SetStateAction<boolean>>
 }
 export const AddExercisesCard = ({
     trainingTableData,
     training,
     trainingGroup,
     refetchTrainingGroup,
+    setShowExercisesCard,
 }: AddExercisesCardProps) => {
     const [isError, setError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -186,7 +189,18 @@ export const AddExercisesCard = ({
         <>
             {trainingTableData && (
                 <Card className="flex flex-col justify-center p-4 space-y-4">
-                    <CardTitle>Exercises</CardTitle>
+                    <div className="flex items-center justify-between">
+                        <CardTitle>Exercises</CardTitle>
+                        <div className="flex justify-end">
+                            <Button
+                                className="w-12 h-12"
+                                variant="ghost"
+                                onClick={() => setShowExercisesCard(false)}
+                            >
+                                <X />
+                            </Button>
+                        </div>
+                    </div>
                     <CardDescription>{`Manage exercises related to the selected training`}</CardDescription>
                     <CardContent className="grid space-y-2 sm:grid-cols-2 justify-items-center">
                         <div className="flex flex-col">
