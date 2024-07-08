@@ -20,28 +20,28 @@ SET row_security = off;
 -- Data for Name: ExerciseReference; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('c64ef60b-4cf7-400d-9cfc-834bac9b233b', 'Puxada articulada', '{BACK}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('651e0f4c-7428-4fea-ae03-72e448cbfa97', 'Puxada neutra', '{BACK}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('0b0f38e4-6b9d-452e-ad68-fd605e8a3613', 'Puxada supinada', '{BACK}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('81c104de-71b1-404a-8535-9d606eba4dcc', 'Remada cavalinho', '{BACK}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('d3043b26-44c0-4eab-9715-3cc47997b061', 'Serrote', '{BACK}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('0bfc07e8-7a9d-4b24-9020-8b48f2ac7adb', 'Supino reto', '{CHEST}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('793dbb81-e5f8-4ca7-b952-45d52dd988c4', 'Supino inclinado', '{CHEST}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('9601cc0e-aa3d-4b91-bcc2-15b70e159d4d', 'Crucifixo', '{CHEST}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('bd6097e9-2ed1-412a-b839-17e760591bb4', 'Triceps pulley', '{TRICEPS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('89d46d06-1a9e-404d-a978-b280174dc1fa', 'Triceps com corda', '{TRICEPS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('fe6be2e4-9388-4665-8499-a045af359614', 'Rosca alternada', '{BICEPS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('f39f62d2-380d-402b-be76-b7be991a3311', 'Martelo', '{BICEPS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('4526302a-acf8-4120-a377-857c7d53f4c9', 'Rosca scott', '{BICEPS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('9da6306c-d291-4e56-a9cb-c41cc9026d9d', 'Agachamento livre', '{LEGS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('83c3ffd4-923e-4667-946c-033b47aa1bd2', 'Agachamento goblet', '{LEGS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('b4fdb432-2503-40cd-93f4-4da987bfcfa0', 'Levantamento terra', '{LEGS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('22bf1d9c-9828-45d4-a02c-a614c28d8851', 'Extensor', '{LEGS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('c383c4bc-ca4c-4c4c-8d1c-2d1dfac5101a', 'Flexor', '{LEGS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('fe7f271f-1f44-4358-82ac-4854755297e7', 'Panturrilha sentado', '{CALVES}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('a858695a-913f-4cca-be53-21ac9eefa01c', 'Elevação frontal', '{SHOULDERS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('249d5591-49cd-40af-bb26-9eed7cb2bff8', 'Elevação lateral', '{SHOULDERS}');
-INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('16f4429d-6c9b-4785-822c-c734f7a11e16', 'Desenvolvimento', '{SHOULDERS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('c64ef60b-4cf7-400d-9cfc-834bac9b233b', 'Puxada articulada', '{BACK}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('651e0f4c-7428-4fea-ae03-72e448cbfa97', 'Puxada neutra', '{BACK}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('0b0f38e4-6b9d-452e-ad68-fd605e8a3613', 'Puxada supinada', '{BACK}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('81c104de-71b1-404a-8535-9d606eba4dcc', 'Remada cavalinho', '{BACK}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('d3043b26-44c0-4eab-9715-3cc47997b061', 'Serrote', '{BACK}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('0bfc07e8-7a9d-4b24-9020-8b48f2ac7adb', 'Supino reto', '{CHEST}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('793dbb81-e5f8-4ca7-b952-45d52dd988c4', 'Supino inclinado', '{CHEST}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('9601cc0e-aa3d-4b91-bcc2-15b70e159d4d', 'Crucifixo', '{CHEST}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('bd6097e9-2ed1-412a-b839-17e760591bb4', 'Triceps pulley', '{TRICEPS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('89d46d06-1a9e-404d-a978-b280174dc1fa', 'Triceps com corda', '{TRICEPS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('fe6be2e4-9388-4665-8499-a045af359614', 'Rosca alternada', '{BICEPS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('f39f62d2-380d-402b-be76-b7be991a3311', 'Martelo', '{BICEPS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('4526302a-acf8-4120-a377-857c7d53f4c9', 'Rosca scott', '{BICEPS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('9da6306c-d291-4e56-a9cb-c41cc9026d9d', 'Agachamento livre', '{LEGS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('83c3ffd4-923e-4667-946c-033b47aa1bd2', 'Agachamento goblet', '{LEGS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('b4fdb432-2503-40cd-93f4-4da987bfcfa0', 'Levantamento terra', '{LEGS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('22bf1d9c-9828-45d4-a02c-a614c28d8851', 'Extensor', '{LEGS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('c383c4bc-ca4c-4c4c-8d1c-2d1dfac5101a', 'Flexor', '{LEGS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('fe7f271f-1f44-4358-82ac-4854755297e7', 'Panturrilha sentado', '{CALVES}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('a858695a-913f-4cca-be53-21ac9eefa01c', 'Elevação frontal', '{SHOULDERS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('249d5591-49cd-40af-bb26-9eed7cb2bff8', 'Elevação lateral', '{SHOULDERS}');
+-- INSERT INTO public."ExerciseReference" (id, name, groups) VALUES ('16f4429d-6c9b-4785-822c-c734f7a11e16', 'Desenvolvimento', '{SHOULDERS}');
 
 --
 -- Data for Name: Exercise; Type: TABLE DATA; Schema: public; Owner: -

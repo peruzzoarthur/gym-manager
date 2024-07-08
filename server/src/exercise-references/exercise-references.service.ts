@@ -18,12 +18,24 @@ export class ExerciseReferencesService {
       data: {
         name: createExerciseReferenceDto.name,
         groups: createExerciseReferenceDto.groups,
+        createdBy: {
+          connect: {
+            id: createExerciseReferenceDto.creatorId,
+          },
+        },
       },
     });
   }
 
   async findAll() {
-    return await this.prisma.exerciseReference.findMany();
+    return await this.prisma.exerciseReference.findMany({
+      select: {
+        id: true,
+        name: true,
+        createdBy: true,
+        createdAt: true,
+      },
+    });
   }
 
   findOne(id: number) {
@@ -34,7 +46,7 @@ export class ExerciseReferencesService {
     return `This action updates a #${id} exerciseReference`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} exerciseReference`;
+  async remove(id: string) {
+    return await this.prisma.exerciseReference.delete({ where: { id: id } });
   }
 }

@@ -58,6 +58,6 @@ export class ExerciseReferencesController {
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.exerciseReferencesService.remove(+id);
+    return this.exerciseReferencesService.remove(id);
   }
 }

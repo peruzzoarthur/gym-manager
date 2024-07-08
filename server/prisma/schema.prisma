@@ -17,21 +17,22 @@ datasource db {
 }
 
 model User {
-  id               String     @id @default(uuid())
-  firstName        String?
-  lastName         String?
-  email            String     @unique
-  password         String
-  dob              DateTime?
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-  role             Role       @default(USER)
-  hashedRt         String?
-  profileImage     String?
-  trainings        Training[]
-  activeTraining   Training?  @relation("ActiveTraining", references: [id], fields: [activeTrainingId])
-  activeTrainingId String?
-  trainingsCreated Training[] @relation("TrainingCreator")
+  id                        String              @id @default(uuid())
+  firstName                 String?
+  lastName                  String?
+  email                     String              @unique
+  password                  String
+  dob                       DateTime?
+  createdAt                 DateTime            @default(now())
+  updatedAt                 DateTime            @updatedAt
+  role                      Role                @default(USER)
+  hashedRt                  String?
+  profileImage              String?
+  trainings                 Training[]
+  activeTraining            Training?           @relation("ActiveTraining", references: [id], fields: [activeTrainingId])
+  activeTrainingId          String?
+  trainingsCreated          Training[]          @relation("TrainingCreator")
+  exerciseReferencesCreated ExerciseReference[] @relation("ExerciseReferenceCreator")
 }
 
 enum Role {
@@ -102,10 +103,14 @@ model CombinedExercise {
 }
 
 model ExerciseReference {
-  id        String     @id @default(uuid())
-  name      String     @unique()
-  exercises Exercise[]
-  groups    Group[]
+  id              String     @id @default(uuid())
+  name            String     @unique()
+  exercises       Exercise[]
+  groups          Group[]
+  createdBy       User       @relation("ExerciseReferenceCreator", fields: [createdByUserId], references: [id])
+  createdByUserId String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
 
 enum Tempo {
