@@ -142,6 +142,10 @@ function User() {
         }
     }
 
+    const totalTrainingsGroupsDone = trainingById?.trainingGroups.filter(
+        (tg) => tg.done === true
+    ).length
+
     return (
         <div className="flex flex-col justify-center w-full p-2 space-y-2 sm:w-11/12">
             {user && (
@@ -165,7 +169,14 @@ function User() {
                 <div className="flex flex-col items-center justify-center w-full space-y-2">
                     {trainingById && user && (
                         <div className="grid gap-2 sm:grid-cols-2">
-                            <Card className="flex items-center gap-1 p-2">
+                            <Card
+                                className={twMerge(
+                                    'flex items-center gap-1 p-2',
+                                    totalTrainingsGroupsDone === 0
+                                        ? 'col-span-2'
+                                        : ''
+                                )}
+                            >
                                 {trainingGroupsKeys.map((key) => {
                                     if (key === selectedTrainingGroupsKey) {
                                         return (

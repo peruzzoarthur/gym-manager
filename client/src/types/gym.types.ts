@@ -28,7 +28,7 @@ export enum Group {
     SHOULDERS = 'SHOULDERS',
 }
 
-export interface User {
+export type User = {
     id: string
     firstName?: string | null
     lastName?: string | null
@@ -46,7 +46,7 @@ export interface User {
     trainingsCreated: Training[]
 }
 
-export interface Training {
+export type Training = {
     id: string
     name?: string | null
     trainingGroups: TrainingGroup[]
@@ -65,7 +65,7 @@ export interface Training {
     createdByUserId: string
 }
 
-export interface TrainingGroup {
+export type TrainingGroup = {
     id: string
     key: string
     exercises: Exercise[]
@@ -79,7 +79,7 @@ export interface TrainingGroup {
     number: number
 }
 
-export interface Exercise {
+export type Exercise = {
     id: string
     ref: ExerciseReference
     refId: string
@@ -91,18 +91,22 @@ export interface Exercise {
     combinedExercises: CombinedExercise[]
 }
 
-export interface CombinedExercise {
+export type CombinedExercise = {
     id: string
     exercises: Exercise[]
     index?: number | null
     trainingGroups: TrainingGroup[]
 }
 
-export interface ExerciseReference {
+export type ExerciseReference = {
     id: string
     name: string
     exercises: Exercise[]
     groups: Group[]
+    createdAt: Date
+    updatedAt: Date
+    createdBy: User
+    createdByUserId: string
 }
 
 export type ErrorResponse = {

@@ -35,6 +35,8 @@ import {
 import { Badge } from '../ui/badge'
 import { PlusCircle } from 'lucide-react'
 import { axiosInstance } from '@/axiosInstance'
+import { useGetUserById } from '@/hooks/useGetUser'
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 
 const exerciseSchema = z.object({
     name: z.string(),
@@ -63,11 +65,20 @@ const muscleGroups = [
 
 type ExerciseInput = z.infer<typeof exerciseSchema>
 
-export function CreateExerciseForm() {
+type CreateExerciseFormProps = {
+    refetchAllExerciseReferences: (
+        options?: RefetchOptions | undefined
+    ) => Promise<QueryObserverResult<ExerciseReference[], Error>>
+}
+
+export function CreateExerciseForm({
+    refetchAllExerciseReferences,
+}: CreateExerciseFormProps) {
     const [isError, setError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const [muscleGroupsState, setMuscleGroupsState] = useState<Group[]>([])
     const { toast } = useToast()
+    const { user } = useGetUserById()
 
     const form = useForm<ExerciseInput>({
         resolver: zodResolver(exerciseSchema),
@@ -81,9 +92,14 @@ export function CreateExerciseForm() {
 
     const onSubmit = async (input: ExerciseInput) => {
         try {
-            const requestBody: { name: string; groups: Group[] } = {
+            const requestBody: {
+                name: string
+                groups: Group[]
+                creatorId: string
+            } = {
                 name: input.name,
                 groups: muscleGroupsState,
+                creatorId: user?.id ?? '',
             }
 
             const data: AxiosResponse<ExerciseReference> =
@@ -91,6 +107,7 @@ export function CreateExerciseForm() {
                     `${import.meta.env.VITE_SERVER_URL}/exercise-references/`,
                     requestBody
                 )
+            await refetchAllExerciseReferences()
             toast({
                 title: `Created exercise ${input.name} 🏋️‍♀️🏋️‍♂️`,
             })
