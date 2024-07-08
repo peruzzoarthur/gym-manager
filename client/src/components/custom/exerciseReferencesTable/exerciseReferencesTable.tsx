@@ -89,7 +89,7 @@ export function ExerciseReferencesTable<TValue>({
     }
 
     return (
-        <div className="flex w-full h-auto border rounded-md">
+        <div className="flex flex-col w-full h-auto border rounded-md">
             <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
@@ -169,6 +169,24 @@ export function ExerciseReferencesTable<TValue>({
                     )}
                 </TableBody>
             </Table>
+            <div className="flex items-center justify-end py-4 space-x-2">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                >
+                    Previous
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                >
+                    Next
+                </Button>
+            </div>
         </div>
     )
 }
