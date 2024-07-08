@@ -14,23 +14,25 @@ export const TrainingGroupsProgress = ({
     const totalTrainingGroups = trainingById?.trainingGroups.length
 
     return (
-        <Card className="flex flex-col p-1">
-            <CardContent>
-                <h3 className=" text-md text-muted-foreground">
-                    {`${trainingById.trainingGroups.length - trainingById.trainingGroups.filter((tg) => tg.done === true).length} left`}
-                </h3>
-            </CardContent>
-            <CardFooter>
-                {totalTrainingsGroupsDone && totalTrainingGroups ? (
-                    <Progress
-                        value={
-                            (totalTrainingsGroupsDone * 100) /
-                            totalTrainingGroups
-                        }
-                        aria-label="training_progress"
-                    />
-                ) : null}
-            </CardFooter>
-        </Card>
+        <>
+            {totalTrainingsGroupsDone && totalTrainingGroups ? (
+                <Card className="flex flex-col p-1">
+                    <CardContent>
+                        <h3 className=" text-md text-muted-foreground">
+                            {`${trainingById.trainingGroups.length - trainingById.trainingGroups.filter((tg) => tg.done === true).length} left`}
+                        </h3>
+                    </CardContent>
+                    <CardFooter>
+                        <Progress
+                            value={
+                                (totalTrainingsGroupsDone * 100) /
+                                totalTrainingGroups
+                            }
+                            aria-label="training_progress"
+                        />
+                    </CardFooter>
+                </Card>
+            ) : null}
+        </>
     )
 }

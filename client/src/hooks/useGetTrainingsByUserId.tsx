@@ -18,7 +18,7 @@ export const useGetTrainingsByUserId = (
             )
             return data
         },
-        enabled: !!userId && !!activeTrainingId,
+        enabled: !!userId,
     })
     const activeTraining = userTrainings?.find((t) => t.id === activeTrainingId)
 
