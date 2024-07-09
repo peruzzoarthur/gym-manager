@@ -98,9 +98,7 @@ export class UsersService {
     return await this.prisma.user.update({
       where: { id: userId },
       data: {
-        activeTraining: {
-          connect: { id: trainingId },
-        },
+        activeTrainingId: trainingId,
       },
     });
   }
@@ -126,9 +124,7 @@ export class UsersService {
     return await this.prisma.user.update({
       where: { id: userId },
       data: {
-        activeTraining: {
-          disconnect: { id: trainingId },
-        },
+        activeTrainingId: null,
       },
     });
   }

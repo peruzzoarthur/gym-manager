@@ -9,7 +9,8 @@ export type TrainingsTableProps = {
     name: string
     createdAt: string
     creator: string
-    user: string | null | undefined
+    user: string
+    userId: string
 }
 
 export const trainingsTableColumns: ColumnDef<TrainingsTableProps>[] = [
@@ -57,15 +58,17 @@ export const trainingsTableColumns: ColumnDef<TrainingsTableProps>[] = [
         },
     },
     {
-        accessorKey: 'users',
+        accessorKey: 'user',
         header: () => {
-            return <div className="text-xs text-right sm:text-sm">Users</div>
+            return <div className="text-xs text-right sm:text-sm">User</div>
         },
         cell: ({ row }) => {
             return (
-                <div className="text-xs font-medium text-right sm:text-sm">
-                    {row.original.user}
-                </div>
+                <Link to="/users/$id" params={{ id: row.original.userId }}>
+                    <div className="text-xs font-medium text-right sm:text-sm">
+                        {row.original.user}
+                    </div>
+                </Link>
             )
         },
     },
@@ -76,9 +79,11 @@ export const trainingsTableColumns: ColumnDef<TrainingsTableProps>[] = [
         },
         cell: ({ row }) => {
             return (
-                <div className="text-xs font-medium text-right sm:text-sm">
-                    {row.getValue('creator')}
-                </div>
+                <Link to="/users/$id" params={{ id: row.original.userId }}>
+                    <div className="text-xs font-medium text-right sm:text-sm">
+                        {row.getValue('creator')}
+                    </div>
+                </Link>
             )
         },
     },

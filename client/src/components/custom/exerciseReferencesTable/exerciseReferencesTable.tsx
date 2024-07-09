@@ -163,7 +163,7 @@ export function ExerciseReferencesTable<TValue>({
                                 colSpan={columns.length}
                                 className="h-24 text-center"
                             >
-                                No trainings
+                                No exercises
                             </TableCell>
                         </TableRow>
                     )}

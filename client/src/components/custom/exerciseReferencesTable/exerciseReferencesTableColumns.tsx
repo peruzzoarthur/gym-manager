@@ -9,6 +9,7 @@ export type ExerciseReferencesTableProps = {
     name: string
     createdAt: string
     creator: string
+    groups: string[]
 }
 
 export const exerciseReferencesTableColumns: ColumnDef<ExerciseReferencesTableProps>[] =
@@ -38,6 +39,36 @@ export const exerciseReferencesTableColumns: ColumnDef<ExerciseReferencesTablePr
                     <Link to="/trainings/$id" params={{ id: row.original.id }}>
                         <div className="text-xs font-medium text-right sm:text-sm">
                             {row.getValue('name')}
+                        </div>
+                    </Link>
+                )
+            },
+        },
+        {
+            accessorKey: 'groups',
+            header: ({ column }) => {
+                return (
+                    <div>
+                        <Button
+                            variant="ghost"
+                            onClick={() =>
+                                column.toggleSorting(
+                                    column.getIsSorted() === 'asc'
+                                )
+                            }
+                            className="w-4 text-xs text-right sm:w-auto sm:text-sm"
+                        >
+                            Groups
+                            <ArrowUpDown className="w-3 h-3 ml-0.5" />
+                        </Button>
+                    </div>
+                )
+            },
+            cell: ({ row }) => {
+                return (
+                    <Link to="/trainings/$id" params={{ id: row.original.id }}>
+                        <div className="text-xs font-medium text-right sm:text-sm">
+                            {row.original.groups.join(', ')}
                         </div>
                     </Link>
                 )

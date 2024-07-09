@@ -23,6 +23,7 @@ function Trainings() {
         trainings?.map((t) => {
             return {
                 id: t.id,
+                userId: t.user.id,
                 creator: `${t.createdBy.firstName} ${t.createdBy.lastName}`,
                 user: `${t.user.firstName} ${t.user.lastName}`,
                 createdAt: new Date(t.createdAt).toLocaleDateString(),

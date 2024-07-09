@@ -34,6 +34,7 @@ export class ExerciseReferencesService {
         name: true,
         createdBy: true,
         createdAt: true,
+        groups: true,
       },
     });
   }

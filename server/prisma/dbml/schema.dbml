@@ -15,7 +15,6 @@ Table User {
   hashedRt String
   profileImage String
   trainings Training [not null]
-  activeTraining Training
   activeTrainingId String
   trainingsCreated Training [not null]
   exerciseReferencesCreated ExerciseReference [not null]
@@ -27,7 +26,6 @@ Table Training {
   trainingGroups TrainingGroup [not null]
   user User [not null]
   userId String [not null]
-  activatedAtUser User [not null]
   tempo Tempo [not null]
   daysInWeek Int [not null]
   done Boolean [not null, default: false]
@@ -133,8 +131,6 @@ Enum Group {
   COMPLEX
   SHOULDERS
 }
-
-Ref: User.activeTrainingId - Training.id
 
 Ref: Training.userId > User.id
 

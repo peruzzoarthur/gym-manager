@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateTrainingDto } from "./dto/create-training.dto";
 import { UpdateTrainingDto } from "./dto/update-training.dto";
 import { PrismaService } from "src/prisma.service";
@@ -157,7 +157,6 @@ export class TrainingsService {
       },
       select: {
         id: true,
-        activatedAtUser: true,
         daysInWeek: true,
         done: true,
         reps: true,
@@ -184,8 +183,24 @@ export class TrainingsService {
       },
     });
 
+    if (!training) {
+      throw new HttpException("Training not found", HttpStatus.NOT_FOUND);
+    }
+
+    const usersWithActiveTraining = await this.prisma.user.findMany({
+      where: {
+        activeTrainingId: id,
+      },
+    });
+
+    if (usersWithActiveTraining.length > 0) {
+      throw new HttpException(
+        "One or more users have this training activated",
+        HttpStatus.CONFLICT
+      );
+    }
+
     const trainingGroups = training.trainingGroups;
-    console.log(trainingGroups.length);
     if (trainingGroups) {
       const promises = trainingGroups.map(async (tg) => {
         const deletedTg = await this.trainingGroupsService.remove(tg.id);

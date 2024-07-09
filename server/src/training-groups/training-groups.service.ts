@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateTrainingGroupDto } from "./dto/create-training-group.dto";
 import { UpdateTrainingGroupDto } from "./dto/update-training-group.dto";
 import { PrismaService } from "src/prisma.service";
@@ -27,7 +27,7 @@ export class TrainingGroupsService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.trainingGroup.findUniqueOrThrow({
+    const trainingGroup = await this.prisma.trainingGroup.findUnique({
       where: {
         id: id,
       },
@@ -47,9 +47,17 @@ export class TrainingGroupsService {
             ref: true,
             load: true,
           },
+          orderBy: {
+            index: "asc",
+          },
         },
       },
     });
+
+    if (!trainingGroup) {
+      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+    }
+    return trainingGroup;
   }
 
   async findByTrainingWithKey(

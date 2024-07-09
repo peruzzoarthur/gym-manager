@@ -169,6 +169,48 @@ export const AddExercisesCard = ({
         }
     }
 
+    const addCombinedExerciseToTrainingGroupsWithSameKey = async (input: {
+        refIds: string[] | undefined
+        trainingGroupId: string | undefined
+    }) => {
+        try {
+            const requestBody = {
+                reps: training?.reps,
+                sets: training?.sets,
+                refIds: input.refIds,
+                trainingGroupId: input.trainingGroupId,
+            }
+
+            const data: AxiosResponse<TrainingGroup> = await axiosInstance.post(
+                '/combined-exercises/create-to-all-with-same-key/',
+                requestBody
+            )
+            await refetchTrainingGroup()
+            toast({
+                title: 'Success! 🙌',
+                description: `Added combined exercise to all ${data.data.key}`,
+            })
+            return data
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<ErrorResponse>
+                if (
+                    axiosError.response &&
+                    (axiosError.response.status === 400 || 409)
+                ) {
+                    setError(true)
+                    setErrorMessage(axiosError.response.data.message)
+                } else {
+                    setError(true)
+                    setErrorMessage('Error adding combinedExercise')
+                }
+            } else {
+                setError(true)
+                setErrorMessage('Error adding combinedExercise')
+            }
+        }
+    }
+
     const { allExerciseReferences } = useGetAllExerciseReferences()
 
     const addCombinedId = (id: string) => {
@@ -203,7 +245,7 @@ export const AddExercisesCard = ({
                     </div>
                     <CardDescription>{`Manage exercises related to the selected training`}</CardDescription>
                     <CardContent className="grid space-y-2 sm:grid-cols-2 justify-items-center">
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center ">
                             <ExerciseComboBox
                                 selectedExercise={selectedExercise}
                                 setSelectedExercise={setSelectedExercise}
@@ -265,6 +307,19 @@ export const AddExercisesCard = ({
                                     }
                                 >
                                     Add to this group
+                                </Button>
+                                <Button
+                                    onClick={async () =>
+                                        addCombinedExerciseToTrainingGroupsWithSameKey(
+                                            {
+                                                refIds: combinedIds,
+                                                trainingGroupId:
+                                                    trainingGroup?.id,
+                                            }
+                                        )
+                                    }
+                                >
+                                    {`Add to all [${trainingGroup?.key}]`}
                                 </Button>
                             </div>
                         )}

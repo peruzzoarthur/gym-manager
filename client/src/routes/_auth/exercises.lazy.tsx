@@ -30,10 +30,10 @@ function Exercises() {
             creator: `${e.createdBy.firstName} ${e.createdBy.lastName}`,
             createdAt: new Date(e.createdAt).toLocaleDateString(),
             name: e.name ?? '',
+            groups: e.groups,
         }
     })
 
-    console.log(exerciseReferencesTableData)
     return (
         <div className="flex flex-col mt-2 space-y-2">
             <div className="flex flex-row justify-center gap-2 pb-2">

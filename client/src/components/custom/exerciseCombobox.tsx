@@ -41,7 +41,7 @@ export function ExerciseComboBox({
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
-                        className="w-[150px] justify-start"
+                        className="w-[200px] justify-start"
                     >
                         {selectedExercise ? (
                             <>{selectedExercise.name}</>
@@ -64,7 +64,7 @@ export function ExerciseComboBox({
     return (
         <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>
-                <Button variant="outline" className="w-[150px] justify-start">
+                <Button variant="outline" className="w-[200px] justify-start">
                     {selectedExercise ? (
                         <>{selectedExercise.name}</>
                     ) : (

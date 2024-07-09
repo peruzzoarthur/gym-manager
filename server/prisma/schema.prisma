@@ -16,6 +16,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id                        String              @id @default(uuid())
   firstName                 String?
@@ -28,25 +33,20 @@ model User {
   role                      Role                @default(USER)
   hashedRt                  String?
   profileImage              String?
-  trainings                 Training[]
-  activeTraining            Training?           @relation("ActiveTraining", references: [id], fields: [activeTrainingId])
+  trainings                 Training[]          @relation("UserTrainings")
+  // activeTraining            Training?           @relation("ActiveTraining", references: [id], fields: [activeTrainingId])
   activeTrainingId          String?
   trainingsCreated          Training[]          @relation("TrainingCreator")
   exerciseReferencesCreated ExerciseReference[] @relation("ExerciseReferenceCreator")
-}
-
-enum Role {
-  USER
-  ADMIN
 }
 
 model Training {
   id              String          @id @default(uuid())
   name            String?
   trainingGroups  TrainingGroup[]
-  user            User            @relation(fields: [userId], references: [id])
+  user            User            @relation("UserTrainings", fields: [userId], references: [id])
   userId          String
-  activatedAtUser User[]          @relation("ActiveTraining")
+  // activatedAtUser User?           @relation("ActiveTraining")
   tempo           Tempo
   daysInWeek      Int
   done            Boolean         @default(false)

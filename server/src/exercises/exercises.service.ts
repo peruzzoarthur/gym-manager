@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateExerciseDto } from "./dto/create-exercise.dto";
 import { UpdateExerciseDto } from "./dto/update-exercise.dto";
 import { PrismaService } from "src/prisma.service";
@@ -139,6 +139,29 @@ export class ExercisesService {
   }
 
   async remove(id: string) {
+    const exercise = await this.prisma.exercise.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        combinedExercises: true,
+      },
+    });
+    if (!exercise) {
+      throw new HttpException("Exercise not found", HttpStatus.NOT_FOUND);
+    }
+
+    const combinedExercises = exercise.combinedExercises;
+    if (combinedExercises.length >= 1) {
+      for (let i = 0; i < combinedExercises.length; i++) {
+        console.log("removing combin3d");
+        await this.prisma.combinedExercise.delete({
+          where: {
+            id: combinedExercises[i].id,
+          },
+        });
+      }
+    }
+
     return await this.prisma.exercise.delete({ where: { id: id } });
   }
 }

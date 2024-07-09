@@ -13,7 +13,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    // DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -26,7 +25,6 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import React from 'react'
-// import { axiosInstance } from '@/axiosInstance'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
 import { TrainingGroupTableProps } from './trainingGroupTableColumns'
