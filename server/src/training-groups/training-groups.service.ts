@@ -36,6 +36,8 @@ export class TrainingGroupsService {
         key: true,
         done: true,
         doneAt: true,
+        active: true,
+        activeAt: true,
         groups: true,
         phase: true,
         exercises: {
@@ -73,6 +75,8 @@ export class TrainingGroupsService {
         key: true,
         done: true,
         doneAt: true,
+        active: true,
+        activeAt: true,
         groups: true,
         phase: true,
         exercises: {
@@ -97,6 +101,28 @@ export class TrainingGroupsService {
     return await this.prisma.trainingGroup.update({
       where: { id: id },
       data: { done: true, doneAt: new Date(Date.now()) },
+    });
+  }
+
+  async updateDoneDate(id: string, date: Date) {
+    const tg = await this.prisma.trainingGroup.findUnique({
+      where: { id: id },
+    });
+    if (!tg) {
+      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+    }
+    if (tg.done) {
+      return await this.prisma.trainingGroup.update({
+        where: { id: tg.id },
+        data: { doneAt: date },
+      });
+    }
+  }
+
+  async setActive(id: string) {
+    return await this.prisma.trainingGroup.update({
+      where: { id: id },
+      data: { active: true, activeAt: new Date(Date.now()) },
     });
   }
 

@@ -72,6 +72,8 @@ model TrainingGroup {
   trainingId        String
   phase             Phase
   number            Int
+  active            Boolean            @default(false)
+  activeAt          DateTime?
 
   @@unique([key, trainingId, phase, number])
 }

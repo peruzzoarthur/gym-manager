@@ -52,6 +52,22 @@ export class TrainingGroupsController {
     return this.trainingGroupsService.setDone(id);
   }
 
+  @Patch("update-done/:id")
+  updateDoneDate(
+    @Param("id") id: string,
+    @Body() updateTrainingGroupDto: UpdateTrainingGroupDto
+  ) {
+    return this.trainingGroupsService.updateDoneDate(
+      id,
+      updateTrainingGroupDto.date
+    );
+  }
+
+  @Patch("set-active/:id")
+  setActive(@Param("id") id: string) {
+    return this.trainingGroupsService.setActive(id);
+  }
+
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.trainingGroupsService.remove(id);

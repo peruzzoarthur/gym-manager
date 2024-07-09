@@ -51,6 +51,8 @@ Table TrainingGroup {
   trainingId String [not null]
   phase Phase [not null]
   number Int [not null]
+  active Boolean [not null, default: false]
+  activeAt DateTime
 
   indexes {
     (key, trainingId, phase, number) [unique]
