@@ -28,6 +28,7 @@ function Trainings() {
                 user: `${t.user.firstName} ${t.user.lastName}`,
                 createdAt: new Date(t.createdAt).toLocaleDateString(),
                 name: t.name ?? '',
+                creatorId: t.createdBy.id,
             }
         })
 

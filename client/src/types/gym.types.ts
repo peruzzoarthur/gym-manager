@@ -77,6 +77,8 @@ export type TrainingGroup = {
     trainingId: string
     phase: Phase
     number: number
+    active: boolean
+    activeAt?: Date | null
 }
 
 export type Exercise = {

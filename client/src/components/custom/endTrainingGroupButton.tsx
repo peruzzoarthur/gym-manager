@@ -7,6 +7,7 @@ import { ErrorAlert } from './errorAlert'
 import { useToast } from '../ui/use-toast'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
+import { Calendar } from '../ui/calendar'
 
 type EndTrainingGroupButtonProps = {
     refetchTrainingGroup: (
@@ -25,6 +26,8 @@ export const EndTrainingGroupButton = ({
     const [isError, setError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const { toast } = useToast()
+    const [openCalendar, setOpenCalendar] = useState<boolean>(false)
+    const [date, setDate] = useState<Date | undefined>(new Date())
 
     const setTrainingGroupDone = async (id: string) => {
         try {
@@ -42,7 +45,7 @@ export const EndTrainingGroupButton = ({
                 const axiosError = error as AxiosError<ErrorResponse>
                 if (
                     axiosError.response &&
-                    (axiosError.response.status === 400 || 409)
+                    (axiosError.response.status === 400 || 404 || 409)
                 ) {
                     setError(true)
                     setErrorMessage(axiosError.response.data.message)
@@ -56,20 +59,178 @@ export const EndTrainingGroupButton = ({
             }
         }
     }
+
+    const updateDoneDate = async (id: string, date: Date | undefined) => {
+        try {
+            const requestBody = {
+                date: date,
+            }
+
+            const data: AxiosResponse<TrainingGroup> =
+                await axiosInstance.patch(
+                    `/training-groups/update-done/${id}`,
+                    requestBody
+                )
+            await refetchTrainingGroup()
+            await refetchTrainingById()
+            toast({
+                title: 'Training date updated 🏋️‍♀️🏋️‍♂️',
+                // description: `Focus!`,
+            })
+            return data
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<ErrorResponse>
+                if (
+                    axiosError.response &&
+                    (axiosError.response.status === 400 || 404 || 409)
+                ) {
+                    setError(true)
+                    setErrorMessage(axiosError.response.data.message)
+                } else {
+                    setError(true)
+                    setErrorMessage('Error updating training')
+                }
+            } else {
+                setError(true)
+                setErrorMessage('Error updating training')
+            }
+        }
+    }
+
+    const setTrainingGroupActive = async (id: string) => {
+        try {
+            const data: AxiosResponse<TrainingGroup> =
+                await axiosInstance.patch(`/training-groups/set-active/${id}`)
+            await refetchTrainingGroup()
+            await refetchTrainingById()
+            toast({
+                title: "Let's go 🏋️‍♀️🏋️‍♂️",
+                description: `Focus!`,
+            })
+            return data
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<ErrorResponse>
+                if (
+                    axiosError.response &&
+                    (axiosError.response.status === 400 || 404 || 409)
+                ) {
+                    setError(true)
+                    setErrorMessage(axiosError.response.data.message)
+                } else {
+                    setError(true)
+                    setErrorMessage('Error starting training')
+                }
+            } else {
+                setError(true)
+                setErrorMessage('Error starting training')
+            }
+        }
+    }
+
     return (
         <>
             {trainingGroup && !trainingGroup.done && (
-                <Button
-                    onClick={async () => setTrainingGroupDone(trainingGroup.id)}
-                >
-                    Finish
-                </Button>
+                <>
+                    {trainingGroup.active ? (
+                        <Button
+                            onClick={async () =>
+                                setTrainingGroupDone(trainingGroup.id)
+                            }
+                        >
+                            Finish
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={async () =>
+                                setTrainingGroupActive(trainingGroup.id)
+                            }
+                        >
+                            Activate
+                        </Button>
+                    )}
+                </>
             )}
-            {trainingGroup && trainingGroup.done && trainingGroup.doneAt && (
-                <Badge>
-                    {new Date(trainingGroup.doneAt).toLocaleDateString()}
-                </Badge>
-            )}
+            {trainingGroup &&
+                trainingGroup.done &&
+                trainingGroup.doneAt &&
+                trainingGroup.activeAt && (
+                    <>
+                        {openCalendar ? (
+                            <div className="flex flex-col items-center">
+                                <div className="grid items-center grid-cols-2 gap-2">
+                                    <Badge
+                                        className="cursor-pointer"
+                                        variant="secondary"
+                                        onClick={() =>
+                                            setOpenCalendar(
+                                                (prevState) => !prevState
+                                            )
+                                        }
+                                    >
+                                        {new Date(
+                                            trainingGroup.doneAt
+                                        ).toLocaleDateString()}
+                                    </Badge>
+                                    <Button
+                                        onClick={async () =>
+                                            updateDoneDate(
+                                                trainingGroup.id,
+                                                date
+                                            )
+                                        }
+                                        className="h-6"
+                                        variant="secondary"
+                                    >
+                                        Update
+                                    </Button>
+                                </div>
+                                <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    className="border rounded-md shadow"
+                                />
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 gap-2">
+                                <Badge
+                                    variant="secondary"
+                                    className="cursor-pointer"
+                                    onClick={() =>
+                                        setOpenCalendar(
+                                            (prevState) => !prevState
+                                        )
+                                    }
+                                >
+                                    {new Date(
+                                        trainingGroup.doneAt
+                                    ).toLocaleDateString()}
+                                </Badge>
+                                <Badge
+                                    variant="secondary"
+                                    className="cursor-pointer"
+                                    onClick={() =>
+                                        setOpenCalendar(
+                                            (prevState) => !prevState
+                                        )
+                                    }
+                                >
+                                    {`${Math.round(
+                                        (new Date(
+                                            trainingGroup.doneAt
+                                        ).getTime() -
+                                            new Date(
+                                                trainingGroup.activeAt
+                                            ).getTime()) /
+                                            60000
+                                    )}'`}
+                                </Badge>
+                            </div>
+                        )}
+                    </>
+                )}
             {isError && (
                 <div onClick={async () => setError(false)} className="mt-4">
                     <ErrorAlert message={errorMessage} />

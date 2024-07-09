@@ -9,6 +9,7 @@ export type TrainingsTableProps = {
     name: string
     createdAt: string
     creator: string
+    creatorId: string
     user: string
     userId: string
 }
@@ -79,7 +80,7 @@ export const trainingsTableColumns: ColumnDef<TrainingsTableProps>[] = [
         },
         cell: ({ row }) => {
             return (
-                <Link to="/users/$id" params={{ id: row.original.userId }}>
+                <Link to="/users/$id" params={{ id: row.original.creatorId }}>
                     <div className="text-xs font-medium text-right sm:text-sm">
                         {row.getValue('creator')}
                     </div>
