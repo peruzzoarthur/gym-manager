@@ -8,6 +8,7 @@ import { useToast } from '../ui/use-toast'
 import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { Calendar } from '../ui/calendar'
+import { TrainingTimer } from './trainingTimer'
 
 type EndTrainingGroupButtonProps = {
     refetchTrainingGroup: (
@@ -133,14 +134,21 @@ export const EndTrainingGroupButton = ({
         <>
             {trainingGroup && !trainingGroup.done && (
                 <>
-                    {trainingGroup.active ? (
-                        <Button
-                            onClick={async () =>
-                                setTrainingGroupDone(trainingGroup.id)
-                            }
-                        >
-                            Finish
-                        </Button>
+                    {trainingGroup.active && trainingGroup.activeAt ? (
+                        <div className="grid grid-cols-2 gap-2">
+                            <TrainingTimer
+                                startTime={new Date(
+                                    trainingGroup.activeAt
+                                ).getTime()}
+                            />
+                            <Button
+                                onClick={async () =>
+                                    setTrainingGroupDone(trainingGroup.id)
+                                }
+                            >
+                                Finish
+                            </Button>
+                        </div>
                     ) : (
                         <Button
                             onClick={async () =>

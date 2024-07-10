@@ -263,7 +263,7 @@ export const AddExercisesCard = ({
                         </div>
                     </div>
                     <CardDescription>
-                        {`Manage exercises related to the selected training`}{' '}
+                        {`Manage exercises related to the selected training`}
                         <MuscleGroupsStateCard
                             backOn={backOn}
                             chestOn={chestOn}
