@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGroupsByTrainingWithKey'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { CalendarDays, CheckCircle2, Circle, Dumbbell, X } from 'lucide-react'
+import { CalendarDays, Dumbbell, X } from 'lucide-react'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ErrorResponse, User as UserType } from '@/types/gym.types'
 import { ErrorBox } from '@/components/custom/errorBox'
@@ -28,6 +28,8 @@ import { TrainingGroupsProgress } from '@/components/custom/trainingGroupsProgre
 import { twMerge } from 'tailwind-merge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
+import { TrainingGroupKeysCard } from '@/components/custom/trainingGroupKeysCard'
+import { TrainingGroupsWPhasesCard } from '@/components/custom/trainingGroupsWPhasesCard'
 
 export const Route = createFileRoute('/_auth/users/$id')({
     component: User,
@@ -143,10 +145,6 @@ function User() {
         }
     }
 
-    const totalTrainingsGroupsDone = trainingById?.trainingGroups.filter(
-        (tg) => tg.done === true
-    ).length
-
     return (
         <div className="flex flex-col justify-center w-full p-2 space-y-2 sm:w-11/12">
             {user && (
@@ -202,74 +200,22 @@ function User() {
                 <div className="flex flex-col items-center justify-center w-full space-y-2">
                     {trainingById && user && (
                         <div className="grid gap-2 sm:grid-cols-2">
-                            <Card
-                                className={twMerge(
-                                    'flex items-center gap-1 p-2',
-                                    totalTrainingsGroupsDone === 0
-                                        ? 'col-span-2'
-                                        : ''
-                                )}
-                            >
-                                {trainingGroupsKeys.map((key) => {
-                                    if (key === selectedTrainingGroupsKey) {
-                                        return (
-                                            <Badge
-                                                className="ml-1 cursor-pointer"
-                                                variant="default"
-                                                onClick={() => {
-                                                    setSelectedTrainingGroupsKey(
-                                                        key
-                                                    )
-                                                }}
-                                                key={key}
-                                            >
-                                                {key}
-                                            </Badge>
-                                        )
-                                    } else {
-                                        return (
-                                            <Badge
-                                                className="ml-1 cursor-pointer"
-                                                variant="outline"
-                                                onClick={() => {
-                                                    setSelectedTrainingGroupsKey(
-                                                        key
-                                                    )
-                                                    setSelectedTrainingGroup(
-                                                        null
-                                                    )
-                                                }}
-                                                key={key}
-                                            >
-                                                {key}
-                                            </Badge>
-                                        )
-                                    }
-                                })}
-                                {user.activeTrainingId === trainingById.id ? (
-                                    <CheckCircle2
-                                        className="ml-2 cursor-pointer"
-                                        onClick={async () =>
-                                            handleActiveTraining(
-                                                user.id,
-                                                trainingById.id,
-                                                'deactivate'
-                                            )
-                                        }
-                                    />
-                                ) : (
-                                    <Circle
-                                        className="ml-2 cursor-pointer"
-                                        onClick={async () =>
-                                            handleActiveTraining(
-                                                user.id,
-                                                trainingById.id,
-                                                'activate'
-                                            )
-                                        }
-                                    />
-                                )}
-                            </Card>
+                            <TrainingGroupKeysCard
+                                handleActiveTraining={handleActiveTraining}
+                                selectedTrainingGroupsKey={
+                                    selectedTrainingGroupsKey
+                                }
+                                setSelectedTrainingGroup={
+                                    setSelectedTrainingGroup
+                                }
+                                setSelectedTrainingGroupsKey={
+                                    setSelectedTrainingGroupsKey
+                                }
+                                trainingById={trainingById}
+                                trainingGroupsKeys={trainingGroupsKeys}
+                                user={user}
+                                showExercisesCard={showExercisesCard}
+                            />
                             <TrainingGroupsProgress
                                 trainingById={trainingById}
                             />
@@ -277,95 +223,113 @@ function User() {
                     )}
                     <div className="grid gap-2 sm:gap-4 md:grid-cols-2">
                         {trainingGroupsByKey &&
-                            selectedTrainingGroupsKey !== 'all' && (
-                                <Card
-                                    className={twMerge(
-                                        'grid grid-cols-2 gap-4 p-2',
+                            selectedTraining &&
+                            trainingById &&
+                            selectedTrainingGroupsKey !== null && (
+                                // <Card
+                                //     className={twMerge(
+                                //         'grid grid-cols-2 gap-4 p-2',
+                                //         selectedTrainingGroup
+                                //             ? ''
+                                //             : 'col-span-2'
+                                //     )}
+                                // >
+                                //     <div className="grid grid-cols-3 space-y-0.5">
+                                //         {trainingGroupsByKey.map((tg) => {
+                                //             if (
+                                //                 tg.id === selectedTrainingGroup
+                                //             ) {
+                                //                 return (
+                                //                     <Badge
+                                //                         className="justify-center ml-1 cursor-pointer "
+                                //                         variant="default"
+                                //                         onClick={() =>
+                                //                             setSelectedTrainingGroup(
+                                //                                 tg.id
+                                //                             )
+                                //                         }
+                                //                         key={tg.id}
+                                //                     >
+                                //                         {tg.phase}
+                                //                     </Badge>
+                                //                 )
+                                //             } else {
+                                //                 if (tg.done) {
+                                //                     return (
+                                //                         <Badge
+                                //                             className="justify-center ml-1 cursor-pointer "
+                                //                             variant="secondary"
+                                //                             onClick={() =>
+                                //                                 setSelectedTrainingGroup(
+                                //                                     tg.id
+                                //                                 )
+                                //                             }
+                                //                             key={tg.id}
+                                //                         >
+                                //                             {tg.phase}
+                                //                         </Badge>
+                                //                     )
+                                //                 }
+                                //                 if (!tg.done) {
+                                //                     return (
+                                //                         <Badge
+                                //                             className="justify-center ml-1 cursor-pointer "
+                                //                             variant="outline"
+                                //                             onClick={() =>
+                                //                                 setSelectedTrainingGroup(
+                                //                                     tg.id
+                                //                                 )
+                                //                             }
+                                //                             key={tg.id}
+                                //                         >
+                                //                             {tg.phase}
+                                //                         </Badge>
+                                //                     )
+                                //                 }
+                                //             }
+                                //         })}
+                                //     </div>
+                                //     <div className="flex flex-col items-center pt-4 space-y-4 ">
+                                //         <div className="flex items-center space-x-2">
+                                //             {showAllTrainingGroups ? (
+                                //                 <Label>Show all</Label>
+                                //             ) : (
+                                //                 <Label>Unfinished</Label>
+                                //             )}
+                                //             <Switch
+                                //                 checked={showAllTrainingGroups}
+                                //                 onCheckedChange={() =>
+                                //                     setShowAllTrainingGroups(
+                                //                         (prevState) =>
+                                //                             !prevState
+                                //                     )
+                                //                 }
+                                //             />
+                                //         </div>
+                                //         {trainingById && (
+                                //             <>
+                                //                 <Badge variant="secondary">{`Rest[${trainingById?.rest}]`}</Badge>
+                                //                 <Badge variant="secondary">{`Tempo[${trainingById?.tempo}]`}</Badge>
+                                //             </>
+                                //         )}
+                                //     </div>
+                                // </Card>
+                                <TrainingGroupsWPhasesCard
+                                    selectedTrainingGroup={
                                         selectedTrainingGroup
-                                            ? ''
-                                            : 'col-span-2'
-                                    )}
-                                >
-                                    <div className="grid grid-cols-3 space-y-0.5">
-                                        {trainingGroupsByKey.map((tg) => {
-                                            if (
-                                                tg.id === selectedTrainingGroup
-                                            ) {
-                                                return (
-                                                    <Badge
-                                                        className="justify-center ml-1 cursor-pointer "
-                                                        variant="default"
-                                                        onClick={() =>
-                                                            setSelectedTrainingGroup(
-                                                                tg.id
-                                                            )
-                                                        }
-                                                        key={tg.id}
-                                                    >
-                                                        {tg.phase}
-                                                    </Badge>
-                                                )
-                                            } else {
-                                                if (tg.done) {
-                                                    return (
-                                                        <Badge
-                                                            className="justify-center ml-1 cursor-pointer "
-                                                            variant="secondary"
-                                                            onClick={() =>
-                                                                setSelectedTrainingGroup(
-                                                                    tg.id
-                                                                )
-                                                            }
-                                                            key={tg.id}
-                                                        >
-                                                            {tg.phase}
-                                                        </Badge>
-                                                    )
-                                                }
-                                                if (!tg.done) {
-                                                    return (
-                                                        <Badge
-                                                            className="justify-center ml-1 cursor-pointer "
-                                                            variant="outline"
-                                                            onClick={() =>
-                                                                setSelectedTrainingGroup(
-                                                                    tg.id
-                                                                )
-                                                            }
-                                                            key={tg.id}
-                                                        >
-                                                            {tg.phase}
-                                                        </Badge>
-                                                    )
-                                                }
-                                            }
-                                        })}
-                                    </div>
-                                    <div className="flex flex-col items-center pt-4 space-y-4 ">
-                                        <div className="flex items-center space-x-2">
-                                            {showAllTrainingGroups ? (
-                                                <Label>Show all</Label>
-                                            ) : (
-                                                <Label>Unfinished</Label>
-                                            )}
-                                            <Switch
-                                                checked={showAllTrainingGroups}
-                                                onCheckedChange={() =>
-                                                    setShowAllTrainingGroups(
-                                                        (prevState) =>
-                                                            !prevState
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                        {trainingById && (
-                                            <>
-                                                <Badge variant="secondary">{`Rest[${trainingById?.rest}]`}</Badge>
-                                                <Badge variant="secondary">{`Tempo[${trainingById?.tempo}]`}</Badge>
-                                            </>
-                                        )}
-                                    </div>
-                                </Card>
+                                    }
+                                    setSelectedTrainingGroup={
+                                        setSelectedTrainingGroup
+                                    }
+                                    setShowAllTrainingGroups={
+                                        setShowAllTrainingGroups
+                                    }
+                                    showAllTrainingGroups={
+                                        showAllTrainingGroups
+                                    }
+                                    trainingById={trainingById}
+                                    trainingGroupsByKey={trainingGroupsByKey}
+                                />
                             )}
                         {selectedTrainingGroup &&
                         trainingById &&

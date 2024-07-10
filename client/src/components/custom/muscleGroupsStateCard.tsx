@@ -59,7 +59,7 @@ export const MuscleGroupsStateCard = ({
     setCalvesOn,
 }: MuscleGroupsStateSelectProps) => {
     return (
-        <Card className="grid grid-cols-4 gap-1 p-2 sm:grid-cols-5">
+        <Card className="grid grid-cols-4 gap-1 p-2 sm:grid-cols-5 md:grid-cols-4">
             <MuscleGroupButton
                 isActive={chestOn}
                 toggle={() => setChestOn((prev) => !prev)}
