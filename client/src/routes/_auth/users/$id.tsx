@@ -2,17 +2,13 @@ import {
     TrainingGroupTableProps,
     trainingGroupTableColumns,
 } from '@/components/custom/trainingGroupTable/trainingGroupTableColumns'
-import { Card } from '@/components/ui/card'
 import { useGetTrainingsByUserId } from '@/hooks/useGetTrainingsByUserId'
 import { useGetUserByUserId } from '@/hooks/useGetUserByUserId'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { useGetTrainingById } from '@/hooks/useGetTrainingById'
 import { useGetTrainingGroup } from '@/hooks/useGetTrainingGroup'
-import { Badge } from '@/components/ui/badge'
 import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGroupsByTrainingWithKey'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
 import { CalendarDays, Dumbbell, X } from 'lucide-react'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ErrorResponse, User as UserType } from '@/types/gym.types'
@@ -25,7 +21,6 @@ import { EndTrainingGroupButton } from '@/components/custom/endTrainingGroupButt
 import { ProfileHeaderCard } from '@/components/custom/profileHeaderCard'
 import { SelectUserTrainings } from '@/components/custom/selectUserTrainings'
 import { TrainingGroupsProgress } from '@/components/custom/trainingGroupsProgress'
-import { twMerge } from 'tailwind-merge'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { TrainingGroupKeysCard } from '@/components/custom/trainingGroupKeysCard'
@@ -226,94 +221,6 @@ function User() {
                             selectedTraining &&
                             trainingById &&
                             selectedTrainingGroupsKey !== null && (
-                                // <Card
-                                //     className={twMerge(
-                                //         'grid grid-cols-2 gap-4 p-2',
-                                //         selectedTrainingGroup
-                                //             ? ''
-                                //             : 'col-span-2'
-                                //     )}
-                                // >
-                                //     <div className="grid grid-cols-3 space-y-0.5">
-                                //         {trainingGroupsByKey.map((tg) => {
-                                //             if (
-                                //                 tg.id === selectedTrainingGroup
-                                //             ) {
-                                //                 return (
-                                //                     <Badge
-                                //                         className="justify-center ml-1 cursor-pointer "
-                                //                         variant="default"
-                                //                         onClick={() =>
-                                //                             setSelectedTrainingGroup(
-                                //                                 tg.id
-                                //                             )
-                                //                         }
-                                //                         key={tg.id}
-                                //                     >
-                                //                         {tg.phase}
-                                //                     </Badge>
-                                //                 )
-                                //             } else {
-                                //                 if (tg.done) {
-                                //                     return (
-                                //                         <Badge
-                                //                             className="justify-center ml-1 cursor-pointer "
-                                //                             variant="secondary"
-                                //                             onClick={() =>
-                                //                                 setSelectedTrainingGroup(
-                                //                                     tg.id
-                                //                                 )
-                                //                             }
-                                //                             key={tg.id}
-                                //                         >
-                                //                             {tg.phase}
-                                //                         </Badge>
-                                //                     )
-                                //                 }
-                                //                 if (!tg.done) {
-                                //                     return (
-                                //                         <Badge
-                                //                             className="justify-center ml-1 cursor-pointer "
-                                //                             variant="outline"
-                                //                             onClick={() =>
-                                //                                 setSelectedTrainingGroup(
-                                //                                     tg.id
-                                //                                 )
-                                //                             }
-                                //                             key={tg.id}
-                                //                         >
-                                //                             {tg.phase}
-                                //                         </Badge>
-                                //                     )
-                                //                 }
-                                //             }
-                                //         })}
-                                //     </div>
-                                //     <div className="flex flex-col items-center pt-4 space-y-4 ">
-                                //         <div className="flex items-center space-x-2">
-                                //             {showAllTrainingGroups ? (
-                                //                 <Label>Show all</Label>
-                                //             ) : (
-                                //                 <Label>Unfinished</Label>
-                                //             )}
-                                //             <Switch
-                                //                 checked={showAllTrainingGroups}
-                                //                 onCheckedChange={() =>
-                                //                     setShowAllTrainingGroups(
-                                //                         (prevState) =>
-                                //                             !prevState
-                                //                     )
-                                //                 }
-                                //             />
-                                //         </div>
-                                //         {trainingById && (
-                                //             <>
-                                //                 <Badge variant="secondary">{`Rest[${trainingById?.rest}]`}</Badge>
-                                //                 <Badge variant="secondary">{`Tempo[${trainingById?.tempo}]`}</Badge>
-                                //             </>
-                                //         )}
-                                //     </div>
-                                // </Card>
                                 <TrainingGroupsWPhasesCard
                                     selectedTrainingGroup={
                                         selectedTrainingGroup
