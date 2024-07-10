@@ -71,7 +71,7 @@ export type TrainingGroup = {
     exercises: Exercise[]
     combinedExercises: CombinedExercise[]
     done: boolean
-    doneAt?: Date | null
+    doneAt?: string | null
     groups: Group[]
     training: Training
     trainingId: string

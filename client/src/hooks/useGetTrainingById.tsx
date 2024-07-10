@@ -20,6 +20,26 @@ export const useGetTrainingById = (trainingByIdId: string | null) => {
         },
         enabled: !!trainingByIdId,
     })
+    let datesTrained: Date[] = []
+    if (trainingById) {
+        const datesTrainedStrings: string[] = trainingById.trainingGroups
+            .map((tg) => tg.doneAt)
+            .filter(
+                (doneAt): doneAt is string =>
+                    doneAt !== null && doneAt !== undefined
+            )
 
-    return { trainingById, isFetchingTrainingById, refetchTrainingById }
+        if (datesTrainedStrings) {
+            datesTrained = datesTrainedStrings.map((dt) => {
+                return new Date(dt)
+            })
+        }
+    }
+
+    return {
+        trainingById,
+        isFetchingTrainingById,
+        refetchTrainingById,
+        datesTrained,
+    }
 }

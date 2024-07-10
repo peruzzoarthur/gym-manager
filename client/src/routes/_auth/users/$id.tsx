@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGroupsByTrainingWithKey'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { CheckCircle2, Circle, Dumbbell } from 'lucide-react'
+import { CalendarDays, CheckCircle2, Circle, Dumbbell, X } from 'lucide-react'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { ErrorResponse, User as UserType } from '@/types/gym.types'
 import { ErrorBox } from '@/components/custom/errorBox'
@@ -27,6 +27,7 @@ import { SelectUserTrainings } from '@/components/custom/selectUserTrainings'
 import { TrainingGroupsProgress } from '@/components/custom/trainingGroupsProgress'
 import { twMerge } from 'tailwind-merge'
 import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 
 export const Route = createFileRoute('/_auth/users/$id')({
     component: User,
@@ -61,8 +62,8 @@ function User() {
     const [showAllTrainingGroups, setShowAllTrainingGroups] =
         useState<boolean>(true)
     const [showExercisesCard, setShowExercisesCard] = useState<boolean>(false)
-
-    const { trainingById, refetchTrainingById } =
+    const [calendarOn, setCalendarOn] = useState<boolean>(false)
+    const { trainingById, refetchTrainingById, datesTrained } =
         useGetTrainingById(selectedTraining)
     const trainingGroupsKeys = [
         ...new Set(trainingById?.trainingGroups.map((tg) => tg.key)),
@@ -149,7 +150,7 @@ function User() {
     return (
         <div className="flex flex-col justify-center w-full p-2 space-y-2 sm:w-11/12">
             {user && (
-                <header className="flex flex-col items-center justify-center w-full space-x-4 sm:gr">
+                <header className="flex flex-col items-center justify-center w-full space-x-4 sm:flex-row sm:gr">
                     <ProfileHeaderCard user={user} refetchUser={refetchUser}>
                         {userTrainings ? (
                             <SelectUserTrainings
@@ -157,11 +158,43 @@ function User() {
                                 user={user}
                                 userTrainings={userTrainings}
                                 activeTraining={activeTraining}
+                                selectedTrainingGroup={selectedTrainingGroup}
+                                setSelectedTrainingGroup={
+                                    setSelectedTrainingGroup
+                                }
                             />
                         ) : (
                             <p>No trainings</p>
                         )}
                     </ProfileHeaderCard>
+                    {calendarOn ? (
+                        datesTrained && (
+                            <div className="flex flex-col items-end p-2">
+                                <Button
+                                    className="w-12 h-12 hover:bg-background"
+                                    variant="ghost"
+                                    onClick={() => setCalendarOn(false)}
+                                >
+                                    <X />
+                                </Button>
+                                <Calendar
+                                    mode="multiple"
+                                    selected={datesTrained}
+                                    className="border rounded-md shadow"
+                                />
+                            </div>
+                        )
+                    ) : (
+                        <div className="flex items-center justify-center p-2">
+                            <Button
+                                className="w-12 h-12 rounded-full"
+                                variant="outline"
+                                onClick={() => setCalendarOn(true)}
+                            >
+                                <CalendarDays />
+                            </Button>
+                        </div>
+                    )}
                 </header>
             )}
 
@@ -260,7 +293,7 @@ function User() {
                                             ) {
                                                 return (
                                                     <Badge
-                                                        className="justify-center ml-1 cursor-pointer"
+                                                        className="justify-center ml-1 cursor-pointer "
                                                         variant="default"
                                                         onClick={() =>
                                                             setSelectedTrainingGroup(
@@ -276,7 +309,7 @@ function User() {
                                                 if (tg.done) {
                                                     return (
                                                         <Badge
-                                                            className="justify-center ml-1 cursor-pointer"
+                                                            className="justify-center ml-1 cursor-pointer "
                                                             variant="secondary"
                                                             onClick={() =>
                                                                 setSelectedTrainingGroup(
@@ -292,7 +325,7 @@ function User() {
                                                 if (!tg.done) {
                                                     return (
                                                         <Badge
-                                                            className="justify-center ml-1 cursor-pointer"
+                                                            className="justify-center ml-1 cursor-pointer "
                                                             variant="outline"
                                                             onClick={() =>
                                                                 setSelectedTrainingGroup(

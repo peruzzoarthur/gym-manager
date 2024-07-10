@@ -254,7 +254,7 @@ export const AddExercisesCard = ({
                         <CardTitle>Exercises</CardTitle>
                         <div className="flex justify-end">
                             <Button
-                                className="w-12 h-12"
+                                className="w-12 h-12 hover:bg-background"
                                 variant="ghost"
                                 onClick={() => setShowExercisesCard(false)}
                             >
@@ -263,26 +263,26 @@ export const AddExercisesCard = ({
                         </div>
                     </div>
                     <CardDescription>
-                        {`Manage exercises related to the selected training`}
-                        <MuscleGroupsStateCard
-                            backOn={backOn}
-                            chestOn={chestOn}
-                            legsOn={legsOn}
-                            setBackOn={setBackOn}
-                            setChestOn={setChestOn}
-                            setLegsOn={setLegsOn}
-                            setShouldersOn={setShouldersOn}
-                            shouldersOn={shouldersOn}
-                            calvesOn={calvesOn}
-                            setCalvesOn={setCalvesOn}
-                            bicepsOn={bicepsOn}
-                            setBicepsOn={setBicepsOn}
-                            tricepsOn={tricepsOn}
-                            setTricepsOn={setTricepsOn}
-                            complexOn={complexOn}
-                            setComplexOn={setComplexOn}
-                        />
+                        Manage exercises related to the selected training
                     </CardDescription>
+                    <MuscleGroupsStateCard
+                        backOn={backOn}
+                        chestOn={chestOn}
+                        legsOn={legsOn}
+                        setBackOn={setBackOn}
+                        setChestOn={setChestOn}
+                        setLegsOn={setLegsOn}
+                        setShouldersOn={setShouldersOn}
+                        shouldersOn={shouldersOn}
+                        calvesOn={calvesOn}
+                        setCalvesOn={setCalvesOn}
+                        bicepsOn={bicepsOn}
+                        setBicepsOn={setBicepsOn}
+                        tricepsOn={tricepsOn}
+                        setTricepsOn={setTricepsOn}
+                        complexOn={complexOn}
+                        setComplexOn={setComplexOn}
+                    />
                     <CardContent className="grid space-y-2 sm:grid-cols-2 justify-items-center">
                         <div className="flex flex-col items-center ">
                             <ExerciseComboBox
@@ -291,25 +291,31 @@ export const AddExercisesCard = ({
                                 addCombinedId={addCombinedId}
                                 exerciseReferences={filteredExerciseReferences}
                             />
-                            <div className="grid grid-cols-2">
-                                {combinedIds.map((id) => {
-                                    return (
-                                        <Badge
-                                            onClick={() => removeCombinedId(id)}
-                                            variant="secondary"
-                                            key={id}
-                                            className="justify-center cursor-pointer w-auto p-4 h-6 text-center  ml-1 mt-2 mr-0.5"
-                                        >
-                                            {
-                                                allExerciseReferences?.filter(
-                                                    (e) => e.id === id
-                                                )[0].name
-                                            }
-                                        </Badge>
-                                        //! fix this later
-                                    )
-                                })}
-                            </div>
+                            {allExerciseReferences && (
+                                <div className="grid grid-cols-2">
+                                    {combinedIds.map((id) => {
+                                        const exercise =
+                                            allExerciseReferences.find(
+                                                (e) => e.id === id
+                                            )
+                                        const exerciseName =
+                                            exercise?.name || 'Unknown Exercise'
+
+                                        return (
+                                            <Badge
+                                                onClick={() =>
+                                                    removeCombinedId(id)
+                                                }
+                                                variant="secondary"
+                                                key={id}
+                                                className="justify-center cursor-pointer w-auto p-4 h-6 text-center  ml-1 mt-2 mr-0.5"
+                                            >
+                                                {exerciseName}
+                                            </Badge>
+                                        )
+                                    })}
+                                </div>
+                            )}
                         </div>
                         {combinedIds.length === 1 && (
                             <div className="flex flex-col space-y-1">

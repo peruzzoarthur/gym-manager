@@ -133,6 +133,7 @@ export class TrainingsService {
             id: true,
             key: true,
             done: true,
+            doneAt: true,
             groups: true,
             exercises: {
               select: {

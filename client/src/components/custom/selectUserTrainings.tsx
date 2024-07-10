@@ -14,6 +14,10 @@ type SelectUserTrainingsProps = {
     setSelectedTraining: React.Dispatch<React.SetStateAction<string | null>>
     userTrainings: Training[]
     activeTraining: Training | undefined
+    selectedTrainingGroup: string | null
+    setSelectedTrainingGroup: React.Dispatch<
+        React.SetStateAction<string | null>
+    >
 }
 
 export const SelectUserTrainings = ({
@@ -21,10 +25,17 @@ export const SelectUserTrainings = ({
     setSelectedTraining,
     userTrainings,
     activeTraining,
+    selectedTrainingGroup,
+    setSelectedTrainingGroup,
 }: SelectUserTrainingsProps) => {
     return (
         <Select
-            onValueChange={(value) => setSelectedTraining(value)}
+            onValueChange={(value) => {
+                setSelectedTraining(value)
+                if (selectedTrainingGroup) {
+                    setSelectedTrainingGroup(null)
+                }
+            }}
             defaultValue={
                 user.activeTraining ? user.activeTraining.id : undefined
             }
