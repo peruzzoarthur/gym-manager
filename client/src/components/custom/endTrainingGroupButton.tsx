@@ -9,6 +9,8 @@ import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import { Calendar } from '../ui/calendar'
 import { TrainingTimer } from './trainingTimer'
+import { Clock } from 'lucide-react'
+import { StopWatch } from './stopWatch'
 
 type EndTrainingGroupButtonProps = {
     refetchTrainingGroup: (
@@ -28,6 +30,8 @@ export const EndTrainingGroupButton = ({
     const [errorMessage, setErrorMessage] = useState<string | undefined>()
     const { toast } = useToast()
     const [openCalendar, setOpenCalendar] = useState<boolean>(false)
+    const [openStopWatch, setOpenStopWatch] = useState<boolean>(false)
+
     const [date, setDate] = useState<Date | undefined>(new Date())
 
     const setTrainingGroupDone = async (id: string) => {
@@ -148,6 +152,24 @@ export const EndTrainingGroupButton = ({
                             >
                                 Finish
                             </Button>
+                            <Button
+                                variant="ghost"
+                                className="flex items-center justify-center col-span-2 hover:bg-background"
+                            >
+                                <Clock
+                                    className="cursor-pointer"
+                                    onClick={() =>
+                                        setOpenStopWatch(
+                                            (prevState) => !prevState
+                                        )
+                                    }
+                                />
+                            </Button>
+                            {openStopWatch && (
+                                <div className="col-span-2">
+                                    <StopWatch running={false} startTime={0} />
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <Button
