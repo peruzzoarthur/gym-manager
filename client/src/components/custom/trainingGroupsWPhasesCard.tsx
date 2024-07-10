@@ -27,7 +27,7 @@ export const TrainingGroupsWPhasesCard = ({
     return (
         <Card
             className={twMerge(
-                'grid grid-cols-2 gap-4 p-2',
+                'flex justify-center items-center gap-4 p-2',
                 selectedTrainingGroup ? '' : 'col-span-2'
             )}
         >
