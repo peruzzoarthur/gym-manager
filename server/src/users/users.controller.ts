@@ -64,6 +64,15 @@ export class UsersController {
       await this.usersService.findOneByEmail(req.user.username)
     );
   }
+
+  @Get("active-training")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: UserEntity })
+  async getActiveTraining(@Request() req: JwtPayload) {
+    return await this.usersService.isUserTraining(req.user.username);
+  }
+
   @Get(":id")
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

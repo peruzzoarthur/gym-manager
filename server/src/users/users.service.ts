@@ -3,10 +3,14 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { PrismaService } from "src/prisma.service";
 import * as argon from "argon2";
+import { TrainingsService } from "src/trainings/trainings.service";
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private trainingsService: TrainingsService
+  ) {}
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await argon.hash(createUserDto.password);
 
@@ -131,5 +135,31 @@ export class UsersService {
 
   async remove(id: string) {
     return await this.prisma.user.delete({ where: { id: id } });
+  }
+
+  async isUserTraining(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { email: email },
+      select: { id: true, activeTrainingId: true },
+    });
+
+    if (!user) {
+      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+    }
+
+    if (!user.activeTrainingId) {
+      throw new HttpException(
+        "No training active for user",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    const training = await this.trainingsService.findOne(user.activeTrainingId);
+
+    const unfinishedTg = training.trainingGroups.filter(
+      (tg) => tg.done !== true
+    );
+
+    const activeTg = unfinishedTg.find((tg) => tg.active === true);
+    return activeTg;
   }
 }

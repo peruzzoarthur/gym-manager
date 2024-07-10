@@ -136,6 +136,9 @@ export class TrainingsService {
             done: true,
             doneAt: true,
             groups: true,
+            active: true,
+            phase: true,
+            activeAt: true,
             exercises: {
               select: {
                 index: true,
