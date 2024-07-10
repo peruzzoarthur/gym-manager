@@ -20,146 +20,86 @@ type MuscleGroupsStateSelectProps = {
     setCalvesOn: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+type MuscleGroupButtonProps = {
+    isActive: boolean
+    toggle: () => void
+    label: string
+}
+
+const MuscleGroupButton = ({
+    isActive,
+    toggle,
+    label,
+}: MuscleGroupButtonProps) => (
+    <Button
+        className="text-xs"
+        variant={isActive ? 'default' : 'outline'}
+        onClick={toggle}
+    >
+        {label}
+    </Button>
+)
+
 export const MuscleGroupsStateCard = ({
-    backOn,
     chestOn,
-    legsOn,
-    setBackOn,
     setChestOn,
+    backOn,
+    setBackOn,
+    legsOn,
     setLegsOn,
-    setShouldersOn,
     shouldersOn,
+    setShouldersOn,
     bicepsOn,
     setBicepsOn,
-    complexOn,
-    setComplexOn,
     tricepsOn,
     setTricepsOn,
+    complexOn,
+    setComplexOn,
     calvesOn,
     setCalvesOn,
 }: MuscleGroupsStateSelectProps) => {
     return (
-        <Card className="grid grid-cols-3 gap-1 p-2 sm:grid-cols-4">
-            {chestOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setChestOn((prevState) => !prevState)}
-                >
-                    CHEST
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setChestOn((prevState) => !prevState)}
-                >
-                    CHEST
-                </Button>
-            )}
-            {backOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setBackOn((prevState) => !prevState)}
-                >
-                    BACK
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setBackOn((prevState) => !prevState)}
-                >
-                    BACK
-                </Button>
-            )}
-            {shouldersOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setShouldersOn((prevState) => !prevState)}
-                >
-                    SHOULDERS
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setShouldersOn((prevState) => !prevState)}
-                >
-                    SHOULDERS
-                </Button>
-            )}
-            {legsOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setLegsOn((prevState) => !prevState)}
-                >
-                    LEGS
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setLegsOn((prevState) => !prevState)}
-                >
-                    LEGS
-                </Button>
-            )}
-            {calvesOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setCalvesOn((prevState) => !prevState)}
-                >
-                    CALVES
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setCalvesOn((prevState) => !prevState)}
-                >
-                    CALVES
-                </Button>
-            )}
-            {bicepsOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setBicepsOn((prevState) => !prevState)}
-                >
-                    BICEPS
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setBicepsOn((prevState) => !prevState)}
-                >
-                    BICEPS
-                </Button>
-            )}
-            {tricepsOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setTricepsOn((prevState) => !prevState)}
-                >
-                    TRICEPS
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setTricepsOn((prevState) => !prevState)}
-                >
-                    TRICEPS
-                </Button>
-            )}
-            {complexOn ? (
-                <Button
-                    variant="default"
-                    onClick={() => setComplexOn((prevState) => !prevState)}
-                >
-                    COMPLEX
-                </Button>
-            ) : (
-                <Button
-                    variant="outline"
-                    onClick={() => setComplexOn((prevState) => !prevState)}
-                >
-                    COMPLEX
-                </Button>
-            )}
+        <Card className="grid grid-cols-4 gap-1 p-2 sm:grid-cols-5">
+            <MuscleGroupButton
+                isActive={chestOn}
+                toggle={() => setChestOn((prev) => !prev)}
+                label="CHEST"
+            />
+            <MuscleGroupButton
+                isActive={backOn}
+                toggle={() => setBackOn((prev) => !prev)}
+                label="BACK"
+            />
+            <MuscleGroupButton
+                isActive={shouldersOn}
+                toggle={() => setShouldersOn((prev) => !prev)}
+                label="SHOULDERS"
+            />
+            <MuscleGroupButton
+                isActive={legsOn}
+                toggle={() => setLegsOn((prev) => !prev)}
+                label="LEGS"
+            />
+            <MuscleGroupButton
+                isActive={calvesOn}
+                toggle={() => setCalvesOn((prev) => !prev)}
+                label="CALVES"
+            />
+            <MuscleGroupButton
+                isActive={bicepsOn}
+                toggle={() => setBicepsOn((prev) => !prev)}
+                label="BICEPS"
+            />
+            <MuscleGroupButton
+                isActive={tricepsOn}
+                toggle={() => setTricepsOn((prev) => !prev)}
+                label="TRICEPS"
+            />
+            <MuscleGroupButton
+                isActive={complexOn}
+                toggle={() => setComplexOn((prev) => !prev)}
+                label="COMPLEX"
+            />
         </Card>
     )
 }
