@@ -42,7 +42,7 @@ export const UserDropdown = () => {
                     size="icon"
                     className="w-12 h-12 overflow-hidden rounded-full"
                 >
-                    {user?.profileImage ? (
+                    {user.profileImage ? (
                         <img
                             src={user.profileImage}
                             alt="Avatar"

@@ -218,7 +218,6 @@ function User() {
                     )}
                     <div className="grid gap-2 sm:gap-4 md:grid-cols-2">
                         {trainingGroupsByKey &&
-                            selectedTraining &&
                             trainingById &&
                             selectedTrainingGroupsKey !== null && (
                                 <TrainingGroupsWPhasesCard

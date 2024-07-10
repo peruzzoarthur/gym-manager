@@ -120,10 +120,32 @@ export class TrainingGroupsService {
   }
 
   async setActive(id: string) {
-    return await this.prisma.trainingGroup.update({
+    const trainingGroup = await this.prisma.trainingGroup.findUnique({
       where: { id: id },
-      data: { active: true, activeAt: new Date(Date.now()) },
     });
+
+    if (!trainingGroup) {
+      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+    }
+    const trainingGroups = await this.prisma.trainingGroup.findMany({
+      where: { trainingId: trainingGroup.trainingId },
+    });
+
+    const unfinishedTg = trainingGroups.filter((tg) => tg.done !== true);
+
+    const activeTg = unfinishedTg.find((tg) => tg.active === true);
+
+    if (activeTg) {
+      throw new HttpException(
+        "Finish active training in order to start a new one",
+        HttpStatus.BAD_REQUEST
+      );
+    } else {
+      return await this.prisma.trainingGroup.update({
+        where: { id: id },
+        data: { active: true, activeAt: new Date(Date.now()) },
+      });
+    }
   }
 
   async remove(id: string) {

@@ -34,7 +34,6 @@ model User {
   hashedRt                  String?
   profileImage              String?
   trainings                 Training[]          @relation("UserTrainings")
-  // activeTraining            Training?           @relation("ActiveTraining", references: [id], fields: [activeTrainingId])
   activeTrainingId          String?
   trainingsCreated          Training[]          @relation("TrainingCreator")
   exerciseReferencesCreated ExerciseReference[] @relation("ExerciseReferenceCreator")

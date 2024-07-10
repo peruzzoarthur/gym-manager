@@ -1,5 +1,6 @@
 import { AddExercisesCard } from '@/components/custom/addExercisesCard'
 import { EndTrainingGroupButton } from '@/components/custom/endTrainingGroupButton'
+import { TrainingGroupKeysCard } from '@/components/custom/trainingGroupKeysCard'
 // import { ErrorBox } from '@/components/custom/errorBox'
 import { TrainingGroupTable } from '@/components/custom/trainingGroupTable/trainingGroupTable'
 import {
@@ -7,20 +8,16 @@ import {
     trainingGroupTableColumns,
 } from '@/components/custom/trainingGroupTable/trainingGroupTableColumns'
 import { TrainingGroupsProgress } from '@/components/custom/trainingGroupsProgress'
-import { Badge } from '@/components/ui/badge'
+import { TrainingGroupsWPhasesCard } from '@/components/custom/trainingGroupsWPhasesCard'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-// import { useToast } from '@/components/ui/use-toast'
+import { Card, CardDescription, CardTitle } from '@/components/ui/card'
 import { useGetTrainingById } from '@/hooks/useGetTrainingById'
 import { useGetTrainingGroup } from '@/hooks/useGetTrainingGroup'
 import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGroupsByTrainingWithKey'
 import { useGetUserByUserId } from '@/hooks/useGetUserByUserId'
 import { createFileRoute } from '@tanstack/react-router'
-import { CheckCircle2, Circle, Dumbbell } from 'lucide-react'
+import { Dumbbell } from 'lucide-react'
 import { useState } from 'react'
-import { twMerge } from 'tailwind-merge'
 
 export const Route = createFileRoute('/_auth/trainings/$id')({
     component: Training,
@@ -73,216 +70,113 @@ function Training() {
             }
         })
 
-    const totalTrainingsGroupsDone = trainingById?.trainingGroups.filter(
-        (tg) => tg.done === true
-    ).length
-
     return (
-        <main>
-            <div className="flex flex-col items-center justify-center w-full mt-2 space-y-2">
-                {trainingById && (
-                    <div className="grid gap-2 sm:grid-cols-2">
-                        <Card
-                            className={twMerge(
-                                'flex items-center gap-1 p-2',
-                                totalTrainingsGroupsDone === 0
-                                    ? 'col-span-2'
-                                    : ''
-                            )}
-                        >
-                            {trainingGroupsKeys.map((key) => {
-                                if (key === selectedTrainingGroupsKey) {
-                                    return (
-                                        <Badge
-                                            className="ml-1 cursor-pointer"
-                                            variant="default"
-                                            onClick={() => {
-                                                setSelectedTrainingGroupsKey(
-                                                    key
-                                                )
-                                            }}
-                                            key={key}
-                                        >
-                                            {key}
-                                        </Badge>
-                                    )
-                                } else {
-                                    return (
-                                        <Badge
-                                            className="ml-1 cursor-pointer"
-                                            variant="outline"
-                                            onClick={() => {
-                                                setSelectedTrainingGroupsKey(
-                                                    key
-                                                )
-                                                setSelectedTrainingGroup(null)
-                                            }}
-                                            key={key}
-                                        >
-                                            {key}
-                                        </Badge>
-                                    )
-                                }
-                            })}
-                            {user &&
-                            user.activeTrainingId === trainingById.id ? (
-                                <CheckCircle2
-                                    className="ml-2 cursor-pointer"
-                                    // onClick={async () =>
-                                    //     handleActiveTraining(
-                                    //         user.id,
-                                    //         trainingById.id,
-                                    //         'deactivate'
-                                    //     )
-                                    // }
-                                />
-                            ) : (
-                                <Circle
-                                    className="ml-2 cursor-pointer"
-                                    // onClick={async () =>
-                                    //     handleActiveTraining(
-                                    //         user.id,
-                                    //         trainingById.id,
-                                    //         'activate'
-                                    //     )
-                                    // }
+        <div className="flex flex-col justify-center w-full p-2 space-y-2 sm:w-11/12">
+            <header>
+                {trainingById && user && (
+                    <Card className="p-2">
+                        <CardTitle>{trainingById.name}</CardTitle>
+                        <div className="flex">
+                            <CardDescription>{`Created by ${trainingById.createdBy.firstName} ${trainingById.createdBy.lastName} for ${trainingById.user.firstName} ${trainingById.user.lastName} `}</CardDescription>
+
+                            {user.profileImage && (
+                                <img
+                                    src={user.profileImage}
+                                    alt="Avatar"
+                                    className="object-cover ml-1 rounded-full w-9 h-9"
                                 />
                             )}
-                        </Card>
-                        <TrainingGroupsProgress trainingById={trainingById} />
-                    </div>
+                        </div>
+                    </Card>
                 )}
-                <div className="grid gap-2 sm:gap-4 md:grid-cols-2">
-                    {trainingGroupsByKey &&
-                        selectedTrainingGroupsKey !== 'all' && (
-                            <Card
-                                className={twMerge(
-                                    'grid grid-cols-2 gap-4 p-2',
-                                    selectedTrainingGroup ? '' : 'col-span-2'
-                                )}
-                            >
-                                <div className="grid grid-cols-3 space-y-0.5">
-                                    {trainingGroupsByKey.map((tg) => {
-                                        if (tg.id === selectedTrainingGroup) {
-                                            return (
-                                                <Badge
-                                                    className="justify-center ml-1 cursor-pointer"
-                                                    variant="default"
-                                                    onClick={() =>
-                                                        setSelectedTrainingGroup(
-                                                            tg.id
-                                                        )
-                                                    }
-                                                    key={tg.id}
-                                                >
-                                                    {tg.phase}
-                                                </Badge>
-                                            )
-                                        } else {
-                                            if (tg.done) {
-                                                return (
-                                                    <Badge
-                                                        className="justify-center ml-1 cursor-pointer"
-                                                        variant="secondary"
-                                                        onClick={() =>
-                                                            setSelectedTrainingGroup(
-                                                                tg.id
-                                                            )
-                                                        }
-                                                        key={tg.id}
-                                                    >
-                                                        {tg.phase}
-                                                    </Badge>
-                                                )
-                                            }
-                                            if (!tg.done) {
-                                                return (
-                                                    <Badge
-                                                        className="justify-center ml-1 cursor-pointer"
-                                                        variant="outline"
-                                                        onClick={() =>
-                                                            setSelectedTrainingGroup(
-                                                                tg.id
-                                                            )
-                                                        }
-                                                        key={tg.id}
-                                                    >
-                                                        {tg.phase}
-                                                    </Badge>
-                                                )
-                                            }
-                                        }
-                                    })}
-                                </div>
-                                <div className="flex flex-col items-center pt-4 space-y-4 ">
-                                    <div className="flex items-center space-x-2">
-                                        {showAllTrainingGroups ? (
-                                            <Label>Show all</Label>
-                                        ) : (
-                                            <Label>Unfinished</Label>
-                                        )}
-                                        <Switch
-                                            checked={showAllTrainingGroups}
-                                            onCheckedChange={() =>
-                                                setShowAllTrainingGroups(
-                                                    (prevState) => !prevState
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    {trainingById && (
-                                        <>
-                                            <Badge variant="secondary">{`Rest[${trainingById?.rest}]`}</Badge>
-                                            <Badge variant="secondary">{`Tempo[${trainingById?.tempo}]`}</Badge>
-                                        </>
-                                    )}
-                                </div>
-                            </Card>
-                        )}
-                    {selectedTrainingGroup &&
-                    trainingById &&
-                    showExercisesCard ? (
-                        <AddExercisesCard
-                            trainingTableData={trainingTableData}
-                            training={trainingById}
-                            trainingGroup={trainingGroup}
-                            refetchTrainingGroup={refetchTrainingGroup}
-                            setShowExercisesCard={setShowExercisesCard}
-                        />
-                    ) : (
-                        <>
-                            {selectedTrainingGroup && (
-                                <div className="flex items-center justify-center">
-                                    <Button
-                                        className="w-12 h-12 rounded-full"
-                                        variant="outline"
-                                        onClick={() =>
-                                            setShowExercisesCard(true)
-                                        }
-                                    >
-                                        <Dumbbell />
-                                    </Button>
-                                </div>
-                            )}
-                        </>
+            </header>
+            <main className="mt-2">
+                <div className="flex flex-col items-center justify-center w-full space-y-2">
+                    {trainingById && user && (
+                        <div className="grid gap-2 sm:grid-cols-2">
+                            <TrainingGroupKeysCard
+                                selectedTrainingGroupsKey={
+                                    selectedTrainingGroupsKey
+                                }
+                                setSelectedTrainingGroup={
+                                    setSelectedTrainingGroup
+                                }
+                                setSelectedTrainingGroupsKey={
+                                    setSelectedTrainingGroupsKey
+                                }
+                                trainingById={trainingById}
+                                trainingGroupsKeys={trainingGroupsKeys}
+                                user={user}
+                                showExercisesCard={showExercisesCard}
+                            />
+                            <TrainingGroupsProgress
+                                trainingById={trainingById}
+                            />
+                        </div>
                     )}
-                    {selectedTrainingGroup && trainingTableData ? (
-                        <TrainingGroupTable
-                            columns={trainingGroupTableColumns}
-                            data={trainingTableData}
-                            refetchTrainingGroup={refetchTrainingGroup}
-                        />
-                    ) : null}
+                    <div className="grid gap-2 sm:gap-4 md:grid-cols-2">
+                        {trainingGroupsByKey &&
+                            trainingById &&
+                            selectedTrainingGroupsKey !== null && (
+                                <TrainingGroupsWPhasesCard
+                                    selectedTrainingGroup={
+                                        selectedTrainingGroup
+                                    }
+                                    setSelectedTrainingGroup={
+                                        setSelectedTrainingGroup
+                                    }
+                                    setShowAllTrainingGroups={
+                                        setShowAllTrainingGroups
+                                    }
+                                    showAllTrainingGroups={
+                                        showAllTrainingGroups
+                                    }
+                                    trainingById={trainingById}
+                                    trainingGroupsByKey={trainingGroupsByKey}
+                                />
+                            )}
+                        {selectedTrainingGroup &&
+                        trainingById &&
+                        showExercisesCard ? (
+                            <AddExercisesCard
+                                trainingTableData={trainingTableData}
+                                training={trainingById}
+                                trainingGroup={trainingGroup}
+                                refetchTrainingGroup={refetchTrainingGroup}
+                                setShowExercisesCard={setShowExercisesCard}
+                            />
+                        ) : (
+                            <>
+                                {selectedTrainingGroup && (
+                                    <div className="flex items-center justify-center">
+                                        <Button
+                                            className="w-12 h-12 rounded-full"
+                                            variant="outline"
+                                            onClick={() =>
+                                                setShowExercisesCard(true)
+                                            }
+                                        >
+                                            <Dumbbell />
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                        {selectedTrainingGroup && trainingTableData ? (
+                            <TrainingGroupTable
+                                columns={trainingGroupTableColumns}
+                                data={trainingTableData}
+                                refetchTrainingGroup={refetchTrainingGroup}
+                            />
+                        ) : null}
+                    </div>
+                    <EndTrainingGroupButton
+                        refetchTrainingById={refetchTrainingById}
+                        refetchTrainingGroup={refetchTrainingGroup}
+                        trainingGroup={trainingGroup}
+                    />
                 </div>
-                <EndTrainingGroupButton
-                    refetchTrainingById={refetchTrainingById}
-                    refetchTrainingGroup={refetchTrainingGroup}
-                    trainingGroup={trainingGroup}
-                />
-            </div>
-            {/* {isError && (
-                <ErrorBox errorMessage={errorMessage} setError={setError} />
-            )} */}
-        </main>
+            </main>
+        </div>
     )
 }

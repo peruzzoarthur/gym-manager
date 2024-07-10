@@ -122,6 +122,7 @@ export class TrainingsService {
         tempo: true,
         daysInWeek: true,
         done: true,
+        createdBy: true,
         createdAt: true,
         updatedAt: true,
         reps: true,

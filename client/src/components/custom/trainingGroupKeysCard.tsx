@@ -16,7 +16,7 @@ type TrainingGroupKeysCard = {
     setSelectedTrainingGroup: (
         value: React.SetStateAction<string | null>
     ) => void
-    handleActiveTraining: (
+    handleActiveTraining?: (
         userId: string,
         trainingId: string,
         option: 'activate' | 'deactivate'
@@ -75,7 +75,8 @@ export const TrainingGroupKeysCard = ({
                     )
                 }
             })}
-            {user.activeTrainingId === trainingById.id ? (
+            {user.activeTrainingId === trainingById.id &&
+            handleActiveTraining ? (
                 <CheckCircle2
                     className="ml-2 cursor-pointer"
                     onClick={async () =>
@@ -87,16 +88,18 @@ export const TrainingGroupKeysCard = ({
                     }
                 />
             ) : (
-                <Circle
-                    className="ml-2 cursor-pointer"
-                    onClick={async () =>
-                        handleActiveTraining(
-                            user.id,
-                            trainingById.id,
-                            'activate'
-                        )
-                    }
-                />
+                handleActiveTraining && (
+                    <Circle
+                        className="ml-2 cursor-pointer"
+                        onClick={async () =>
+                            handleActiveTraining(
+                                user.id,
+                                trainingById.id,
+                                'activate'
+                            )
+                        }
+                    />
+                )
             )}
         </Card>
     )
