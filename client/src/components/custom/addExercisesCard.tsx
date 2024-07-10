@@ -20,6 +20,8 @@ import { Badge } from '../ui/badge'
 import { ExerciseComboBox } from './exerciseCombobox'
 import { Label } from '../ui/label'
 import { X } from 'lucide-react'
+import { MuscleGroupsStateCard } from './muscleGroupsStateCard'
+import { useGetFilteredExerciseReferences } from '@/hooks/useGetFilteredExercises'
 
 type AddExercisesCardProps = {
     trainingTableData: TrainingGroupTableProps[] | undefined
@@ -43,6 +45,25 @@ export const AddExercisesCard = ({
     const [combinedIds, setCombinedIds] = useState<string[]>([])
     const [selectedExercise, setSelectedExercise] =
         useState<ExerciseReference | null>(null)
+    const [chestOn, setChestOn] = useState<boolean>(true)
+    const [backOn, setBackOn] = useState<boolean>(true)
+    const [shouldersOn, setShouldersOn] = useState<boolean>(true)
+    const [legsOn, setLegsOn] = useState<boolean>(true)
+    const [calvesOn, setCalvesOn] = useState<boolean>(true)
+    const [bicepsOn, setBicepsOn] = useState<boolean>(true)
+    const [tricepsOn, setTricepsOn] = useState<boolean>(true)
+    const [complexOn, setComplexOn] = useState<boolean>(true)
+    const { allExerciseReferences } = useGetAllExerciseReferences()
+    const { filteredExerciseReferences } = useGetFilteredExerciseReferences({
+        chestOn: chestOn,
+        backOn: backOn,
+        legsOn: legsOn,
+        shouldersOn: shouldersOn,
+        bicepsOn: bicepsOn,
+        tricepsOn: tricepsOn,
+        complexOn: complexOn,
+        calvesOn: calvesOn,
+    })
 
     const toasted = (exercise: Exercise) => {
         toast({
@@ -211,8 +232,6 @@ export const AddExercisesCard = ({
         }
     }
 
-    const { allExerciseReferences } = useGetAllExerciseReferences()
-
     const addCombinedId = (id: string) => {
         if (combinedIds.includes(id)) {
             return
@@ -243,13 +262,34 @@ export const AddExercisesCard = ({
                             </Button>
                         </div>
                     </div>
-                    <CardDescription>{`Manage exercises related to the selected training`}</CardDescription>
+                    <CardDescription>
+                        {`Manage exercises related to the selected training`}{' '}
+                        <MuscleGroupsStateCard
+                            backOn={backOn}
+                            chestOn={chestOn}
+                            legsOn={legsOn}
+                            setBackOn={setBackOn}
+                            setChestOn={setChestOn}
+                            setLegsOn={setLegsOn}
+                            setShouldersOn={setShouldersOn}
+                            shouldersOn={shouldersOn}
+                            calvesOn={calvesOn}
+                            setCalvesOn={setCalvesOn}
+                            bicepsOn={bicepsOn}
+                            setBicepsOn={setBicepsOn}
+                            tricepsOn={tricepsOn}
+                            setTricepsOn={setTricepsOn}
+                            complexOn={complexOn}
+                            setComplexOn={setComplexOn}
+                        />
+                    </CardDescription>
                     <CardContent className="grid space-y-2 sm:grid-cols-2 justify-items-center">
                         <div className="flex flex-col items-center ">
                             <ExerciseComboBox
                                 selectedExercise={selectedExercise}
                                 setSelectedExercise={setSelectedExercise}
                                 addCombinedId={addCombinedId}
+                                exerciseReferences={filteredExerciseReferences}
                             />
                             <div className="grid grid-cols-2">
                                 {combinedIds.map((id) => {

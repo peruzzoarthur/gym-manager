@@ -2,7 +2,7 @@ import { axiosInstance } from '@/axiosInstance'
 import { User } from '@/types/gym.types'
 import { useQuery } from '@tanstack/react-query'
 
-export const useGetUserByUserId = (userId: string) => {
+export const useGetUserByUserId = (userId: string | undefined) => {
     const {
         data: user,
         isFetching: isFetchingUser,

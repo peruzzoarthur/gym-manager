@@ -16,7 +16,6 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover'
 import { ExerciseReference } from '@/types/gym.types'
-import { useGetAllExerciseReferences } from '@/hooks/useGetAllExercises'
 import { useMediaQuery } from 'usehooks-ts'
 
 type ComboBoxResponsiveProps = {
@@ -25,12 +24,14 @@ type ComboBoxResponsiveProps = {
         React.SetStateAction<ExerciseReference | null>
     >
     addCombinedId: (id: string) => void
+    exerciseReferences: ExerciseReference[] | undefined
 }
 
 export function ExerciseComboBox({
     selectedExercise,
     setSelectedExercise,
     addCombinedId,
+    exerciseReferences,
 }: ComboBoxResponsiveProps) {
     const [open, setOpen] = React.useState(false)
     const isDesktop = useMediaQuery('(min-width: 768px)')
@@ -55,6 +56,7 @@ export function ExerciseComboBox({
                         setOpen={setOpen}
                         setSelectedExercise={setSelectedExercise}
                         addCombinedId={addCombinedId}
+                        exerciseReferences={exerciseReferences}
                     />
                 </PopoverContent>
             </Popover>
@@ -78,6 +80,7 @@ export function ExerciseComboBox({
                         setOpen={setOpen}
                         setSelectedExercise={setSelectedExercise}
                         addCombinedId={addCombinedId}
+                        exerciseReferences={exerciseReferences}
                     />
                 </div>
             </DrawerContent>
@@ -89,26 +92,26 @@ function ExercisesList({
     setOpen,
     setSelectedExercise,
     addCombinedId,
+    exerciseReferences,
 }: {
     setOpen: (open: boolean) => void
     setSelectedExercise: (exercise: ExerciseReference | null) => void
     addCombinedId: (id: string) => void
+    exerciseReferences: ExerciseReference[] | undefined
 }) {
-    const { allExerciseReferences } = useGetAllExerciseReferences()
-
     return (
         <Command>
             <CommandInput placeholder="Filter exercises..." />
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 <CommandGroup>
-                    {allExerciseReferences?.map((e) => (
+                    {exerciseReferences?.map((e) => (
                         <CommandItem
                             key={e.id}
                             value={e.name}
                             onSelect={(value) => {
                                 setSelectedExercise(
-                                    allExerciseReferences.find(
+                                    exerciseReferences.find(
                                         (priority) => priority.name === value
                                     ) || null
                                 )
