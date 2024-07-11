@@ -45,11 +45,16 @@ function Activity() {
                                     <CardDescription>{`Created by ${object.t.createdBy.firstName} ${object.t.createdBy.lastName} for ${object.t.user.firstName} ${object.t.user.lastName} `}</CardDescription>
 
                                     {object.user.profileImage && (
-                                        <img
-                                            src={object.user.profileImage}
-                                            alt="Avatar"
-                                            className="object-cover ml-1 rounded-full w-9 h-9"
-                                        />
+                                        <Link
+                                            to={'/users/$id'}
+                                            params={{ id: object.user.id }}
+                                        >
+                                            <img
+                                                src={object.user.profileImage}
+                                                alt="Avatar"
+                                                className="object-cover ml-1 rounded-full w-9 h-9"
+                                            />
+                                        </Link>
                                     )}
                                 </div>
                             </Card>

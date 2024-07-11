@@ -114,7 +114,7 @@ export class TrainingGroupsService {
     if (tg.done) {
       return await this.prisma.trainingGroup.update({
         where: { id: tg.id },
-        data: { doneAt: date, activeAt: date },
+        data: { active: false, doneAt: date, activeAt: date },
       });
     }
   }

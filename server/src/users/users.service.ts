@@ -171,6 +171,7 @@ export class UsersService {
         firstName: true,
         lastName: true,
         profileImage: true,
+        id: true,
       },
     });
     if (!allUsersTraining) {
@@ -190,6 +191,7 @@ export class UsersService {
           lastName: u.lastName,
           activeTrainingId: u.activeTrainingId,
           profileImage: u.profileImage,
+          id: u.id,
         },
         tg: tg,
         t: t,
