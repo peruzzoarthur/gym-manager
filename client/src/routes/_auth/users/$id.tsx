@@ -60,8 +60,12 @@ function User() {
         useState<boolean>(true)
     const [showExercisesCard, setShowExercisesCard] = useState<boolean>(false)
     const [calendarOn, setCalendarOn] = useState<boolean>(false)
-    const { trainingById, refetchTrainingById, datesTrained } =
-        useGetTrainingById(selectedTraining)
+    const {
+        trainingById,
+        refetchTrainingById,
+        datesTrained,
+        activeTrainingGroup,
+    } = useGetTrainingById(selectedTraining)
     const trainingGroupsKeys = [
         ...new Set(trainingById?.trainingGroups.map((tg) => tg.key)),
     ]
@@ -73,8 +77,16 @@ function User() {
     )
 
     const { trainingGroup, refetchTrainingGroup } = useGetTrainingGroup(
+        // activeTrainingGroup ? activeTrainingGroup.id : selectedTrainingGroup
         selectedTrainingGroup
     )
+
+    useEffect(() => {
+        if (activeTrainingGroup?.id) {
+            setSelectedTrainingGroupsKey(activeTrainingGroup.key)
+            setSelectedTrainingGroup(activeTrainingGroup.id)
+        }
+    }, [activeTrainingGroup])
 
     const trainingTableData: TrainingGroupTableProps[] | undefined =
         trainingGroup?.exercises.map((e) => {

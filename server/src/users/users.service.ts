@@ -162,4 +162,40 @@ export class UsersService {
     const activeTg = unfinishedTg.find((tg) => tg.active === true);
     return activeTg;
   }
+
+  async getAllUsersTrainings() {
+    const allUsersTraining = await this.prisma.user.findMany({
+      select: {
+        activeTrainingId: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        profileImage: true,
+      },
+    });
+    if (!allUsersTraining) {
+      throw new HttpException("No users registered", HttpStatus.NOT_FOUND);
+    }
+    const usersWithActiveTraining = allUsersTraining.filter(
+      (u) => u.activeTrainingId !== null
+    );
+
+    const promises = usersWithActiveTraining.map(async (u) => {
+      const t = await this.trainingsService.findOne(u.activeTrainingId);
+      const tg = await this.isUserTraining(u.email);
+      return {
+        user: {
+          email: u.email,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          activeTrainingId: u.activeTrainingId,
+          profileImage: u.profileImage,
+        },
+        tg: tg,
+        t: t,
+      };
+    });
+    const result = await Promise.all(promises);
+    return result;
+  }
 }

@@ -100,7 +100,7 @@ export class TrainingGroupsService {
   async setDone(id: string) {
     return await this.prisma.trainingGroup.update({
       where: { id: id },
-      data: { done: true, doneAt: new Date(Date.now()) },
+      data: { active: false, done: true, doneAt: new Date(Date.now()) },
     });
   }
 

@@ -17,7 +17,7 @@ import { useGetTrainingGroupsByTrainingWithKey } from '@/hooks/useGetTrainingGro
 import { useGetUserByUserId } from '@/hooks/useGetUserByUserId'
 import { createFileRoute } from '@tanstack/react-router'
 import { Dumbbell } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/trainings/$id')({
     component: Training,
@@ -41,7 +41,8 @@ function Training() {
     const [showAllTrainingGroups, setShowAllTrainingGroups] =
         useState<boolean>(true)
 
-    const { trainingById, refetchTrainingById } = useGetTrainingById(id)
+    const { trainingById, refetchTrainingById, activeTrainingGroup } =
+        useGetTrainingById(id)
     const { user } = useGetUserByUserId(trainingById?.user.id)
 
     const trainingGroupsKeys = [
@@ -57,6 +58,13 @@ function Training() {
     const { trainingGroup, refetchTrainingGroup } = useGetTrainingGroup(
         selectedTrainingGroup
     )
+
+    useEffect(() => {
+        if (activeTrainingGroup?.id) {
+            setSelectedTrainingGroupsKey(activeTrainingGroup.key)
+            setSelectedTrainingGroup(activeTrainingGroup.id)
+        }
+    }, [activeTrainingGroup])
 
     const trainingTableData: TrainingGroupTableProps[] | undefined =
         trainingGroup?.exercises.map((e) => {

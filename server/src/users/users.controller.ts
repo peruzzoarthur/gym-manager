@@ -68,9 +68,19 @@ export class UsersController {
   @Get("active-training")
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ type: UserEntity })
+  @ApiOkResponse()
   async getActiveTraining(@Request() req: JwtPayload) {
     return await this.usersService.isUserTraining(req.user.username);
+  }
+
+  @Get("all-active-trainings")
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse()
+  @Roles(["ADMIN"])
+  @ApiBearerAuth()
+  async getAllActiveTrainings() {
+    return await this.usersService.getAllUsersTrainings();
   }
 
   @Get(":id")
@@ -112,6 +122,7 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse()
   @Roles(["USER", "ADMIN"])
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: UserEntity })
   async deactivateTraining(

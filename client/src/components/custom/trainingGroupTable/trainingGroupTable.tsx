@@ -28,7 +28,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
 import { TrainingGroupTableProps } from './trainingGroupTableColumns'
-import { Exercise, TrainingGroup } from '@/types/gym.types'
+import { Exercise, Training, TrainingGroup, User } from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { SetLoadDrawer } from '../setLoadDrawer'
@@ -37,15 +37,29 @@ import { useGetRole } from '@/hooks/useGetRole'
 interface DataTableProps<TValue> {
     columns: ColumnDef<TrainingGroupTableProps, TValue>[]
     data: TrainingGroupTableProps[]
-    refetchTrainingGroup: (
+    refetchTrainingGroup?: (
         options?: RefetchOptions | undefined
     ) => Promise<QueryObserverResult<TrainingGroup, Error>>
+    refetchAllActiveTrainings?: (
+        options?: RefetchOptions | undefined
+    ) => Promise<
+        QueryObserverResult<
+            | {
+                  user: User
+                  tg: TrainingGroup
+                  t: Training
+              }[]
+            | null,
+            Error
+        >
+    >
 }
 
 export function TrainingGroupTable<TValue>({
     columns,
     data,
     refetchTrainingGroup,
+    refetchAllActiveTrainings,
 }: DataTableProps<TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const table = useReactTable({
@@ -78,7 +92,12 @@ export function TrainingGroupTable<TValue>({
         {
             if (exerciseId) {
                 await handleDeleteExercise(exerciseId)
-                await refetchTrainingGroup()
+                if (refetchTrainingGroup) {
+                    await refetchTrainingGroup()
+                }
+                if (refetchAllActiveTrainings) {
+                    await refetchAllActiveTrainings()
+                }
             } else {
                 throw new Error('Error deleting exercise.')
             }
@@ -127,6 +146,9 @@ export function TrainingGroupTable<TValue>({
                                         exerciseId={row.original.id}
                                         refetchTrainingGroup={
                                             refetchTrainingGroup
+                                        }
+                                        refetchAllActiveTrainings={
+                                            refetchAllActiveTrainings
                                         }
                                     />
                                 </TableCell>

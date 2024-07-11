@@ -5,7 +5,7 @@ import {
     TooltipTrigger,
     TooltipProvider,
 } from '@/components/ui/tooltip'
-import { Calendar, Dumbbell, Home, User } from 'lucide-react'
+import { Activity, Calendar, Dumbbell, Home, User } from 'lucide-react'
 import { useGetUserById } from '@/hooks/useGetUser'
 import { UserDropdown } from './userDropdown'
 import { useGetRole } from '@/hooks/useGetRole'
@@ -79,6 +79,22 @@ export function RootNav() {
                                     </TooltipTrigger>
                                     <TooltipContent side="right">
                                         Trainings
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Link
+                                            to={'/activity'}
+                                            className="flex items-center justify-center transition-colors rounded-lg h-9 w-9 [&.active]:bg-accent text-accent-foreground hover:text-foreground"
+                                        >
+                                            <Activity className="w-5 h-5" />
+                                            <span className="sr-only">
+                                                Activity
+                                            </span>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        Activity
                                     </TooltipContent>
                                 </Tooltip>
                             </>

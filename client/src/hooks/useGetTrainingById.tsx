@@ -2,23 +2,23 @@ import { axiosInstance } from '@/axiosInstance'
 import { Training } from '@/types/gym.types'
 import { useQuery } from '@tanstack/react-query'
 
-export const useGetTrainingById = (trainingByIdId: string | null) => {
+export const useGetTrainingById = (trainingId: string | null) => {
     const {
         data: trainingById,
         isFetching: isFetchingTrainingById,
         refetch: refetchTrainingById,
     } = useQuery({
-        queryKey: ['get-training-byId', trainingByIdId],
+        queryKey: ['get-training-byId', trainingId],
         queryFn: async (): Promise<Training | null> => {
             const { data }: { data: Training } = await axiosInstance.get(
-                `/trainings/${trainingByIdId}`
+                `/trainings/${trainingId}`
             )
             if (!data) {
                 return null
             }
             return data
         },
-        enabled: !!trainingByIdId,
+        enabled: !!trainingId,
     })
     let datesTrained: Date[] = []
     if (trainingById) {
@@ -35,11 +35,15 @@ export const useGetTrainingById = (trainingByIdId: string | null) => {
             })
         }
     }
+    const activeTrainingGroup = trainingById?.trainingGroups.find(
+        (tg) => tg.active === true
+    )
 
     return {
         trainingById,
         isFetchingTrainingById,
         refetchTrainingById,
         datesTrained,
+        activeTrainingGroup,
     }
 }

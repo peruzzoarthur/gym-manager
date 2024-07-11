@@ -141,6 +141,7 @@ export class TrainingsService {
             activeAt: true,
             exercises: {
               select: {
+                id: true,
                 index: true,
                 sets: true,
                 reps: true,

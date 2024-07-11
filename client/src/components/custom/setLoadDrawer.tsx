@@ -14,20 +14,40 @@ import { Input } from '../ui/input'
 import { ErrorBox } from './errorBox'
 import { useToast } from '../ui/use-toast'
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { ErrorResponse, Exercise, TrainingGroup } from '@/types/gym.types'
+import {
+    ErrorResponse,
+    Exercise,
+    Training,
+    TrainingGroup,
+    User,
+} from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { DumbbellIcon } from 'lucide-react'
 
 type SetLoadDrawerProps = {
-    refetchTrainingGroup: (
+    refetchTrainingGroup?: (
         options?: RefetchOptions | undefined
     ) => Promise<QueryObserverResult<TrainingGroup, Error>>
     exerciseId: string
+    refetchAllActiveTrainings?: (
+        options?: RefetchOptions | undefined
+    ) => Promise<
+        QueryObserverResult<
+            | {
+                  user: User
+                  tg: TrainingGroup
+                  t: Training
+              }[]
+            | null,
+            Error
+        >
+    >
 }
 export const SetLoadDrawer = ({
     exerciseId,
     refetchTrainingGroup,
+    refetchAllActiveTrainings,
 }: SetLoadDrawerProps) => {
     const [open, setOpen] = useState(false)
     return (
@@ -47,6 +67,7 @@ export const SetLoadDrawer = ({
                     </DrawerHeader>
                     <ExerciseLoadForm
                         refetchTrainingGroup={refetchTrainingGroup}
+                        refetchAllActiveTrainings={refetchAllActiveTrainings}
                         exerciseId={exerciseId}
                     />
                     <DrawerFooter className="pt-2">
@@ -61,14 +82,28 @@ export const SetLoadDrawer = ({
 }
 
 type ExerciseLoadFormProps = {
-    refetchTrainingGroup: (
+    refetchTrainingGroup?: (
         options?: RefetchOptions | undefined
     ) => Promise<QueryObserverResult<TrainingGroup, Error>>
     exerciseId: string
+    refetchAllActiveTrainings?: (
+        options?: RefetchOptions | undefined
+    ) => Promise<
+        QueryObserverResult<
+            | {
+                  user: User
+                  tg: TrainingGroup
+                  t: Training
+              }[]
+            | null,
+            Error
+        >
+    >
 }
 function ExerciseLoadForm({
     refetchTrainingGroup,
     exerciseId,
+    refetchAllActiveTrainings,
 }: ExerciseLoadFormProps) {
     const [inputValue, setInputValue] = useState('')
     const [isError, setError] = useState<boolean>(false)
@@ -94,7 +129,12 @@ function ExerciseLoadForm({
                 `/exercises/set-load/${exerciseId}`,
                 requestBody
             )
-            await refetchTrainingGroup()
+            if (refetchTrainingGroup) {
+                await refetchTrainingGroup()
+            }
+            if (refetchAllActiveTrainings) {
+                await refetchAllActiveTrainings()
+            }
             toasted(data.data, parseFloat(inputValue))
             return data
         } catch (error) {

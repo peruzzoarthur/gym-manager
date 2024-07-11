@@ -153,7 +153,6 @@ export class ExercisesService {
     const combinedExercises = exercise.combinedExercises;
     if (combinedExercises.length >= 1) {
       for (let i = 0; i < combinedExercises.length; i++) {
-        console.log("removing combin3d");
         await this.prisma.combinedExercise.delete({
           where: {
             id: combinedExercises[i].id,
