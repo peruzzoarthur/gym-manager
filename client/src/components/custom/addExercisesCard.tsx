@@ -249,7 +249,7 @@ export const AddExercisesCard = ({
     return (
         <>
             {trainingTableData && (
-                <Card className="flex flex-col justify-center p-4 space-y-4">
+                <Card className="flex flex-col justify-center p-4 space-y-4 w-full lg:w-[480px]">
                     <div className="flex items-center justify-between">
                         <CardTitle>Exercises</CardTitle>
                         <div className="flex justify-end">
@@ -283,7 +283,7 @@ export const AddExercisesCard = ({
                         complexOn={complexOn}
                         setComplexOn={setComplexOn}
                     />
-                    <CardContent className="grid space-y-2 sm:grid-cols-2 justify-items-center">
+                    <CardContent className="grid space-y-2 sm:grid-cols-1 lg:grid-cols-2 justify-items-center">
                         <div className="flex flex-col items-center ">
                             <ExerciseComboBox
                                 selectedExercise={selectedExercise}
@@ -292,7 +292,7 @@ export const AddExercisesCard = ({
                                 exerciseReferences={filteredExerciseReferences}
                             />
                             {allExerciseReferences && (
-                                <div className="grid grid-cols-2">
+                                <div className="grid grid-cols-2 lg:grid-cols-1">
                                     {combinedIds.map((id) => {
                                         const exercise =
                                             allExerciseReferences.find(
@@ -318,7 +318,7 @@ export const AddExercisesCard = ({
                             )}
                         </div>
                         {combinedIds.length === 1 && (
-                            <div className="flex flex-col space-y-1">
+                            <div className="flex flex-col space-y-1 ">
                                 <Button
                                     onClick={async () =>
                                         addExerciseToTrainingGroup({
@@ -342,7 +342,7 @@ export const AddExercisesCard = ({
                             </div>
                         )}
                         {combinedIds.length > 1 && (
-                            <div className="flex flex-col">
+                            <div className="flex flex-col space-y-1">
                                 <Label>Combined</Label>
                                 <Button
                                     onClick={async () =>

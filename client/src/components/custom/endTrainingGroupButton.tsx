@@ -211,7 +211,7 @@ export const EndTrainingGroupButton = ({
                                             )
                                         }
                                         className="h-6"
-                                        variant="secondary"
+                                        variant="default"
                                     >
                                         Update
                                     </Button>
