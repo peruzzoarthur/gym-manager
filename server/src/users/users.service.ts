@@ -184,6 +184,9 @@ export class UsersService {
     const promises = usersWithActiveTraining.map(async (u) => {
       const t = await this.trainingsService.findOne(u.activeTrainingId);
       const tg = await this.isUserTraining(u.email);
+      if (!tg) {
+        return null;
+      }
       return {
         user: {
           email: u.email,
@@ -198,6 +201,7 @@ export class UsersService {
       };
     });
     const result = await Promise.all(promises);
-    return result;
+    console.log(result.filter((r) => r !== null));
+    return result.filter((r) => r !== null);
   }
 }
