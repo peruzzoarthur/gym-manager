@@ -68,6 +68,11 @@ export class TrainingGroupsController {
     return this.trainingGroupsService.setActive(id);
   }
 
+  @Patch("fix-indexes/:id")
+  fixIndexes(@Param("id") id: string) {
+    return this.trainingGroupsService.reorganizeIndexes(id);
+  }
+
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.trainingGroupsService.remove(id);

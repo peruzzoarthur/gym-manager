@@ -79,6 +79,7 @@ export class ExercisesService {
         id: createExerciseDto.trainingGroupId,
       },
     });
+
     const key = tg.key;
     const training = await this.prisma.training.findUniqueOrThrow({
       where: {
@@ -88,12 +89,15 @@ export class ExercisesService {
         trainingGroups: true,
       },
     });
+
     const filteredByKey = training.trainingGroups.filter(
       (tg) => tg.key === key && tg.done === false
     );
+
     const ids = filteredByKey.flatMap((tg) => tg.id);
 
-    const promises = ids.map(async (id) => {
+    const results = [];
+    for (const id of ids) {
       const exercise = await this.create({
         load: createExerciseDto.load,
         refId: createExerciseDto.refId,
@@ -102,10 +106,9 @@ export class ExercisesService {
         trainingGroupId: id,
         index: undefined,
       });
-      return exercise;
-    });
+      results.push(exercise);
+    }
 
-    const results = await Promise.all(promises);
     return results[0];
   }
 
@@ -117,8 +120,11 @@ export class ExercisesService {
     return `This action returns a #${id} exercise`;
   }
 
-  update(id: string, updateExerciseDto: UpdateExerciseDto) {
-    return `This action updates a #${id} exercise`;
+  async update(id: string, updateExerciseDto: UpdateExerciseDto) {
+    return await this.prisma.exercise.update({
+      where: { id: id },
+      data: updateExerciseDto,
+    });
   }
 
   async setLoadToExercise(id: string, updateExerciseDto: UpdateExerciseDto) {

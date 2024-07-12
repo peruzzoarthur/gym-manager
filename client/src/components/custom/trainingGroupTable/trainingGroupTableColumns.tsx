@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 
 export type TrainingGroupTableProps = {
+    tgId: string | null
     id: string
     index: number | undefined
     sets: number | undefined

@@ -77,7 +77,6 @@ function User() {
     )
 
     const { trainingGroup, refetchTrainingGroup } = useGetTrainingGroup(
-        // activeTrainingGroup ? activeTrainingGroup.id : selectedTrainingGroup
         selectedTrainingGroup
     )
 
@@ -97,8 +96,11 @@ function User() {
                 sets: e.sets ?? undefined,
                 load: e.load ?? undefined,
                 name: e.ref.name,
+                tgId: selectedTrainingGroup,
             }
         })
+
+    console.log(trainingTableData)
 
     const handleActiveTraining = async (
         userId: string,

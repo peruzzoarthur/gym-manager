@@ -201,7 +201,6 @@ export class UsersService {
       };
     });
     const result = await Promise.all(promises);
-    console.log(result.filter((r) => r !== null));
     return result.filter((r) => r !== null);
   }
 }

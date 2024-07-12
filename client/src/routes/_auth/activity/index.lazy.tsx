@@ -30,6 +30,7 @@ function Activity() {
                             sets: e.sets ?? undefined,
                             load: e.load ?? undefined,
                             name: e.ref.name,
+                            tgId: object.tg.id,
                         }
                     })
                     return (

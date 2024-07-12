@@ -3,10 +3,14 @@ import { CreateTrainingGroupDto } from "./dto/create-training-group.dto";
 import { UpdateTrainingGroupDto } from "./dto/update-training-group.dto";
 import { PrismaService } from "src/prisma.service";
 import { FindByTrainingWithKeyDto } from "./dto/find-by-training-with-key";
+import { ExercisesService } from "src/exercises/exercises.service";
 
 @Injectable()
 export class TrainingGroupsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private exercisesService: ExercisesService
+  ) {}
   async create(createTrainingGroupDto: CreateTrainingGroupDto) {
     return await this.prisma.trainingGroup.create({
       data: {
@@ -150,5 +154,35 @@ export class TrainingGroupsService {
 
   async remove(id: string) {
     return await this.prisma.trainingGroup.delete({ where: { id: id } });
+  }
+
+  async reorganizeIndexes(id: string) {
+    const trainingGroup = await this.prisma.trainingGroup.findUnique({
+      where: { id: id },
+      select: { id: true, exercises: true },
+    });
+
+    if (!trainingGroup) {
+      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+    }
+
+    const exercises = trainingGroup.exercises;
+
+    let newIndex = 1;
+    let previousIndex: number | null = null;
+
+    for (const exercise of exercises) {
+      if (exercise.index !== previousIndex) {
+        previousIndex = exercise.index;
+        newIndex++;
+      }
+
+      await this.exercisesService.update(exercise.id, {
+        ...exercise,
+        index: newIndex - 1,
+      });
+    }
+
+    return exercises;
   }
 }

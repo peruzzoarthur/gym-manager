@@ -284,7 +284,7 @@ export const AddExercisesCard = ({
                         setComplexOn={setComplexOn}
                     />
                     <CardContent className="grid space-y-2 sm:grid-cols-1 lg:grid-cols-2 justify-items-center">
-                        <div className="flex flex-col items-center w-full ">
+                        <div className="flex flex-col items-center ">
                             <ExerciseComboBox
                                 selectedExercise={selectedExercise}
                                 setSelectedExercise={setSelectedExercise}

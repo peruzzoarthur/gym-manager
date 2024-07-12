@@ -24,15 +24,23 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal } from 'lucide-react'
 import { TrainingGroupTableProps } from './trainingGroupTableColumns'
-import { Exercise, Training, TrainingGroup, User } from '@/types/gym.types'
+import {
+    ErrorResponse,
+    Exercise,
+    Training,
+    TrainingGroup,
+    User,
+} from '@/types/gym.types'
 import { axiosInstance } from '@/axiosInstance'
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query'
 import { SetLoadDrawer } from '../setLoadDrawer'
 import { useGetRole } from '@/hooks/useGetRole'
+import axios, { AxiosError, AxiosResponse } from 'axios'
+import { ErrorBox } from '../errorBox'
 
 interface DataTableProps<TValue> {
     columns: ColumnDef<TrainingGroupTableProps, TValue>[]
@@ -74,6 +82,33 @@ export function TrainingGroupTable<TValue>({
         },
     })
     const { role } = useGetRole()
+    const [isError, setError] = useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = useState<string | undefined>()
+
+    const handleFixIndexes = async (trainingGroupId: string | null) => {
+        try {
+            const data: AxiosResponse<User> = await axiosInstance.patch(
+                `${import.meta.env.VITE_SERVER_URL}/training-groups/fix-indexes/${trainingGroupId}`
+            )
+
+            return data
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const axiosError = error as AxiosError<ErrorResponse>
+                if (axiosError.response && axiosError.response.status === 404) {
+                    setError(true)
+                    setErrorMessage(axiosError.response.data.message)
+                }
+                if (axiosError.response && axiosError.response.status === 400) {
+                    setError(true)
+                    setErrorMessage(axiosError.response.data.message)
+                }
+            } else {
+                setError(true)
+                setErrorMessage(`Error fixing exercises indexes`)
+            }
+        }
+    }
 
     const handleDeleteExercise = async (id: string) => {
         try {
@@ -89,9 +124,11 @@ export function TrainingGroupTable<TValue>({
         row: Row<TrainingGroupTableProps>
     ) => {
         const exerciseId: string = row.original.id
+        const tgId: string | null = row.original.tgId
         {
-            if (exerciseId) {
+            if (exerciseId && tgId) {
                 await handleDeleteExercise(exerciseId)
+                await handleFixIndexes(tgId)
                 if (refetchTrainingGroup) {
                     await refetchTrainingGroup()
                 }
@@ -195,6 +232,9 @@ export function TrainingGroupTable<TValue>({
                     )}
                 </TableBody>
             </Table>
+            {isError && (
+                <ErrorBox errorMessage={errorMessage} setError={setError} />
+            )}
         </div>
     )
 }
