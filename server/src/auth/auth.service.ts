@@ -2,20 +2,19 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
-} from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import * as argon from "argon2";
-import { PrismaService } from "src/prisma.service";
-import { UserEntity } from "src/users/entities/user.entity";
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as argon from 'argon2';
+import { PrismaService } from 'src/prisma.service';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
-    private jwtService: JwtService
-  ) {}
+    private jwtService: JwtService,
+  ) { }
 
   async validateUser(email: string, password: string): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({
@@ -38,11 +37,11 @@ export class AuthService {
   }
 
   async login(
-    user: UserEntity
+    user: UserEntity,
   ): Promise<{ user: UserEntity; accessToken: string; refreshToken: string }> {
     const payload = { username: user.email, sub: user.id, role: user.role };
     const accessToken = this.jwtService.sign(payload);
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: "7d" });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
     const hashedRefreshToken = await argon.hash(refreshToken);
     await this.prisma.user.update({
       where: {
@@ -66,7 +65,7 @@ export class AuthService {
       secret: process.env.JWT_SECRET_KEY,
     });
     if (!tokenPayload) {
-      throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
     const user = await this.prisma.user.findUniqueOrThrow({
       where: {
@@ -74,7 +73,7 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new HttpException("Unauthorized1", HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
     const dbHashedRt = user.hashedRt;
     const isRtTokenValid = await argon.verify(dbHashedRt, refresh);
@@ -102,7 +101,7 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
     if (!user.hashedRt) {
       return false;
@@ -126,7 +125,7 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
     return user.role.toString();
   }

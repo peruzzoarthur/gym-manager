@@ -1,31 +1,23 @@
-version: '3'
+---
 services:
   postgres:
-    container_name: postgres
-    image: postgres:latest
+    image: postgres
+    container_name: gym
+    restart: 'no'
+    environment:
+      POSTGRES_USER: ozzu
+      POSTGRES_PASSWORD: marij
+      POSTGRES_DB: gym
     ports:
       - '5432:5432'
     volumes:
-      - /data/postgres:/data/postgres
-    env_file:
-      - docker.env
+      - gym_data:/var/lib/postgresql/data
     networks:
-      - postgres
-
-  pgadmin:
-    links:
-      - postgres:postgres
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    ports:
-      - '8080:80'
-    volumes:
-      - /data/pgadmin:/root/.pgadmin
-    env_file:
-      - docker.env
-    networks:
-      - postgres
+      - gym
 
 networks:
-  postgres:
+  gym:
     driver: bridge
+
+volumes:
+  gym_data:
