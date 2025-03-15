@@ -1,24 +1,19 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateTrainingDto } from "./dto/create-training.dto";
-import { UpdateTrainingDto } from "./dto/update-training.dto";
-import { PrismaService } from "src/prisma.service";
-import { TrainingGroupsService } from "src/training-groups/training-groups.service";
-import { Phase } from "@prisma/client";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateTrainingDto } from './dto/create-training.dto';
+import { UpdateTrainingDto } from './dto/update-training.dto';
+import { TrainingGroupsService } from 'src/training-groups/training-groups.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TrainingsService {
   constructor(
     private prisma: PrismaService,
-    private trainingGroupsService: TrainingGroupsService
-  ) {}
+    private trainingGroupsService: TrainingGroupsService,
+  ) { }
   async createForUser(createTrainingDto: CreateTrainingDto) {
     const training = await this.prisma.training.create({
       data: {
         daysInWeek: createTrainingDto.daysInWeek,
-        reps: createTrainingDto.reps,
-        sets: createTrainingDto.sets,
-        tempo: createTrainingDto.tempo,
-        rest: createTrainingDto.rest,
         name: createTrainingDto.name,
         user: {
           connect: {
@@ -33,44 +28,13 @@ export class TrainingsService {
       },
     });
 
-    const keys = ["A", "B", "C", "D", "E", "F"];
+    const keys = ['A', 'B', 'C', 'D', 'E', 'F'];
 
     for (let i = 0; i < training.daysInWeek; i++) {
       await this.trainingGroupsService.create({
         key: keys[i],
         trainingId: training.id,
-        phase: "CIS",
-        number: 1,
-      });
-      await this.trainingGroupsService.create({
-        key: keys[i],
-        trainingId: training.id,
-        phase: Phase.ONE,
-        number: 1,
-      });
-      await this.trainingGroupsService.create({
-        key: keys[i],
-        trainingId: training.id,
-        phase: Phase.ONE,
-        number: 2,
-      });
-      await this.trainingGroupsService.create({
-        key: keys[i],
-        trainingId: training.id,
-        phase: Phase.TWO,
-        number: 1,
-      });
-      await this.trainingGroupsService.create({
-        key: keys[i],
-        trainingId: training.id,
-        phase: Phase.TWO,
-        number: 2,
-      });
-      await this.trainingGroupsService.create({
-        key: keys[i],
-        trainingId: training.id,
-        phase: Phase.TWO,
-        number: 3,
+        number: i + 1,
       });
     }
     return training;
@@ -80,14 +44,10 @@ export class TrainingsService {
     return await this.prisma.training.findMany({
       select: {
         id: true,
-        tempo: true,
         daysInWeek: true,
         done: true,
         createdAt: true,
         updatedAt: true,
-        reps: true,
-        sets: true,
-        rest: true,
         createdBy: true,
         name: true,
         user: true,
@@ -119,17 +79,13 @@ export class TrainingsService {
         id: true,
         user: true,
         name: true,
-        tempo: true,
         daysInWeek: true,
         done: true,
         createdBy: true,
         createdAt: true,
         updatedAt: true,
-        reps: true,
-        sets: true,
-        rest: true,
         trainingGroups: {
-          orderBy: { key: "asc" },
+          orderBy: { key: 'asc' },
           select: {
             id: true,
             key: true,
@@ -137,7 +93,6 @@ export class TrainingsService {
             doneAt: true,
             groups: true,
             active: true,
-            phase: true,
             activeAt: true,
             exercises: {
               select: {
@@ -166,12 +121,8 @@ export class TrainingsService {
         id: true,
         daysInWeek: true,
         done: true,
-        reps: true,
-        rest: true,
-        tempo: true,
         createdAt: true,
         trainingGroups: true,
-        sets: true,
         name: true,
       },
     });
@@ -191,7 +142,7 @@ export class TrainingsService {
     });
 
     if (!training) {
-      throw new HttpException("Training not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('Training not found', HttpStatus.NOT_FOUND);
     }
 
     const usersWithActiveTraining = await this.prisma.user.findMany({
@@ -202,8 +153,8 @@ export class TrainingsService {
 
     if (usersWithActiveTraining.length > 0) {
       throw new HttpException(
-        "One or more users have this training activated",
-        HttpStatus.CONFLICT
+        'One or more users have this training activated',
+        HttpStatus.CONFLICT,
       );
     }
 

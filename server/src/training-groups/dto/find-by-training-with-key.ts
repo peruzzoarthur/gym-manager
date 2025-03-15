@@ -1,5 +1,4 @@
-import { Phase } from "@prisma/client";
-import { IsEnum, IsInt, IsString, IsUUID } from "class-validator";
+import { IsString, IsUUID } from 'class-validator';
 
 export class FindByTrainingWithKeyDto {
   @IsString()

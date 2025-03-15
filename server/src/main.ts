@@ -2,7 +2,7 @@ import { HttpAdapterHost, NestFactory, Reflector } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as cookieParser from "cookie-parser";
 import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
-import { PrismaClientExceptionFilter } from "prisma/prisma-client-exception.filter";
+import { PrismaClientExceptionFilter } from "src/prisma/prisma-client-exception.filter";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 // import { ExcludeNullInterceptor } from './utils/excludeNull.interceptor';
 

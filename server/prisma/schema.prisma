@@ -45,15 +45,10 @@ model Training {
   trainingGroups  TrainingGroup[]
   user            User            @relation("UserTrainings", fields: [userId], references: [id])
   userId          String
-  // activatedAtUser User?           @relation("ActiveTraining")
-  tempo           Tempo
   daysInWeek      Int
   done            Boolean         @default(false)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-  reps            Int
-  sets            Int
-  rest            Int
   objective       String?
   createdBy       User            @relation("TrainingCreator", fields: [createdByUserId], references: [id])
   createdByUserId String
@@ -69,19 +64,11 @@ model TrainingGroup {
   groups            Group[]
   training          Training           @relation(fields: [trainingId], references: [id])
   trainingId        String
-  phase             Phase
   number            Int
   active            Boolean            @default(false)
   activeAt          DateTime?
 
-  @@unique([key, trainingId, phase, number])
-}
-
-enum Phase {
-  CIS
-  ONE
-  TWO
-  UNCATEGORIZED
+  @@unique([key, trainingId, number])
 }
 
 model Exercise {
@@ -93,6 +80,7 @@ model Exercise {
   sets              Int?
   trainingGroups    TrainingGroup[]
   index             Int?
+  tempo             Tempo?
   combinedExercises CombinedExercise[]
 }
 

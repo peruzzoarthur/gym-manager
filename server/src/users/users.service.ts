@@ -1,16 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { PrismaService } from "src/prisma.service";
-import * as argon from "argon2";
-import { TrainingsService } from "src/trainings/trainings.service";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import * as argon from 'argon2';
+import { TrainingsService } from 'src/trainings/trainings.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
-    private trainingsService: TrainingsService
-  ) {}
+    private trainingsService: TrainingsService,
+  ) { }
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await argon.hash(createUserDto.password);
 
@@ -47,7 +47,7 @@ export class UsersService {
 
   async updateProfileImage(id: string, profileImage: Express.Multer.File) {
     const bufferData = profileImage.buffer;
-    const base64String = Buffer.from(bufferData).toString("base64");
+    const base64String = Buffer.from(bufferData).toString('base64');
     const image = `data:image/jpeg;base64,${base64String}`;
     return await this.prisma.user.update({
       where: {
@@ -66,17 +66,17 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new HttpException("No user", HttpStatus.NOT_FOUND);
+      throw new HttpException('No user', HttpStatus.NOT_FOUND);
     }
-    if (user.role === "ADMIN") {
-      throw new HttpException("Already admin", HttpStatus.CONFLICT);
+    if (user.role === 'ADMIN') {
+      throw new HttpException('Already admin', HttpStatus.CONFLICT);
     }
     return await this.prisma.user.update({
       where: {
         id: user.id,
       },
       data: {
-        role: "ADMIN",
+        role: 'ADMIN',
       },
     });
   }
@@ -89,13 +89,13 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     if (user.activeTrainingId) {
       throw new HttpException(
-        "Finish active training before activating a new one",
-        HttpStatus.BAD_REQUEST
+        'Finish active training before activating a new one',
+        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -115,13 +115,13 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     if (!user.activeTrainingId) {
       throw new HttpException(
-        "No training active for user",
-        HttpStatus.BAD_REQUEST
+        'No training active for user',
+        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -144,19 +144,19 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     if (!user.activeTrainingId) {
       throw new HttpException(
-        "No training active for user",
-        HttpStatus.BAD_REQUEST
+        'No training active for user',
+        HttpStatus.BAD_REQUEST,
       );
     }
     const training = await this.trainingsService.findOne(user.activeTrainingId);
 
     const unfinishedTg = training.trainingGroups.filter(
-      (tg) => tg.done !== true
+      (tg) => tg.done !== true,
     );
 
     const activeTg = unfinishedTg.find((tg) => tg.active === true);
@@ -175,10 +175,10 @@ export class UsersService {
       },
     });
     if (!allUsersTraining) {
-      throw new HttpException("No users registered", HttpStatus.NOT_FOUND);
+      throw new HttpException('No users registered', HttpStatus.NOT_FOUND);
     }
     const usersWithActiveTraining = allUsersTraining.filter(
-      (u) => u.activeTrainingId !== null
+      (u) => u.activeTrainingId !== null,
     );
 
     const promises = usersWithActiveTraining.map(async (u) => {

@@ -1,21 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateTrainingGroupDto } from "./dto/create-training-group.dto";
-import { UpdateTrainingGroupDto } from "./dto/update-training-group.dto";
-import { PrismaService } from "src/prisma.service";
-import { FindByTrainingWithKeyDto } from "./dto/find-by-training-with-key";
-import { ExercisesService } from "src/exercises/exercises.service";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateTrainingGroupDto } from './dto/create-training-group.dto';
+import { UpdateTrainingGroupDto } from './dto/update-training-group.dto';
+import { FindByTrainingWithKeyDto } from './dto/find-by-training-with-key';
+import { ExercisesService } from 'src/exercises/exercises.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class TrainingGroupsService {
   constructor(
     private prisma: PrismaService,
-    private exercisesService: ExercisesService
+    private exercisesService: ExercisesService,
   ) {}
   async create(createTrainingGroupDto: CreateTrainingGroupDto) {
     return await this.prisma.trainingGroup.create({
       data: {
         key: createTrainingGroupDto.key,
-        phase: createTrainingGroupDto.phase,
         number: createTrainingGroupDto.number,
         training: {
           connect: {
@@ -43,7 +42,6 @@ export class TrainingGroupsService {
         active: true,
         activeAt: true,
         groups: true,
-        phase: true,
         exercises: {
           select: {
             id: true,
@@ -54,20 +52,20 @@ export class TrainingGroupsService {
             load: true,
           },
           orderBy: {
-            index: "asc",
+            index: 'asc',
           },
         },
       },
     });
 
     if (!trainingGroup) {
-      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('Training group not found', HttpStatus.NOT_FOUND);
     }
     return trainingGroup;
   }
 
   async findByTrainingWithKey(
-    findByTrainingWithKeyDto: FindByTrainingWithKeyDto
+    findByTrainingWithKeyDto: FindByTrainingWithKeyDto,
   ) {
     return await this.prisma.trainingGroup.findMany({
       where: {
@@ -82,7 +80,6 @@ export class TrainingGroupsService {
         active: true,
         activeAt: true,
         groups: true,
-        phase: true,
         exercises: {
           select: {
             id: true,
@@ -113,7 +110,7 @@ export class TrainingGroupsService {
       where: { id: id },
     });
     if (!tg) {
-      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('Training group not found', HttpStatus.NOT_FOUND);
     }
     if (tg.done) {
       return await this.prisma.trainingGroup.update({
@@ -129,7 +126,7 @@ export class TrainingGroupsService {
     });
 
     if (!trainingGroup) {
-      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('Training group not found', HttpStatus.NOT_FOUND);
     }
     const trainingGroups = await this.prisma.trainingGroup.findMany({
       where: { trainingId: trainingGroup.trainingId },
@@ -141,8 +138,8 @@ export class TrainingGroupsService {
 
     if (activeTg) {
       throw new HttpException(
-        "Finish active training in order to start a new one",
-        HttpStatus.BAD_REQUEST
+        'Finish active training in order to start a new one',
+        HttpStatus.BAD_REQUEST,
       );
     } else {
       return await this.prisma.trainingGroup.update({
@@ -163,7 +160,7 @@ export class TrainingGroupsService {
     });
 
     if (!trainingGroup) {
-      throw new HttpException("Training group not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('Training group not found', HttpStatus.NOT_FOUND);
     }
 
     const exercises = trainingGroup.exercises;

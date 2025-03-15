@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
-import { PrismaService } from './prisma.service';
+// import { PrismaService } from './prisma/prisma.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
@@ -33,6 +33,6 @@ import { CombinedExercisesModule } from './combined-exercises/combined-exercises
     CombinedExercisesModule,
   ],
   controllers: [],
-  providers: [PrismaService],
+  // providers: [PrismaService],
 })
-export class AppModule {}
+export class AppModule { }

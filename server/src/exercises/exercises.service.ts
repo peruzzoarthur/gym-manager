@@ -1,11 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateExerciseDto } from "./dto/create-exercise.dto";
-import { UpdateExerciseDto } from "./dto/update-exercise.dto";
-import { PrismaService } from "src/prisma.service";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateExerciseDto } from './dto/create-exercise.dto';
+import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ExercisesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createExerciseDto: CreateExerciseDto) {
     const highestIndexExercise = await this.prisma.exercise.findFirst({
@@ -16,7 +16,7 @@ export class ExercisesService {
           },
         },
       },
-      orderBy: { index: "desc" },
+      orderBy: { index: 'desc' },
     });
 
     const highestIndexCombinedExercise =
@@ -28,7 +28,7 @@ export class ExercisesService {
             },
           },
         },
-        orderBy: { index: "desc" },
+        orderBy: { index: 'desc' },
       });
 
     let newIndex = 1;
@@ -37,7 +37,7 @@ export class ExercisesService {
       newIndex =
         Math.max(
           highestIndexExercise.index,
-          highestIndexCombinedExercise.index
+          highestIndexCombinedExercise.index,
         ) + 1;
     } else if (highestIndexExercise) {
       newIndex = highestIndexExercise.index + 1;
@@ -91,7 +91,7 @@ export class ExercisesService {
     });
 
     const filteredByKey = training.trainingGroups.filter(
-      (tg) => tg.key === key && tg.done === false
+      (tg) => tg.key === key && tg.done === false,
     );
 
     const ids = filteredByKey.flatMap((tg) => tg.id);
@@ -153,7 +153,7 @@ export class ExercisesService {
       },
     });
     if (!exercise) {
-      throw new HttpException("Exercise not found", HttpStatus.NOT_FOUND);
+      throw new HttpException('Exercise not found', HttpStatus.NOT_FOUND);
     }
 
     const combinedExercises = exercise.combinedExercises;

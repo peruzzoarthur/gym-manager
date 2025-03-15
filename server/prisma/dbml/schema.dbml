@@ -26,14 +26,10 @@ Table Training {
   trainingGroups TrainingGroup [not null]
   user User [not null]
   userId String [not null]
-  tempo Tempo [not null]
   daysInWeek Int [not null]
   done Boolean [not null, default: false]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  reps Int [not null]
-  sets Int [not null]
-  rest Int [not null]
   objective String
   createdBy User [not null]
   createdByUserId String [not null]
@@ -49,13 +45,12 @@ Table TrainingGroup {
   groups Group[] [not null]
   training Training [not null]
   trainingId String [not null]
-  phase Phase [not null]
   number Int [not null]
   active Boolean [not null, default: false]
   activeAt DateTime
 
   indexes {
-    (key, trainingId, phase, number) [unique]
+    (key, trainingId, number) [unique]
   }
 }
 
@@ -68,6 +63,7 @@ Table Exercise {
   sets Int
   trainingGroups TrainingGroup [not null]
   index Int
+  tempo Tempo
   combinedExercises CombinedExercise [not null]
 }
 
@@ -107,13 +103,6 @@ Table CombinedExerciseToExercise {
 Enum Role {
   USER
   ADMIN
-}
-
-Enum Phase {
-  CIS
-  ONE
-  TWO
-  UNCATEGORIZED
 }
 
 Enum Tempo {

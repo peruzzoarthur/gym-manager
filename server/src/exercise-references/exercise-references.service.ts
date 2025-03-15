@@ -1,17 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateExerciseReferenceDto } from "./dto/create-exercise-reference.dto";
-import { UpdateExerciseReferenceDto } from "./dto/update-exercise-reference.dto";
-import { PrismaService } from "src/prisma.service";
-import { Group } from "@prisma/client";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateExerciseReferenceDto } from './dto/create-exercise-reference.dto';
+import { UpdateExerciseReferenceDto } from './dto/update-exercise-reference.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ExerciseReferencesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
   async create(createExerciseReferenceDto: CreateExerciseReferenceDto) {
     if (createExerciseReferenceDto.groups.length === 0) {
       throw new HttpException(
-        "Select at least a muscle group to create exercise reference",
-        HttpStatus.BAD_REQUEST
+        'Select at least a muscle group to create exercise reference',
+        HttpStatus.BAD_REQUEST,
       );
     }
     return await this.prisma.exerciseReference.create({

@@ -3,20 +3,20 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
-import { PrismaService } from "src/prisma.service";
-import { Roles } from "./roles.decorator";
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { Roles } from './roles.decorator';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
-    private reflector: Reflector
-  ) {}
+    private reflector: Reflector,
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -33,7 +33,7 @@ export class RolesGuard implements CanActivate {
         secret: process.env.JWT_SECRET_KEY,
       });
 
-      request["user"] = payload;
+      request['user'] = payload;
       const user = await this.prisma.user.findUnique({
         where: { email: request.user.username },
       });
@@ -42,14 +42,14 @@ export class RolesGuard implements CanActivate {
         return true;
       }
     } catch {
-      throw new UnauthorizedException("Access denied.");
+      throw new UnauthorizedException('Access denied.');
     }
 
     return false;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(" ") ?? [];
-    return type === "Bearer" ? token : undefined;
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }

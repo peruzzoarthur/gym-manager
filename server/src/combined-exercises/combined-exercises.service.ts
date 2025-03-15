@@ -1,21 +1,17 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateCombinedExerciseDto } from "./dto/create-combined-exercise.dto";
-import { UpdateCombinedExerciseDto } from "./dto/update-combined-exercise.dto";
-import { PrismaService } from "src/prisma.service";
-import { ExercisesService } from "src/exercises/exercises.service";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateCombinedExerciseDto } from './dto/create-combined-exercise.dto';
+import { UpdateCombinedExerciseDto } from './dto/update-combined-exercise.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CombinedExercisesService {
-  constructor(
-    private prisma: PrismaService,
-    private exercisesService: ExercisesService
-  ) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createCombinedExerciseDto: CreateCombinedExerciseDto) {
     if (createCombinedExerciseDto.refIds.length < 2) {
       throw new HttpException(
-        "Select at least two exercises to create a combined exercise",
-        HttpStatus.BAD_REQUEST
+        'Select at least two exercises to create a combined exercise',
+        HttpStatus.BAD_REQUEST,
       );
     }
     const highestIndexExercise = await this.prisma.exercise.findFirst({
@@ -26,7 +22,7 @@ export class CombinedExercisesService {
           },
         },
       },
-      orderBy: { index: "desc" },
+      orderBy: { index: 'desc' },
     });
 
     const highestIndexCombinedExercise =
@@ -38,7 +34,7 @@ export class CombinedExercisesService {
             },
           },
         },
-        orderBy: { index: "desc" },
+        orderBy: { index: 'desc' },
       });
 
     let newIndex = 1;
@@ -47,7 +43,7 @@ export class CombinedExercisesService {
       newIndex =
         Math.max(
           highestIndexExercise.index,
-          highestIndexCombinedExercise.index
+          highestIndexCombinedExercise.index,
         ) + 1;
     } else if (highestIndexExercise) {
       newIndex = highestIndexExercise.index + 1;
@@ -93,12 +89,12 @@ export class CombinedExercisesService {
   }
 
   async createToAllWithSameKey(
-    createCombinedExerciseDto: CreateCombinedExerciseDto
+    createCombinedExerciseDto: CreateCombinedExerciseDto,
   ) {
     if (createCombinedExerciseDto.refIds.length < 2) {
       throw new HttpException(
-        "Select at least two exercises to create a combined exercise",
-        HttpStatus.BAD_REQUEST
+        'Select at least two exercises to create a combined exercise',
+        HttpStatus.BAD_REQUEST,
       );
     }
     const highestIndexExercise = await this.prisma.exercise.findFirst({
@@ -109,7 +105,7 @@ export class CombinedExercisesService {
           },
         },
       },
-      orderBy: { index: "desc" },
+      orderBy: { index: 'desc' },
     });
 
     const highestIndexCombinedExercise =
@@ -121,7 +117,7 @@ export class CombinedExercisesService {
             },
           },
         },
-        orderBy: { index: "desc" },
+        orderBy: { index: 'desc' },
       });
 
     let newIndex = 1;
@@ -130,7 +126,7 @@ export class CombinedExercisesService {
       newIndex =
         Math.max(
           highestIndexExercise.index,
-          highestIndexCombinedExercise.index
+          highestIndexCombinedExercise.index,
         ) + 1;
     } else if (highestIndexExercise) {
       newIndex = highestIndexExercise.index + 1;
@@ -153,7 +149,7 @@ export class CombinedExercisesService {
       },
     });
     const filteredByKey = training.trainingGroups.filter(
-      (tg) => tg.key === key && tg.done === false
+      (tg) => tg.key === key && tg.done === false,
     );
     const ids = filteredByKey.flatMap((tg) => tg.id);
 
